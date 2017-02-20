@@ -14,3 +14,9 @@ A little helper to keep your notes organized.
 - Search all notes (inluding secure notes)
 - Do todo-lists
 - It's all backed upp daily (if you want)
+
+###Thanks to
+
+The team behind MahApps.Metro (https://github.com/MahApps/MahApps.Metro)
+
+And to @punker76 for https://github.com/punker76/gong-wpf-dragdrop
