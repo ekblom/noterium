@@ -20,3 +20,5 @@ A little helper to keep your notes organized.
 The team behind MahApps.Metro (https://github.com/MahApps/MahApps.Metro)
 
 And to @punker76 for https://github.com/punker76/gong-wpf-dragdrop
+
+And https://github.com/ekblom/Markdown.XAML that i have been extending to fit my needs.
