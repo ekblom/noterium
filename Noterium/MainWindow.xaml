@@ -417,7 +417,7 @@
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<controls:DropDownButton DisplayMemberPath="Name" ItemsSource="{Binding Librarys}">
+					<controls:DropDownButton DisplayMemberPath="Name" ItemsSource="{Binding Librarys}" Content="Librarys" BorderThickness="0">
 						<controls:DropDownButton.Icon>
 							<iconPacks:PackIconMaterial Kind="NoteMultipleOutline" />
 						</controls:DropDownButton.Icon>
