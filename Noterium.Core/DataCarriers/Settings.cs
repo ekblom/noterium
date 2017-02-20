@@ -8,13 +8,13 @@ namespace Noterium.Core.DataCarriers
 {
     public class Settings : INotifyPropertyChanged
     {
-        private string _accent = "Blue";
+        private string _accent = "VSDark";
         private bool _autoBackup = true;
         private int _autoLockMainWindowAfter = 10;
         private string _defaultNoteView = "View";
         private bool _enableAdvancedControls;
         private int _numberOfBackupsToKeep = 10;
-        private string _theme = "BaseLight";
+        private string _theme = "BaseDark";
 
         public Settings()
         {
@@ -79,8 +79,8 @@ namespace Noterium.Core.DataCarriers
         }
 
         [JsonProperty("theme", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        [DefaultValue("BaseDark")]
-        public string Theme
+		[DefaultValue("BaseDark")]
+		public string Theme
         {
             get { return _theme; }
             set
