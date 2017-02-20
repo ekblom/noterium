@@ -417,10 +417,11 @@
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<ComboBox Grid.Row="0">
-						<ComboBoxItem Content="Library 1"/>
-						<ComboBoxItem Content="Library 2"/>
-					</ComboBox>
+					<controls:DropDownButton DisplayMemberPath="Name" ItemsSource="{Binding Librarys}">
+						<controls:DropDownButton.Icon>
+							<iconPacks:PackIconMaterial Kind="NoteMultipleOutline" />
+						</controls:DropDownButton.Icon>
+					</controls:DropDownButton>
 
 
 					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" DataContext="{Binding MenuContext}"

@@ -173,6 +173,7 @@ namespace Noterium.ViewModels
 		}
 
 		public ObservableCollection<NoteViewModel> SearchResult { get; }
+		public ObservableCollection<Library> Librarys { get; }
 
 		public bool IsSearching
 		{
@@ -224,7 +225,7 @@ namespace Noterium.ViewModels
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
 			TopMainMenuItems = new ObservableCollection<TopMainMenuItemViewModel>();
 			SearchResult = new ObservableCollection<NoteViewModel>();
-
+			Librarys = Hub.Instance.AppSettings.Librarys;
 
 			BindingOperations.EnableCollectionSynchronization(NotebookMenuItems, _currentNotesbooksLockObject);
 			BindingOperations.EnableCollectionSynchronization(SearchResult, _searchResultLockObject);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using Newtonsoft.Json;
@@ -11,7 +12,7 @@ namespace Noterium.Core
     public class AppSettings
     {
         private string _settingsFilePath;
-        public List<Library> Librarys { get; set; }
+        public ObservableCollection<Library> Librarys { get; set; }
         public double NoteColumnWidth { get; set; } = 250;
         public double NotebookColumnWidth { get; set; } = 205;
         public Size WindowSize { get; set; } = new Size(1024, 768);
@@ -19,7 +20,7 @@ namespace Noterium.Core
 
         public void Init()
         {
-            Librarys = new List<Library>();
+            Librarys = new ObservableCollection<Library>();
             _settingsFilePath = GetSettingsFilePath();
 
             var fi = new FileInfo(_settingsFilePath);
@@ -69,7 +70,7 @@ namespace Noterium.Core
 
         private void CopySettings(AppSettings temp)
         {
-            Librarys = temp.Librarys ?? new List<Library>();
+            Librarys = temp.Librarys ?? new ObservableCollection<Library>();
             NoteColumnWidth = temp.NoteColumnWidth;
             NotebookColumnWidth = temp.NotebookColumnWidth;
             WindowState = temp.WindowState;
