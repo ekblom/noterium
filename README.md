@@ -4,7 +4,7 @@ A little helper to keep your notes organized.
 
 [![Issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
-![maindemowindow01](./docs/noterium_screenshot_1.png)
+![maindemowindow01](./docs/mainwindow1.png)
 
 ###Features
 
