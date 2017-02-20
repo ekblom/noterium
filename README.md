@@ -1,2 +1,3 @@
-# noterium
-An app for taking total control over your notes
+##Noteray
+
+A little helper to keep your notes organized.

@@ -1,0 +1,299 @@
+﻿<controls1:BaseUserControl x:Class="Noterium.Views.NoteEditor"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:viewModels="clr-namespace:Noterium.ViewModels"
+						   xmlns:controls1="clr-namespace:Noterium.Controls"
+						   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+						   xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
+						   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+						   xmlns:dd="urn:gong-wpf-dragdrop"
+						   xmlns:converters="clr-namespace:Noterium.Code.Converters"
+						   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+						   xmlns:controls2="clr-namespace:Noterium.Code.Controls"
+						   mc:Ignorable="d"
+			 d:DesignHeight="394" d:DesignWidth="508"
+			  d:DataContext="{d:DesignInstance {x:Type viewModels:NoteViewModel}}">
+	<UserControl.InputBindings>
+		<KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveNoteCommand}"/>
+	</UserControl.InputBindings>
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.buttons.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="26" />
+			<RowDefinition Height="*" />
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="100" />
+
+        </Grid.RowDefinitions>
+		<controls1:TokenizedTagControl Grid.Row="2" VerticalContentAlignment="Center" x:Name="TagControl" Height="26" ItemsSource="{Binding Tags}">
+			<controls1:TokenizedTagControl.Placeholder>Click here to add tags...</controls1:TokenizedTagControl.Placeholder>
+		</controls1:TokenizedTagControl>
+		<ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
+			<Button Name="Header1Button" CommandParameter="H1" Click="ToolbarButtonClick" ToolTip="Add H1-style headline">
+                <iconPacks:PackIconMaterial Kind="FormatHeader1" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button CommandParameter="H2" Click="ToolbarButtonClick" ToolTip="Add H2-style headline">
+                <iconPacks:PackIconMaterial Kind="FormatHeader2" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button CommandParameter="H3" Click="ToolbarButtonClick" ToolTip="Add H3-style headline">
+                <iconPacks:PackIconMaterial Kind="FormatHeader3" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Separator/>
+			<Button Name="BoldButton" CommandParameter="Bold" Click="ToolbarButtonClick" ToolTip="Make text bold">
+                <iconPacks:PackIconMaterial Kind="FormatBold" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button Name="ItalicButton" CommandParameter="Italic" Click="ToolbarButtonClick" ToolTip="Make text ittalic">
+                <iconPacks:PackIconMaterial Kind="FormatItalic" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button Name="StrikeButton" CommandParameter="Strike" Click="ToolbarButtonClick" ToolTip="Make text strike through">
+                <iconPacks:PackIconMaterial Kind="FormatStrikethrough" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+
+			<Button CommandParameter="Code" Click="ToolbarButtonClick" ToolTip="Make text appear as code">
+                <iconPacks:PackIconMaterial Kind="CodeBraces" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Separator/>
+
+			<Button CommandParameter="Image"  Click="ToolbarTagButtonClick" ToolTip="Insert image tag">
+                <iconPacks:PackIconMaterial Kind="ImageMultiple" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button Name="InsertDate" CommandParameter="InsertDate" Click="ToolbarTagButtonClick" ToolTip="Insert todays date">
+                <iconPacks:PackIconModern Kind="CalendarDay" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Button Name="InsertComment" CommandParameter="InsertComment" Click="ToolbarTagButtonClick" ToolTip="Insert a comment">
+                <iconPacks:PackIconFontAwesome Kind="Comment" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Separator />
+			<ToggleButton Name="ToggleWordWrapButton" Checked="ToggleWordWrapButton_OnClick" ToolTip="Toggle editor word wrap">
+                <iconPacks:PackIconMaterial Kind="Wrap" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</ToggleButton>
+
+			<Button Name="HelpButton" CommandParameter="Help" Click="ShowHelpBubble" ToolTip="View help">
+                <iconPacks:PackIconModern Kind="Question" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+			</Button>
+			<Popup x:Name="Popup" AllowsTransparency="True" PlacementTarget="{Binding ElementName=HelpButton}" StaysOpen="False" PopupAnimation="Fade" Width="400" Height="400">
+				<Border Background="White" BorderBrush="{DynamicResource BlackColorBrush}" BorderThickness="1">
+					<Border.Effect>
+						<DropShadowEffect ShadowDepth="0"
+						  Color="{DynamicResource AccentColor}"
+						  Opacity="1"
+						  BlurRadius="5"/>
+					</Border.Effect>
+					<StackPanel>
+						<FlowDocumentScrollViewer Height="{Binding ElementName=Popup, Path=Width}">
+							<FlowDocument FontFamily="Consolas">
+								<Paragraph>
+									<Run>Formatting:</Run>
+									<LineBreak />
+									<Bold>**bold**</Bold>
+									<Run>or</Run>
+									<Bold>__bold__</Bold>
+									<LineBreak />
+									<Italic>*italic*</Italic>
+									<Run>or</Run>
+									<Italic>_italic_</Italic>
+									<LineBreak />
+									<Run>~~</Run>
+									<Run TextDecorations="Strikethrough">strike</Run>
+									<Run>~~</Run>
+									<LineBreak />
+									<LineBreak />
+
+									<Run>This is an H1</Run>
+									<LineBreak />
+									<Run># This is an H1</Run>
+									<LineBreak />
+									<Run>## This is an H2</Run>
+									<LineBreak />
+									<Run>###### This is an H6</Run>
+									<LineBreak />
+									<LineBreak />
+
+									<Run>Links:</Run>
+									<LineBreak />
+									<Run>[This link](http://example.net/)</Run>
+
+									<LineBreak />
+									<LineBreak />
+
+									<Run>Check box list:</Run>
+									<LineBreak />
+									<Run>- [ ] First item</Run>
+									<LineBreak />
+									<Run>- [ ] Second item</Run>
+									<LineBreak />
+									<Run>- [x] Third finished item</Run>
+
+									<LineBreak />
+									<LineBreak />
+
+									<Run>Math support by surrounding a math expression with $$.</Run>
+									<LineBreak />
+									<LineBreak />
+									<Run>e.g. $$1+2$$ will render as 3</Run>
+									<LineBreak />
+									<LineBreak />
+									<Run>There are support for:</Run>
+									<LineBreak />
+									<Run>+ (addition)</Run>
+									<LineBreak />
+									<Run>- (subtraction)</Run>
+									<LineBreak />
+									<Run>* (multiplication)</Run>
+									<LineBreak />
+									<Run>/ (division)</Run>
+									<LineBreak />
+									<Run>% (modulus)</Run>
+									<LineBreak />
+									<Run>And much more..</Run>
+									<!-- https://msdn.microsoft.com/en-us/library/system.data.datacolumn.expression.aspx -->
+								</Paragraph>
+							</FlowDocument>
+						</FlowDocumentScrollViewer>
+					</StackPanel>
+				</Border>
+			</Popup>
+		</ToolBar>
+
+		<TextBox Grid.Row="1"
+			x:Name="MarkdownText"
+			FontFamily="Consolas"
+			FontSize="10pt"
+			TextChanged="MarkdownText_OnTextChanged"
+			HorizontalScrollBarVisibility="Auto"
+			VerticalScrollBarVisibility="Auto"
+			FocusVisualStyle="{x:Null}"
+			AcceptsReturn="True"
+			AcceptsTab="True"
+			dd:DragDrop.IsDropTarget="True"
+			dd:DragDrop.DropHandler="{Binding}"
+			BorderBrush="Transparent"
+			BorderThickness="0"
+			LostFocus="MarkdownText_OnLostFocus"
+                 Background="{DynamicResource TransparentWhiteBrush}"
+                  Foreground="{DynamicResource IdealForegroundColorBrush}">
+		</TextBox>
+		<Popup Name="TableToolbarPopup" PlacementTarget="{Binding ElementName=MarkdownText}" Placement="Relative" Grid.Row="1" Grid.Column="0">
+			<Border Background="White" BorderThickness="1" BorderBrush="Black">
+				<Button Click="EditTableClick" Style="{StaticResource MetroFlatButton}">
+					<iconPacks:PackIconMaterial Kind="TableEdit" />
+				</Button>
+			</Border>
+		</Popup>
+		<Popup Name="LinkToolbarPopup" PlacementTarget="{Binding ElementName=MarkdownText}" Placement="Relative" Grid.Row="1" Grid.Column="0">
+			<Border Background="White" BorderThickness="1" BorderBrush="Black">
+				<Button Click="EditLinkClick" Style="{StaticResource MetroFlatButton}">
+					<iconPacks:PackIconModern Kind="Edit" />
+				</Button>
+			</Border>
+		</Popup>
+
+		<GridSplitter Grid.Row="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
+		<Grid Grid.Row="3" AllowDrop="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+			<TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Padding="5" Background="{DynamicResource TransparentWhiteBrush}"
+                  Foreground="{DynamicResource IdealForegroundColorBrush}">Files (drag and drop files here):</TextBlock>
+			<ListView ItemsSource="{Binding Note.Files}" Grid.Row="1"
+			Background="{DynamicResource TransparentWhiteBrush}"
+                  Foreground="{DynamicResource IdealForegroundColorBrush}"
+					  SelectedItem="{Binding SelectedNoteFile, Mode=TwoWay}"
+					  Name="FilesListView"
+					  SelectionMode="Single"
+					  dd:DragDrop.IsDropTarget="True"
+					  dd:DragDrop.DropHandler="{Binding}"
+					  dd:DragDrop.IsDragSource="True"
+					  dd:DragDrop.UseDefaultDragAdorner="True"
+					  dd:DragDrop.DragHandler="{Binding}" BorderThickness="0"
+                      Height="Auto">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="MouseDoubleClick">
+						<i:InvokeCommandAction Command="{Binding OpenFileCommand}" CommandParameter="{Binding ElementName=FilesListView, Path=SelectedItem}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem Command="{Binding RenameFileCommand}" >
+							<MenuItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<iconPacks:PackIconMaterial Name="RenameNoteFileButton" Kind="RenameBox" VerticalAlignment="Center" />
+									<TextBlock Text="Rename" VerticalAlignment="Center" />
+								</StackPanel>
+							</MenuItem.Header>
+						</MenuItem>
+						<MenuItem Command="{Binding DeleteFileCommand}">
+							<MenuItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<iconPacks:PackIconMaterial Name="DeleteNoteFileButton" Kind="Delete" VerticalAlignment="Center" />
+									<TextBlock Text="Delete" VerticalAlignment="Center" />
+								</StackPanel>
+							</MenuItem.Header>
+						</MenuItem>
+
+					</ContextMenu>
+				</ListView.ContextMenu>
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+			ItemWidth="{Binding (ListView.View).ItemWidth,
+			RelativeSource={RelativeSource AncestorType=ListView}}"
+			MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+			ItemHeight="{Binding (ListView.View).ItemHeight,
+			RelativeSource={RelativeSource AncestorType=ListView}}" />
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Width="64">
+                            <Image Width="48" Height="48" Source="{Binding Thumbnail}" />
+							<TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" Text="{Binding Name}" Foreground="{DynamicResource IdealForegroundColorBrush}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+
+		<simpleChildWindow:ChildWindow Grid.Row="1" Grid.Column="0"
+					HorizontalContentAlignment="Stretch"
+					VerticalContentAlignment="Stretch"
+					ShowCloseButton="True"
+					EnableDropShadow="true"
+					CloseByEscape="True"
+					GlowBrush="{StaticResource BlackBrush}"
+					BorderBrush="{StaticResource AccentColorBrush}"
+					BorderThickness="1"
+					Margin="100"
+					Title="Edit table"
+					Name="LinkEditor">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="34"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="34"/>
+					<ColumnDefinition Width="34"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Row="1" Grid.Column="1" Click="CloseLinkEditor">
+					<iconPacks:PackIconModern Kind="Close" />
+				</Button>
+				<Button Grid.Row="1" Grid.Column="2" Click="SaveLink">
+					<iconPacks:PackIconModern Kind="Save" />
+				</Button>
+			</Grid>
+		</simpleChildWindow:ChildWindow>
+	</Grid>
+</controls1:BaseUserControl>

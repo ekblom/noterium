@@ -1,0 +1,292 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
+             xmlns:views1="clr-namespace:Noterium.Views"
+             xmlns:converters="clr-namespace:Noterium.Code.Converters"
+             xmlns:dataCarriers="clr-namespace:Noterium.Core.DataCarriers;assembly=Noterium.Core"
+             xmlns:controls1="clr-namespace:Noterium.Controls"
+             xmlns:markdown="clr-namespace:Noterium.Code.Markdown"
+             xmlns:attachedProperties="clr-namespace:Noterium.Code.AttachedProperties"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             x:Class="Noterium.Views.NoteView"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="500"
+			 d:DataContext="{d:DesignInstance {x:Type viewModels1:NoteViewModel}}" Loaded="NoteView_OnLoaded">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<DataTemplate x:Key="NameTokenTemplate" DataType="dataCarriers:Tag">
+				<DataTemplate.Resources>
+					<Storyboard x:Key="OnLoaded1">
+						<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="border">
+							<SplineDoubleKeyFrame KeyTime="0" Value="0"/>
+							<SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+						</DoubleAnimationUsingKeyFrames>
+					</Storyboard>
+				</DataTemplate.Resources>
+				<Border x:Name="border" BorderBrush="{StaticResource ControlBorderBrush}" BorderThickness="1" CornerRadius="10" Height="20" Padding="5,3" Margin="3,0,3,3" Background="{StaticResource AccentColorBrush4}">
+					<Grid HorizontalAlignment="Left" Width="Auto">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="0.21*"/>
+							<ColumnDefinition Width="0.79*"/>
+						</Grid.ColumnDefinitions>
+						<Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1">
+							<Ellipse.Fill>
+								<SolidColorBrush Color="{Binding Color}" />
+							</Ellipse.Fill>
+							<Ellipse.Stroke>
+								<SolidColorBrush Color="{Binding Color}" />
+							</Ellipse.Stroke>
+						</Ellipse>
+						<TextBlock TextWrapping="NoWrap" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" FontWeight="SemiBold"/>
+					</Grid>
+				</Border>
+				<DataTemplate.Triggers>
+					<EventTrigger RoutedEvent="FrameworkElement.Loaded">
+						<BeginStoryboard Storyboard="{StaticResource OnLoaded1}"/>
+					</EventTrigger>
+				</DataTemplate.Triggers>
+			</DataTemplate>
+
+			<Style TargetType="{x:Type FlowDocument}" x:Key="DocumentStyle">
+				<Setter Property="FontFamily" Value="Segoe UI" />
+				<Setter Property="TextAlignment" Value="Left" />
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+			</Style>
+
+			<Style x:Key="PageHeader" TargetType="{x:Type Paragraph}">
+				<Setter Property="FontSize" Value="32" />
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="FontWeight" Value="Bold" />
+				<Setter Property="Margin" Value="0,0,0,15" />
+			</Style>
+
+			<Style x:Key="SubHeader" TargetType="{x:Type Paragraph}">
+				<Setter Property="FontSize" Value="23" />
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="FontWeight" Value="Medium" />
+				<Setter Property="Margin" Value="0,0,0,5" />
+			</Style>
+
+			<Style x:Key="SubHeaderSecondary" TargetType="{x:Type Paragraph}">
+				<Setter Property="FontSize" Value="20" />
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="FontWeight" Value="Light" />
+				<Setter Property="Margin" Value="0" />
+			</Style>
+
+			<Style x:Key="Quote" TargetType="{x:Type Paragraph}">
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="BorderBrush" Value="#c8c8c0" />
+				<Setter Property="BorderThickness" Value="4,0,0,0" />
+				<Setter Property="Padding" Value="5" />
+			</Style>
+
+			<Style x:Key="Code" TargetType="{x:Type Span}">
+				<Setter Property="FontFamily" Value="Consolas" />
+				<Setter Property="Background" Value="#002B36" />
+				<Setter Property="Foreground" Value="#839496" />
+			</Style>
+
+			<Style x:Key="CodeBlock" TargetType="{x:Type Paragraph}">
+				<Setter Property="FontFamily" Value="Consolas" />
+				<Setter Property="Background" Value="#002B36" />
+				<Setter Property="Foreground" Value="#839496" />
+				<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushNormal}" />
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="Padding" Value="5" />
+			</Style>
+
+			<Style x:Key="Table" TargetType="{x:Type Table}">
+				<Setter Property="CellSpacing" Value="0" />
+				<Setter Property="BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="BorderThickness" Value="0.5" />
+			</Style>
+
+			<Style x:Key="TableHead" TargetType="{x:Type TableRow}">
+				<Setter Property="FontWeight" Value="Bold" />
+			</Style>
+
+			<Style x:Key="TableCell" TargetType="{x:Type TableCell}">
+				<Setter Property="BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="BorderThickness" Value="0.5" />
+				<Setter Property="Padding" Value="2"/>
+			</Style>
+
+			<Style x:Key="TableColumn" TargetType="{x:Type TableColumn}">
+				<Setter Property="Width" Value="*" />
+			</Style>
+
+			<Style x:Key="Image" TargetType="{x:Type Image}">
+				<Setter Property="HorizontalAlignment" Value="Left" />
+			</Style>
+
+			<Style x:Key="LinkStyle" TargetType="{x:Type Hyperlink}">
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+
+				<Style.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
+					</Trigger>
+				</Style.Triggers>
+
+			</Style>
+
+			<Style x:Key="HighlightedTextStyle" TargetType="{x:Type Run}">
+				<Setter Property="Background" Value="{DynamicResource AccentColorBrush2}" />
+			</Style>
+
+			<Style x:Key="TextStyle" TargetType="{x:Type Run}">
+				
+			</Style>
+
+			<Style x:Key="ParagraphStyle" TargetType="{x:Type Paragraph}">
+				
+			</Style>
+
+			<Style x:Key="TodoCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+				<Setter Property="Margin" Value="5" />
+			</Style>
+			<Style x:Key="TodoTextStyle" TargetType="{x:Type TextBlock}">
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+			</Style>
+
+			<markdown:Markdown x:Key="Markdown" DocumentStyle="{StaticResource DocumentStyle}"
+                        Heading1Style="{StaticResource PageHeader}"
+                        Heading2Style="{StaticResource SubHeader}"
+                        Heading3Style="{StaticResource SubHeaderSecondary}"
+                        ImageStyle="{StaticResource Image}"
+						QuoteStyle="{StaticResource Quote}"
+						CodeBlockStyle="{StaticResource CodeBlock}"
+						InlineCodeStyle="{StaticResource Code}"
+						TableStyle="{StaticResource Table}"
+						TableHeadStyle="{StaticResource TableHead}"
+						TableCellStyle="{StaticResource TableCell}"
+						TableColumnStyle="{StaticResource TableColumn}"
+						LinkStyle="{StaticResource LinkStyle}"
+						HighlightedTextStyle="{StaticResource HighlightedTextStyle}"
+                        TodoCheckBoxStyle="{StaticResource TodoCheckBox}"
+                        TodoTextStyle="{StaticResource TodoTextStyle}"
+						TextStyle="{StaticResource TextStyle}"
+						ParagraphStyle="{StaticResource ParagraphStyle}"
+				/>
+
+			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" Markdown="{StaticResource Markdown}" />
+
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<UserControl.CommandBindings>
+		<CommandBinding Command="GoToPage" Executed="GoToPage_OnExecuted" />
+	</UserControl.CommandBindings>
+	<controls:TransitioningContentControl Transition="LeftReplace" x:Name="ContentContainer">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Height="35">
+				<Button x:Name="EditButton" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Left"
+						Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type views1:NoteView}}, Path=EditNote}" CommandParameter="{Binding}"
+                        Width="30" Height="30" Visibility="Collapsed">
+					<iconPacks:PackIconMaterial Kind="Pencil" />
+				</Button>
+
+				<Button Margin="5,0,0,0" x:Name="XamlButton" Visibility="Collapsed" Width="30" Height="30"
+                            Style="{DynamicResource MetroFlatButton}" Click="GetXamlButton_OnClick" HorizontalAlignment="Left">
+					<iconPacks:PackIconMaterial Kind="CodeTags" Foreground="{DynamicResource IdealForegroundColorBrush}"/>
+				</Button>
+
+				<Button Margin="5,0,0,0" x:Name="PrintButton" Width="30" Height="30"
+                            Style="{DynamicResource NoStyleButton}" Click="PrintButton_OnClick" HorizontalAlignment="Left">
+					<iconPacks:PackIconMaterial Kind="Printer" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+				</Button>
+
+				<ToggleButton IsChecked="{Binding Note.Favourite, Mode=TwoWay}" Width="30" Height="30" Style="{DynamicResource MetroCircleToggleButtonStyle}">
+					<iconPacks:PackIconMaterial Kind="Star" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+				</ToggleButton>
+			</StackPanel>
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="34"/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<controls1:ColumnDefinitionExtended x:Name="EditColumn" Visible="false" Width="*" />
+					<controls1:ColumnDefinitionExtended x:Name="SplitColumn" Visible="false" Width="2" />
+					<controls1:ColumnDefinitionExtended x:Name="ViewColumn" Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Orientation="Horizontal">
+					<Button Click="ViewModeButtonClicked" Name="EditModeButton" Style="{DynamicResource EditorTabButton}" Width="34">
+						<iconPacks:PackIconModern Kind="DrawPencil" Width="18" Height="18" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					</Button>
+					<Button Click="ViewModeButtonClicked" Name="SplitModeButton" Style="{DynamicResource EditorTabButton}" Width="34">
+						<iconPacks:PackIconMaterial Kind="CodeTags" Width="18" Height="18" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					</Button>
+					<Button Click="ViewModeButtonClicked" Name="ViewModeButton" Style="{DynamicResource EditorTabButton}" Width="34">
+						<iconPacks:PackIconModern Kind="Eye" Width="18" Height="18" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					</Button>
+				</StackPanel>
+
+				<views1:NoteEditor Grid.Column="0" Grid.Row="1" DataContext="{Binding}" x:Name="NoteEditor" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+				<GridSplitter Grid.Column="1" Grid.Row="1" IsEnabled="False" Width="2" Style="{StaticResource CustomGridSplitterStyle}" />
+				<FlowDocumentScrollViewer Grid.Column="2" Grid.Row="1" IsTabStop="False"
+                                                x:Name="FlowDocumentPageViewer"
+                                                Margin="0"
+                                                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                          PreviewKeyDown="FlowDocumentPageViewer_OnPreviewKeyDown" KeyDown="FlowDocumentPageViewer_OnKeyDown"
+                                          IsToolBarVisible="False"
+                                          attachedProperties:ScrollHelper.ScrollSpeed="3"
+                                          FocusVisualStyle="{x:Null}"
+                                           RenderOptions.ClearTypeHint="Enabled"
+										   Foreground="{DynamicResource IdealForegroundColorBrush}">
+					<MultiBinding Converter="{StaticResource TextToFlowDocumentConverter}">
+						<Binding Path="Note.DecryptedText" />
+						<Binding Path="Note" />
+						<Binding ElementName="SearchTextBlock" Path="Text" />
+					</MultiBinding>
+				</FlowDocumentScrollViewer>
+
+			</Grid>
+
+			<TabControl Grid.Row="0" x:Name="TabControl" controls:TabControlHelper.IsUnderlined="True" Margin="0,5,0,0" Visibility="Collapsed">
+				<TabControl.Resources>
+					<Style TargetType="{x:Type TabPanel}">
+						<Setter Property="HorizontalAlignment" Value="Center" />
+						<Setter Property="Height" Value="35" />
+					</Style>
+				</TabControl.Resources>
+				<TabItem Name="EditTabItem">
+					<TabItem.Header>
+						<iconPacks:PackIconModern Kind="DrawPencil" Width="18" Height="18" />
+					</TabItem.Header>
+				</TabItem>
+				<TabItem Name="ViewTabItem" IsSelected="True">
+					<TabItem.Header>
+						<iconPacks:PackIconModern Kind="Eye" Width="18" Height="18" />
+					</TabItem.Header>
+
+				</TabItem>
+				<!--<TabItem>
+                        <TabItem.Header>
+                            <metro:PackIconModern Kind="Fullscreen" Width="18" Height="18" />
+                        </TabItem.Header>
+                        <TextBlock>bananas</TextBlock>
+                    </TabItem>-->
+			</TabControl>
+
+
+			<TextBlock x:Name="SearchTextBlock" Visibility="Collapsed" Text="{Binding SearchText, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type views1:NoteView}}}"/>
+		</Grid>
+
+	</controls:TransitioningContentControl>
+</UserControl>

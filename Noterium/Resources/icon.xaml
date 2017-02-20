@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Name="NoteriumIcon" Width="24" Height="19" Clip="F1 M 0,0L 892,0L 892,709.333L 0,709.333L 0,0">
+    
+</Canvas>
