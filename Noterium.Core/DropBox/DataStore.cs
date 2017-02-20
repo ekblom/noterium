@@ -21,7 +21,7 @@ using File = Noterium.Core.Constants.File;
 
 namespace Noterium.Core.DropBox
 {
-    public class DropBoxDataStore
+    public class DataStore
     {
         private const string BackupFileDateFormat = "yyyyMMddHHmmss";
         private readonly DirectoryInfo _backupFolder;
@@ -32,7 +32,7 @@ namespace Noterium.Core.DropBox
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        private readonly ILog _log = LogManager.GetLogger(typeof(DropBoxDataStore));
+        private readonly ILog _log = LogManager.GetLogger(typeof(DataStore));
         private readonly DirectoryInfo _remindersFolder;
         private readonly DirectoryInfo _rootFolder;
 
@@ -42,7 +42,7 @@ namespace Noterium.Core.DropBox
         private List<SimpleReminder> _reminders;
         private FileSystemWatcher _watcher;
 
-        public DropBoxDataStore(string path)
+        public DataStore(string path)
         {
             _rootPath = string.IsNullOrWhiteSpace(path) ? GetDropBoxPath() : path;
 

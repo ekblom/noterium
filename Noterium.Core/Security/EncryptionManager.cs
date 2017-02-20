@@ -15,13 +15,13 @@ namespace Noterium.Core.Security
     {
         public delegate SecureString NeedPasswordEventHandler();
 
-        private readonly DropBoxDataStore _dataStore;
+        private readonly DataStore _dataStore;
         private bool _alwaysRequirePassword;
         private bool _isAuthenticated;
         private SecureString _password;
         private bool _secureNotesEnabled;
 
-        public EncryptionManager(DropBoxDataStore dataStore)
+        public EncryptionManager(DataStore dataStore)
         {
             _dataStore = dataStore;
             SecureNotesEnabled = File.Exists(_dataStore.MasterPasswordFile);

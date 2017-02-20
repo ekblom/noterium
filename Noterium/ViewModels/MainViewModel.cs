@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Noterium.Code.Commands;
 using Noterium.Code.Helpers;
 using Noterium.Core;
@@ -46,6 +48,8 @@ namespace Noterium.ViewModels
 		public ICommand CloseSearchCommand { get; set; }
 		public ICommand PerformLockActionsCommand { get; set; }
 		public ICommand ToggleSettingsFlyoutCommand { get; set; }
+		public ICommand ChangeLibraryCommand { get; set; }
+		public ICommand AddLibraryCommand { get; set; }
 
 		private readonly object _currentNotesLockObject = new object();
 		private readonly object _currentNotesbooksLockObject = new object();
@@ -220,6 +224,7 @@ namespace Noterium.ViewModels
 			ToggleHelpViewCommand = new RelayCommand(ToggleHelpView);
 			PerformLockActionsCommand = new RelayCommand(PerformLockActions);
 			ToggleSettingsFlyoutCommand = new RelayCommand(ToggleSettingsFlyout);
+			AddLibraryCommand = new RelayCommand(AddLibrary);
 
 			NotebookMenuItems = new ObservableCollection<NotebookMenuItem>();
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
@@ -249,6 +254,39 @@ namespace Noterium.ViewModels
 			_searchTimer.Elapsed += SearchTimerElapsed;
 			_searchTimer.Interval = 250;
 			//_searchTimer.SynchronizingObject = _searchLockObject;
+		}
+
+		private void AddLibrary()
+		{
+			var dialog = new CommonOpenFileDialog
+			{
+				IsFolderPicker = true,
+				AllowNonFileSystemItems = false,
+				EnsurePathExists = true,
+				Multiselect = false
+			};
+
+			CommonFileDialogResult result = dialog.ShowDialog();
+			if (result == CommonFileDialogResult.Ok)
+			{
+				DirectoryInfo di = new DirectoryInfo(dialog.FileName);
+				if (di.Exists)
+				{
+					string path = dialog.FileName;
+					string name = Path.GetFileName(path);
+					var library = new Library
+					{
+						Name = name,
+						Path = path,
+						StorageType = StorageType.Disc
+					};
+
+					Hub.Instance.AppSettings.Librarys.Add(library);
+					Hub.Instance.AppSettings.Save();
+
+					ChangeLibraryCommand?.Execute(library);
+				}
+			}
 		}
 
 		private void ToggleSettingsFlyout()

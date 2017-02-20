@@ -171,7 +171,7 @@
     <Compile Include="DataCarriers\Recurrence.cs" />
     <Compile Include="DataCarriers\Reminder.cs" />
     <Compile Include="DataCarriers\Settings.cs" />
-    <Compile Include="DropBox\DropBoxDataStore.cs" />
+    <Compile Include="DropBox\DataStore.cs" />
     <Compile Include="Exceptions\SaveException.cs" />
     <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\CollectionHelpers.cs" />

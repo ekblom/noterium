@@ -26,6 +26,7 @@ namespace Noterium
 		private static ILog _log;
 		private DispatcherTimer _activityTimer;
 		private Point _inactiveMousePosition = new Point(0, 0);
+		private Library _currentLibrary;
 
 		public App()
 		{
@@ -78,46 +79,14 @@ namespace Noterium
 				return;
 			}
 
-			if (!Hub.Instance.AppSettings.Librarys.Any())
+			var library = GetLibrary();
+			if (library == null)
 			{
-				var oldType = Hub.Instance.Storage.GetStorageType();
-				if (oldType != StorageType.Undefined)
-				{
-					string path = Hub.Instance.Storage.GetStoragePath();
-					string name = Path.GetFileName(path);
-					Hub.Instance.AppSettings.Librarys.Add(new Library
-					{
-						Name = name,
-						Path = path,
-						StorageType = oldType
-					});
-
-					Hub.Instance.AppSettings.Save();
-				}
+				Current.Shutdown(1);
+				return;
 			}
 
-			if (!Hub.Instance.AppSettings.Librarys.Any())
-			{
-				StorageSelector selector = new StorageSelector();
-				bool? result = selector.ShowDialog();
-				if (result == null || !result.Value)
-				{
-					Current.Shutdown(1);
-					return;
-				}
-			}
-
-			Hub.Instance.Init();
-			InitLog4Net();
-			SetAppTheme();
-
-			LoadingWindow loading = new LoadingWindow();
-
-			SetTheme(loading);
-
-			loading.Loaded += LoadingLoaded;
-			loading.SetMessage("Initializing core");
-			loading.Show();
+			LoadLibrary(library);
 
 			//bool autenticated = false;
 			//if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
@@ -138,11 +107,45 @@ namespace Noterium
 			//}
 		}
 
+		private static Library GetLibrary()
+		{
+			Library library = null;
+			if (!Hub.Instance.AppSettings.Librarys.Any())
+			{
+				StorageSelector selector = new StorageSelector();
+				selector.ShowDialog();
+			}
+			else
+			{
+				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(Hub.Instance.AppSettings.SelectedLibrary));
+			}
+
+			return library ?? Hub.Instance.AppSettings.Librarys.FirstOrDefault();
+		}
+
+		private void LoadLibrary(Library library)
+		{
+			_currentLibrary = library;
+
+			Hub.Instance.Init(library);
+			InitLog4Net();
+			SetAppTheme();
+
+			LoadingWindow loading = new LoadingWindow();
+
+			SetTheme(loading);
+
+			loading.Loaded += LoadingLoaded;
+			loading.SetMessage("Initializing core");
+			loading.Show();
+		}
+
 		private void LoadingLoaded(object sender, RoutedEventArgs e)
 		{
 			Thread t = new Thread(Load);
 			t.Start(sender);
 		}
+
 		private void Load(object sender)
 		{
 			LoadingWindow loading = (LoadingWindow)sender;
@@ -191,8 +194,12 @@ namespace Noterium
 		private void ShowMainWindow()
 		{
 			_mainWindow = new MainWindow();
-			_mainWindow.DataContext = ViewModelLocator.Instance.Main;
-			_mainWindow.Model = ViewModelLocator.Instance.Main;
+
+			MainViewModel model = new MainViewModel();
+			model.ChangeLibraryCommand = new SimpleCommand(LoadLibrary);
+
+			_mainWindow.DataContext = model;
+			_mainWindow.Model = model;
 			_mainWindow.Width = Hub.Instance.AppSettings.WindowSize.Width;
 			_mainWindow.Height = Hub.Instance.AppSettings.WindowSize.Height;
 			_mainWindow.WindowState = Hub.Instance.AppSettings.WindowState;
@@ -220,6 +227,20 @@ namespace Noterium
 				IsEnabled = true
 			};
 			_activityTimer.Tick += OnInactivity;
+		}
+
+		private void LoadLibrary(object obj)
+		{
+			Library library = (Library) obj;
+			if (_currentLibrary != null && library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+			_mainWindow.Close();
+			_mainWindowLoaded = false;
+
+			LoadLibrary(library);
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

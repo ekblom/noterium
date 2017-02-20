@@ -413,24 +413,63 @@
 
 				<Grid Grid.Row="0" Grid.Column="0">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="25"/>
+						<RowDefinition Height="35"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<controls:DropDownButton DisplayMemberPath="Name" ItemsSource="{Binding Librarys}" Content="Librarys" BorderThickness="0">
-						<controls:DropDownButton.Icon>
-							<iconPacks:PackIconMaterial Kind="NoteMultipleOutline" />
-						</controls:DropDownButton.Icon>
-					</controls:DropDownButton>
+					<DockPanel Grid.Row="0">
+						<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Name="LibrarysButton" Click="LibrarysButton_OnClick">
+							<Button.ContentTemplate>
+								<DataTemplate>
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
+										<iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
+										<TextBlock>Librarys</TextBlock>
+									</StackPanel>
+								</DataTemplate>
+							</Button.ContentTemplate>
+						</Button>
+						
+					</DockPanel>
+					<Popup Grid.Row="0" StaysOpen="False" PlacementTarget="{Binding ElementName=LibrarysButton}" Placement="MousePoint" Name="LibrarysPopup"
+					Width="{Binding ElementName=LibrarysButton, Path=ActualWidth}">
+						<Border BorderBrush="{DynamicResource WindowGlowBrush}" BorderThickness="1">
+							<StackPanel>
+								<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" CommandParameter="{Binding}" 
+												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.ChangeLibraryCommand}">
+												<Button.ContentTemplate>
+													<DataTemplate>
+														<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
+															<iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
+															<TextBlock Text="{Binding Name}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+														</StackPanel>
+													</DataTemplate>
+												</Button.ContentTemplate>
+											</Button>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+								<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Command="{Binding AddLibraryCommand}">
+									<Button.ContentTemplate>
+										<DataTemplate>
+											<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
+												<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
+												<TextBlock>Add library</TextBlock>
+											</StackPanel>
+										</DataTemplate>
+									</Button.ContentTemplate>
+								</Button>
+							</StackPanel>
+						</Border>
 
-
+					</Popup>
 					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" DataContext="{Binding MenuContext}"
 					AdornerLayer="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedLayer}"
 					AdornedElement="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedElement}"
                                             SizeChanged="ColumnOnSizeChanged"/>
 				</Grid>
-
-
 
 				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
 
@@ -448,7 +487,7 @@
 					</Grid.RowDefinitions>
 
 					<Button Grid.Column="0" Grid.Row="0" Style="{DynamicResource NoStyleButton}" Click="ToggleSortMode" Name="SortModeButton">
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 							<iconPacks:PackIconModern Kind="SortNumeric" Width="15" Height="15" Name="SortButtonIcon" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 						</StackPanel>
 					</Button>
@@ -460,7 +499,7 @@
                             Visibility="{Binding AddNoteButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}">
 						<Button.ContentTemplate>
 							<DataTemplate>
-								<StackPanel Orientation="Horizontal">
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 									<iconPacks:PackIconMaterial Kind="Plus" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 								</StackPanel>
 							</DataTemplate>

@@ -314,7 +314,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Border x:Name="border" BorderThickness="0" Padding="3" BorderBrush="Transparent" Background="Transparent">
-						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="content"/>
+						<ContentPresenter Name="content"/>
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">

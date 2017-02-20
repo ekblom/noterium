@@ -18,25 +18,7 @@ namespace Noterium.Core
         {
         }
 
-        public DropBoxDataStore DataStore { get; private set; }
-
-        internal string RegKey
-        {
-            get
-            {
-                const string userRoot = "HKEY_CURRENT_USER\\Software\\";
-                const string company = "Viktor Ekblom";
-
-#if DEBUG
-                const string applicationName = "NoteriumDebug";
-#else
-                const string applicationName = "Noterium";
-#endif
-
-                const string keyName = userRoot + "\\" + company + "\\" + applicationName;
-                return keyName;
-            }
-        }
+        public DataStore DataStore { get; private set; }
 
         public List<string> Tags
         {
@@ -69,62 +51,11 @@ namespace Noterium.Core
             if (library == null)
                 throw new ApplicationException("Unable to detect storage type.");
 
+	        _tags = null;
+
             var path = library.Path;
 
-            DataStore = new DropBoxDataStore(path);
-        }
-
-        public StorageType GetStorageType()
-        {
-            try
-            {
-                var value = (int) Registry.GetValue(RegKey, "StorageType", -1);
-                if (value == -1)
-                    return StorageType.Undefined;
-
-                var type = (StorageType) value;
-                return type;
-            }
-            catch (Exception)
-            {
-            }
-
-            return StorageType.Undefined;
-        }
-
-        public bool HasStorageTypeSet()
-        {
-            var type = GetStorageType();
-            return type != StorageType.Undefined;
-        }
-
-        public bool SetStorageType(StorageType type, string path = null)
-        {
-            try
-            {
-                if (type == StorageType.Disc && string.IsNullOrWhiteSpace(path))
-                    return false;
-
-                Registry.SetValue(RegKey, "StorageType", (int) type, RegistryValueKind.DWord);
-
-                if (!string.IsNullOrEmpty(path))
-                    Registry.SetValue(RegKey, "StoragePath", path, RegistryValueKind.String);
-                else
-                {
-                    var existingPath = (string) Registry.GetValue(RegKey, "StoragePath", null);
-                    if (!string.IsNullOrWhiteSpace(existingPath))
-                    {
-                        var regKey = Registry.CurrentUser.OpenSubKey(RegKey);
-                        if (regKey != null)
-                            regKey.DeleteValue("StoragePath");
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            DataStore = new DataStore(path);
         }
 
         internal void SaveReminder(SimpleReminder reminder)
@@ -223,26 +154,6 @@ namespace Noterium.Core
         public void EnsureOneNotebook()
         {
             DataStore.EnsureOneNotebook();
-        }
-
-        public int GetAllNoteCount()
-        {
-            return 100;
-        }
-
-        public string GetStoragePath()
-        {
-            try
-            {
-                var value = (string) Registry.GetValue(RegKey, "StoragePath", null);
-                if (!string.IsNullOrWhiteSpace(value))
-                    return value;
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
         }
 
         internal void MoveNote(Note note, Notebook noteBook)
