@@ -11,6 +11,7 @@ using MahApps.Metro;
 using Noterium.Code.Commands;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
+using Noterium.Core.Helpers;
 using Noterium.ViewModels;
 using Noterium.Views.Dialogs;
 
@@ -82,10 +83,12 @@ namespace Noterium
 				return;
 			}
 
+			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
+
 			LoadLibrary(library);
 
 			InputManager.Current.PreProcessInput += OnActivity;
-			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
+			
 			Current.Deactivated += OnDeactivated;
 		}
 
@@ -165,7 +168,13 @@ namespace Noterium
 
 		private static void CurrentDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
-			_log.Fatal(e.Exception.Message, e.Exception);
+			if (_log != null)
+				_log.Fatal(e.Exception.Message, e.Exception);
+			else
+			{
+				string message = e.Exception.FlattenException();
+				Hub.Instance.AppSettings.LogFatal(message);
+			}
 		}
 
 		private void ShowMainWindow()
@@ -192,8 +201,6 @@ namespace Noterium
 				_mainWindow.Lock(true);
 			}
 			_mainWindowLoaded = true;
-
-			
 		}
 
 		private void LoadLibrary(object obj)
@@ -235,6 +242,9 @@ namespace Noterium
 
 		void OnActivity(object sender, PreProcessInputEventArgs e)
 		{
+			if (e.StagingItem == null || e.StagingItem.Input == null || _activityTimer == null)
+				return;
+
 			InputEventArgs inputEventArgs = e.StagingItem.Input;
 
 			if (inputEventArgs is MouseEventArgs || inputEventArgs is KeyboardEventArgs)

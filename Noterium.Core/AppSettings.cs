@@ -60,6 +60,12 @@ namespace Noterium.Core
 				File.WriteAllText(_settingsFilePath, json);
 			}
 		}
+
+		public void LogFatal(string message)
+		{
+			string logFile = Path.Combine(GetSettingsFilePath(), "log", $"noterium_fatal_error_{DateTime.Now.Ticks}.log");
+			File.WriteAllText(logFile, message);
+		}
 	}
 
 	public class InvalidConfigurationFileException : Exception

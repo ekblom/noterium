@@ -53,9 +53,16 @@ namespace Noterium.Core
 
 	        _tags = null;
 
-            var path = library.Path;
+	        string path = null;
+	        if (library.StorageType == StorageType.DropBox)
+		        path = DataStore.GetDropBoxPath();
+			else if(!string.IsNullOrWhiteSpace(library.Path))
+			path = library.Path;
 
-            DataStore = new DataStore(path);
+	        if (path == null)
+		        throw new Exception("Library path is null");
+
+			DataStore = new DataStore(path);
         }
 
         internal void SaveReminder(SimpleReminder reminder)

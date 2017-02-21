@@ -417,9 +417,11 @@ namespace Noterium
 
 		private void MainWindow_OnClosing(object sender, CancelEventArgs e)
 		{
-			NoteView.NoteEditor.SaveNoteText();
-			if (Model != null && Model.NoteMenuContext != null)
+			if(NoteView != null && NoteView.NoteEditor != null)
+				NoteView.NoteEditor.SaveNoteText();
+			if (Model != null && Model.NoteMenuContext != null && Model.NoteMenuContext.SelectedNote != null)
 				Model.NoteMenuContext.SelectedNote.SaveNote();
+			
 			SystemEvents.PowerModeChanged -= OnPowerChange;
 		}
 

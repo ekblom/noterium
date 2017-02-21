@@ -175,6 +175,7 @@
     <Compile Include="Exceptions\SaveException.cs" />
     <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\CollectionHelpers.cs" />
+    <Compile Include="Helpers\ExceptionHelpers.cs" />
     <Compile Include="Helpers\FileHelpers.cs" />
     <Compile Include="Helpers\FlashWindowHelper.cs" />
     <Compile Include="Helpers\GuiHelper.cs" />

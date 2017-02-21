@@ -24,8 +24,8 @@
 				Welcome!
 			</Run>
 			<LineBreak/>
-			<Run>Before you start you need to decide where to store your notes. I have two options for you, Dropbox or a folder of your choosing. 
-			The simplest is to select Dropbox (if you have it installed, otherwise you can get it</Run><Hyperlink NavigateUri="https://db.tt/Hlvc0GG">here</Hyperlink><Run>) and the application does the rest, else you can select a folder on your computer and all files will be stored there.</Run>
+			<Run>Before you start you need to decide where to store your notes. I have two options for you, Dropbox or a folder of your choosing. The simplest is to select Dropbox (if you have it installed, otherwise you can get it</Run>
+			<Hyperlink NavigateUri="https://db.tt/Hlvc0GG">here</Hyperlink><Run>) and the application does the rest, else you can select a folder on your computer and all files will be stored there.</Run>
 		</TextBlock>
 		<ListBox Grid.Row="1" Name="StorageTypeListBox" SelectionChanged="StorageTypeListBox_OnSelectionChanged">
 			<ListBoxItem Tag="DropBox">
