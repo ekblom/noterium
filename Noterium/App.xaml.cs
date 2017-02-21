@@ -26,6 +26,7 @@ namespace Noterium
 		private static ILog _log;
 		private DispatcherTimer _activityTimer;
 		private Point _inactiveMousePosition = new Point(0, 0);
+		private Library _currentLibrary;
 
 		public App()
 		{
@@ -48,10 +49,7 @@ namespace Noterium
 		{
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-			//TODO: Flytta från registry
-			//TODO: Lägga trail-license i en annan fil i appdata katalogen
-			ThemeManager.AddAccent("VSDark", new Uri("pack://application:,,,/Resources/VSDark.xaml"));
-			ThemeManager.AddAccent("VSLight", new Uri("pack://application:,,,/Resources/VSLight.xaml"));
+			RegisterCustomAccents();
 
 			try
 			{
@@ -72,44 +70,62 @@ namespace Noterium
 			}
 			catch (Exception ex)
 			{
-
 				MessageBox.Show(ex.ToString(), ex.Message);
 				Current.Shutdown();
 				return;
 			}
 
-			if (!Hub.Instance.AppSettings.Librarys.Any())
+			var library = GetLibrary();
+			if (library == null)
 			{
-				var oldType = Hub.Instance.Storage.GetStorageType();
-				if (oldType != StorageType.Undefined)
-				{
-					string path = Hub.Instance.Storage.GetStoragePath();
-					string name = Path.GetFileName(path);
-					Hub.Instance.AppSettings.Librarys.Add(new Library
-					{
-						Name = name,
-						Path = path,
-						StorageType = oldType
-					});
-
-					Hub.Instance.AppSettings.Save();
-				}
+				Current.Shutdown(1);
+				return;
 			}
 
+			LoadLibrary(library);
+
+			InputManager.Current.PreProcessInput += OnActivity;
+			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
+			Current.Deactivated += OnDeactivated;
+		}
+
+		private static void RegisterCustomAccents()
+		{
+			ThemeManager.AddAccent("VSDark", new Uri("pack://application:,,,/Resources/VSDark.xaml"));
+			ThemeManager.AddAccent("VSLight", new Uri("pack://application:,,,/Resources/VSLight.xaml"));
+		}
+
+		private static Library GetLibrary()
+		{
+			Library library = null;
 			if (!Hub.Instance.AppSettings.Librarys.Any())
 			{
 				StorageSelector selector = new StorageSelector();
-				bool? result = selector.ShowDialog();
-				if (result == null || !result.Value)
-				{
-					Current.Shutdown(1);
-					return;
-				}
+				selector.ShowDialog();
+			}
+			else
+			{
+				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(Hub.Instance.AppSettings.SelectedLibrary));
 			}
 
-			Hub.Instance.Init();
+			return library ?? Hub.Instance.AppSettings.Librarys.FirstOrDefault();
+		}
+
+		private void LoadLibrary(Library library)
+		{
+			_currentLibrary = library;
+
+			Hub.Instance.Init(library);
 			InitLog4Net();
 			SetAppTheme();
+
+			Hub.Instance.Settings.PropertyChanged += SettingsPropertyChanged;
+			_activityTimer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromMinutes(Hub.Instance.Settings.AutoLockMainWindowAfter),
+				IsEnabled = true
+			};
+			_activityTimer.Tick += OnInactivity;
 
 			LoadingWindow loading = new LoadingWindow();
 
@@ -118,24 +134,6 @@ namespace Noterium
 			loading.Loaded += LoadingLoaded;
 			loading.SetMessage("Initializing core");
 			loading.Show();
-
-			//bool autenticated = false;
-			//if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
-			//{
-			//    _authenticationWindow = new AuthenticationWindow();
-			//    _authenticationWindow.AuthForm.OnlyVerifyPassword = false;
-			//    _authenticationWindow.AuthForm.OnAuthenticated += AuthForm_OnAuthenticated;
-			//    _authenticationWindow.AuthForm.OnAuthentionCanceled += AuthForm_OnAuthentionCanceled;
-			//    _authenticationWindow.ShowDialog();
-			//}
-			//else
-			//{
-			//    autenticated = true;
-			//}
-
-			//if (autenticated)
-			//{
-			//}
 		}
 
 		private void LoadingLoaded(object sender, RoutedEventArgs e)
@@ -143,30 +141,13 @@ namespace Noterium
 			Thread t = new Thread(Load);
 			t.Start(sender);
 		}
+
 		private void Load(object sender)
 		{
 			LoadingWindow loading = (LoadingWindow)sender;
 
 			_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 			_log.Info("Application started");
-
-			loading.SetMessage("Loading license");
-
-			//Hub.Instance.LicenseManager.LoadLicense();
-			//if (!Hub.Instance.LicenseManager.ValidLicense)
-			//{
-			//    Hub.Instance.LicenseManager.InitTrailLicense();
-			//}
-
-			//if (!Hub.Instance.LicenseManager.ValidLicense)
-			//{
-			//    MessageBox.Show("Your trail period has ended, please purchase a valid license if you like Noterium.", "Trail", MessageBoxButton.OK, MessageBoxImage.Information);
-			//    Current.Shutdown(-1);
-			//    return;
-			//}
-
-			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
-			Current.Deactivated += OnDeactivated;
 
 			Hub.Instance.Storage.DataStore.InitCache(s =>
 			{
@@ -176,7 +157,6 @@ namespace Noterium
 			loading.SetMessage("Loading main window");
 
 			Current.Dispatcher.Invoke(ShowMainWindow);
-
 			Current.Dispatcher.Invoke(() =>
 			{
 				loading.Close();
@@ -191,15 +171,17 @@ namespace Noterium
 		private void ShowMainWindow()
 		{
 			_mainWindow = new MainWindow();
-			_mainWindow.DataContext = ViewModelLocator.Instance.Main;
-			_mainWindow.Model = ViewModelLocator.Instance.Main;
+
+			MainViewModel model = new MainViewModel();
+			model.ChangeLibraryCommand = new SimpleCommand(LoadLibrary);
+
+			_mainWindow.DataContext = model;
+			_mainWindow.Model = model;
 			_mainWindow.Width = Hub.Instance.AppSettings.WindowSize.Width;
 			_mainWindow.Height = Hub.Instance.AppSettings.WindowSize.Height;
 			_mainWindow.WindowState = Hub.Instance.AppSettings.WindowState;
 
 			_mainWindow.Model.LockCommand = new BasicCommand(Lock);
-			//Re-enable normal shutdown mode.
-			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 			Current.MainWindow = _mainWindow;
 
 			SetTheme(_mainWindow);
@@ -211,15 +193,23 @@ namespace Noterium
 			}
 			_mainWindowLoaded = true;
 
-			Hub.Instance.Settings.PropertyChanged += SettingsPropertyChanged;
+			
+		}
 
-			InputManager.Current.PreProcessInput += OnActivity;
-			_activityTimer = new DispatcherTimer
-			{
-				Interval = TimeSpan.FromMinutes(Hub.Instance.Settings.AutoLockMainWindowAfter),
-				IsEnabled = true
-			};
-			_activityTimer.Tick += OnInactivity;
+		private void LoadLibrary(object obj)
+		{
+			Library library = (Library) obj;
+			if (_currentLibrary != null && library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+			_mainWindow.Close();
+			_mainWindowLoaded = false;
+
+			LoadLibrary(library);
+
+			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

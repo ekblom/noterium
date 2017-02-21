@@ -142,7 +142,7 @@
 						<Button Grid.Column="1" Command="{Binding AddNotebookCommand}" Style="{DynamicResource NoStyleButton}">
 							<Button.ContentTemplate>
 								<DataTemplate>
-									<StackPanel Orientation="Horizontal">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 										<iconPacks:PackIconMaterial Kind="Plus" Foreground="{StaticResource IdealForegroundColorBrush}" />
 									</StackPanel>
 								</DataTemplate>

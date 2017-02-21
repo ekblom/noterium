@@ -230,7 +230,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.F)
 			{
 				e.Handled = true;
-				ViewModelLocator.Instance.Main.ToggleSearchFlyoutCommand.Execute(e);
+				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.SystemKey == Key.LeftCtrl && e.Key == Key.F)
 			{
 				e.Handled = true;
-				ViewModelLocator.Instance.Main.ToggleSearchFlyoutCommand.Execute(e);
+				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 

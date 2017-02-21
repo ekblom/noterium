@@ -50,7 +50,7 @@ namespace Noterium.Views.Dialogs
                 ListBoxItem item = (ListBoxItem)StorageTypeListBox.SelectedItem;
                 if (((string)item.Tag) == "DropBox")
                 {
-                    string dbPath = DropBoxDataStore.GetDropBoxPath();
+                    string dbPath = DataStore.GetDropBoxPath();
                     if (!string.IsNullOrWhiteSpace(dbPath))
                     {
                         Hub.Instance.AppSettings.Librarys.Add(new Library

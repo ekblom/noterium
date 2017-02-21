@@ -17,7 +17,7 @@ namespace Noterium
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow
+	public partial class MainWindow : IDisposable
 	{
 		private bool _loaded;
 
@@ -35,6 +35,8 @@ namespace Noterium
 				Title = Title + " - Trail";
 			}
 		}
+
+		
 
 		private void AuthenticationForm1_OnAuthenticated()
 		{
@@ -419,6 +421,16 @@ namespace Noterium
 			if (Model != null && Model.NoteMenuContext != null)
 				Model.NoteMenuContext.SelectedNote.SaveNote();
 			SystemEvents.PowerModeChanged -= OnPowerChange;
+		}
+
+		private void LibrarysButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			LibrarysPopup.IsOpen = true;
+		}
+
+		public void Dispose()
+		{
+			Model.NoteViewModels.Clear();
 		}
 	}
 }

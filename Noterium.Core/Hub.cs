@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Noterium.Core.DataCarriers;
 using Noterium.Core.License;
 using Noterium.Core.Search;
 using Noterium.Core.Security;
@@ -49,11 +50,9 @@ namespace Noterium.Core
 
         public AppSettings AppSettings { get; }
 
-        public void Init()
+        public void Init(Library l)
         {
-            var library = AppSettings.Librarys.First();
-
-            _storage.Init(library);
+            _storage.Init(l);
             LicenseManager = new LicenseManager(_storage);
             SearchManager = new SearchManager(_storage);
             _settings = new Settings(_storage);

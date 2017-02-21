@@ -205,7 +205,9 @@
 
 				<Button Margin="5,0,0,0" x:Name="PrintButton" Width="30" Height="30"
                             Style="{DynamicResource NoStyleButton}" Click="PrintButton_OnClick" HorizontalAlignment="Left">
-					<iconPacks:PackIconMaterial Kind="Printer" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+						<iconPacks:PackIconMaterial Kind="Printer" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					</StackPanel>
 				</Button>
 
 				<ToggleButton IsChecked="{Binding Note.Favourite, Mode=TwoWay}" Width="30" Height="30" Style="{DynamicResource MetroCircleToggleButtonStyle}">
