@@ -49,6 +49,7 @@ namespace Noterium.ViewModels
 		public ICommand PerformLockActionsCommand { get; set; }
 		public ICommand ToggleSettingsFlyoutCommand { get; set; }
 		public ICommand ChangeLibraryCommand { get; set; }
+		public ICommand DeleteLibraryCommand { get; set; }
 		public ICommand AddLibraryCommand { get; set; }
 
 		private readonly object _currentNotesLockObject = new object();
@@ -225,6 +226,7 @@ namespace Noterium.ViewModels
 			PerformLockActionsCommand = new RelayCommand(PerformLockActions);
 			ToggleSettingsFlyoutCommand = new RelayCommand(ToggleSettingsFlyout);
 			AddLibraryCommand = new RelayCommand(AddLibrary);
+			DeleteLibraryCommand = new SimpleCommand(DeleteLibrary);
 
 			NotebookMenuItems = new ObservableCollection<NotebookMenuItem>();
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
@@ -254,6 +256,24 @@ namespace Noterium.ViewModels
 			_searchTimer.Elapsed += SearchTimerElapsed;
 			_searchTimer.Interval = 250;
 			//_searchTimer.SynchronizingObject = _searchLockObject;
+		}
+
+		private void DeleteLibrary(object o)
+		{
+			Library library = (Library) o;
+
+			var settings = DialogHelpers.GetDefaultDialogSettings();
+
+			string message = $"Do you want to delete the library '{library.Name}'?\nAll files will be left untouched, it's just the connection that is removed.";
+			MainWindowInstance.ShowMessageAsync("Delete library", message, MessageDialogStyle.AffirmativeAndNegative, settings).
+				ContinueWith(delegate (Task<MessageDialogResult> task)
+				{
+					if (task.Result == MessageDialogResult.Affirmative)
+					{
+						Hub.Instance.AppSettings.Librarys.Remove(library);
+						Hub.Instance.AppSettings.Save();
+					}
+				});
 		}
 
 		private void AddLibrary()

@@ -49,10 +49,7 @@ namespace Noterium
 		{
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-			//TODO: Flytta från registry
-			//TODO: Lägga trail-license i en annan fil i appdata katalogen
-			ThemeManager.AddAccent("VSDark", new Uri("pack://application:,,,/Resources/VSDark.xaml"));
-			ThemeManager.AddAccent("VSLight", new Uri("pack://application:,,,/Resources/VSLight.xaml"));
+			RegisterCustomAccents();
 
 			try
 			{
@@ -73,7 +70,6 @@ namespace Noterium
 			}
 			catch (Exception ex)
 			{
-
 				MessageBox.Show(ex.ToString(), ex.Message);
 				Current.Shutdown();
 				return;
@@ -88,23 +84,15 @@ namespace Noterium
 
 			LoadLibrary(library);
 
-			//bool autenticated = false;
-			//if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
-			//{
-			//    _authenticationWindow = new AuthenticationWindow();
-			//    _authenticationWindow.AuthForm.OnlyVerifyPassword = false;
-			//    _authenticationWindow.AuthForm.OnAuthenticated += AuthForm_OnAuthenticated;
-			//    _authenticationWindow.AuthForm.OnAuthentionCanceled += AuthForm_OnAuthentionCanceled;
-			//    _authenticationWindow.ShowDialog();
-			//}
-			//else
-			//{
-			//    autenticated = true;
-			//}
+			InputManager.Current.PreProcessInput += OnActivity;
+			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
+			Current.Deactivated += OnDeactivated;
+		}
 
-			//if (autenticated)
-			//{
-			//}
+		private static void RegisterCustomAccents()
+		{
+			ThemeManager.AddAccent("VSDark", new Uri("pack://application:,,,/Resources/VSDark.xaml"));
+			ThemeManager.AddAccent("VSLight", new Uri("pack://application:,,,/Resources/VSLight.xaml"));
 		}
 
 		private static Library GetLibrary()
@@ -131,6 +119,14 @@ namespace Noterium
 			InitLog4Net();
 			SetAppTheme();
 
+			Hub.Instance.Settings.PropertyChanged += SettingsPropertyChanged;
+			_activityTimer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromMinutes(Hub.Instance.Settings.AutoLockMainWindowAfter),
+				IsEnabled = true
+			};
+			_activityTimer.Tick += OnInactivity;
+
 			LoadingWindow loading = new LoadingWindow();
 
 			SetTheme(loading);
@@ -153,24 +149,6 @@ namespace Noterium
 			_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 			_log.Info("Application started");
 
-			loading.SetMessage("Loading license");
-
-			//Hub.Instance.LicenseManager.LoadLicense();
-			//if (!Hub.Instance.LicenseManager.ValidLicense)
-			//{
-			//    Hub.Instance.LicenseManager.InitTrailLicense();
-			//}
-
-			//if (!Hub.Instance.LicenseManager.ValidLicense)
-			//{
-			//    MessageBox.Show("Your trail period has ended, please purchase a valid license if you like Noterium.", "Trail", MessageBoxButton.OK, MessageBoxImage.Information);
-			//    Current.Shutdown(-1);
-			//    return;
-			//}
-
-			Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
-			Current.Deactivated += OnDeactivated;
-
 			Hub.Instance.Storage.DataStore.InitCache(s =>
 			{
 				Current.Dispatcher.Invoke(() => { loading.SetMessage(s); });
@@ -179,7 +157,6 @@ namespace Noterium
 			loading.SetMessage("Loading main window");
 
 			Current.Dispatcher.Invoke(ShowMainWindow);
-
 			Current.Dispatcher.Invoke(() =>
 			{
 				loading.Close();
@@ -205,8 +182,6 @@ namespace Noterium
 			_mainWindow.WindowState = Hub.Instance.AppSettings.WindowState;
 
 			_mainWindow.Model.LockCommand = new BasicCommand(Lock);
-			//Re-enable normal shutdown mode.
-			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 			Current.MainWindow = _mainWindow;
 
 			SetTheme(_mainWindow);
@@ -218,15 +193,7 @@ namespace Noterium
 			}
 			_mainWindowLoaded = true;
 
-			Hub.Instance.Settings.PropertyChanged += SettingsPropertyChanged;
-
-			InputManager.Current.PreProcessInput += OnActivity;
-			_activityTimer = new DispatcherTimer
-			{
-				Interval = TimeSpan.FromMinutes(Hub.Instance.Settings.AutoLockMainWindowAfter),
-				IsEnabled = true
-			};
-			_activityTimer.Tick += OnInactivity;
+			
 		}
 
 		private void LoadLibrary(object obj)
@@ -241,6 +208,8 @@ namespace Noterium
 			_mainWindowLoaded = false;
 
 			LoadLibrary(library);
+
+			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
