@@ -181,7 +181,7 @@ namespace Noterium
 		{
 			_mainWindow = new MainWindow();
 
-			MainViewModel model = new MainViewModel();
+			MainViewModel model = new MainViewModel(_currentLibrary);
 			model.ChangeLibraryCommand = new SimpleCommand(LoadLibrary);
 
 			_mainWindow.DataContext = model;
@@ -206,8 +206,8 @@ namespace Noterium
 
 		private void LoadLibrary(object obj)
 		{
-			Library library = (Library) obj;
-			if (_currentLibrary != null && library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
+			LibraryViewModel library = (LibraryViewModel) obj;
+			if (_currentLibrary != null && library.Library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
 				return;
 
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -215,7 +215,7 @@ namespace Noterium
 			_mainWindow.Close();
 			_mainWindowLoaded = false;
 
-			LoadLibrary(library);
+			LoadLibrary(library.Library);
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

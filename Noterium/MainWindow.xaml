@@ -424,7 +424,7 @@
 								<DataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
 										<iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
-										<TextBlock>Librarys</TextBlock>
+										<TextBlock>Librarys - <Run Text="{Binding CurrentLibrary.Name}"/></TextBlock>
 									</StackPanel>
 								</DataTemplate>
 							</Button.ContentTemplate>
@@ -438,7 +438,7 @@
 								<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<Grid>
+											<Grid Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="25"/>
 													<RowDefinition Height="25"/>
@@ -448,7 +448,7 @@
 													<ColumnDefinition Width="*"/>
 												</Grid.ColumnDefinitions>
 												<StackPanel Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
-													<TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="15 0 0 0" />
+													<TextBlock Text="{Binding Library.Name}" FontWeight="Bold" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="15 0 0 0" />
 												</StackPanel>
 												<Button Grid.Row="1" Grid.Column="0" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" CommandParameter="{Binding}" 
 												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.ChangeLibraryCommand}">

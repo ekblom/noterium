@@ -11,10 +11,6 @@
 				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Styles.xaml" />-->
                 <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/cobalt.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml"/>-->
-
-				<ResourceDictionary>
-                    <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:Noterium.ViewModel" />
-                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="FlowDocument">
                 <Setter Property="IsOptimalParagraphEnabled" Value="True" />

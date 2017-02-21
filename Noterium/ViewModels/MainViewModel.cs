@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Noterium.Code.Commands;
@@ -85,6 +84,7 @@ namespace Noterium.ViewModels
 		private bool _isSearching;
 		private bool _isHelpVisible;
 		private bool _settingsFlyoutIsVisible;
+		private Library _currentLibrary;
 
 		#endregion
 
@@ -114,10 +114,7 @@ namespace Noterium.ViewModels
 			set { _selectedMenuItem = value; RaisePropertyChanged(); }
 		}
 
-		public ObservableCollection<Tag> Tags
-		{
-			get { return Hub.Instance.Settings.Tags; }
-		}
+		public ObservableCollection<Tag> Tags => Hub.Instance.Settings.Tags;
 
 		public NotebookMenuViewModel MenuContext
 		{
@@ -178,7 +175,7 @@ namespace Noterium.ViewModels
 		}
 
 		public ObservableCollection<NoteViewModel> SearchResult { get; }
-		public ObservableCollection<Library> Librarys { get; }
+		public ObservableCollection<LibraryViewModel> Librarys { get; }
 
 		public bool IsSearching
 		{
@@ -198,13 +195,21 @@ namespace Noterium.ViewModels
 			set { _settingsFlyoutIsVisible = value; RaisePropertyChanged(); }
 		}
 
+		public Library CurrentLibrary
+		{
+			get { return _currentLibrary; }
+			set { _currentLibrary = value; RaisePropertyChanged(); }
+		}
+
 		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the MainViewModel class.
 		/// </summary>
-		public MainViewModel()
+		public MainViewModel(Library library)
 		{
+			CurrentLibrary = library;
+
 			CreateNewNoteCommand = new RelayCommand(CreateNewNote);
 			CreateNewSecureNoteCommand = new RelayCommand(CreateNewSecureNote);
 			DeleteNoteCommand = new RelayCommand(DeleteCurrentNote);
@@ -232,7 +237,9 @@ namespace Noterium.ViewModels
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
 			TopMainMenuItems = new ObservableCollection<TopMainMenuItemViewModel>();
 			SearchResult = new ObservableCollection<NoteViewModel>();
-			Librarys = Hub.Instance.AppSettings.Librarys;
+
+			Librarys = new ObservableCollection<LibraryViewModel>();
+			ReloadLibrary();
 
 			BindingOperations.EnableCollectionSynchronization(NotebookMenuItems, _currentNotesbooksLockObject);
 			BindingOperations.EnableCollectionSynchronization(SearchResult, _searchResultLockObject);
@@ -246,25 +253,35 @@ namespace Noterium.ViewModels
 
 			SettingsViewModel = new SettingsViewModel(Hub.Instance.Settings);
 
-			_quickMessageTimer = new Timer();
-			_quickMessageTimer.AutoReset = false;
+			_quickMessageTimer = new Timer { AutoReset = false };
 			_quickMessageTimer.Elapsed += QuickMessageTimerElapsed;
 			_quickMessageTimer.Interval = 2000;
 
-			_searchTimer = new Timer();
-			_searchTimer.AutoReset = false;
+			_searchTimer = new Timer { AutoReset = false };
 			_searchTimer.Elapsed += SearchTimerElapsed;
 			_searchTimer.Interval = 250;
-			//_searchTimer.SynchronizingObject = _searchLockObject;
+
+			Hub.Instance.AppSettings.Librarys.CollectionChanged += LibrarysOnCollectionChanged;
+		}
+
+		private void LibrarysOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+		{
+			ReloadLibrary();
+		}
+
+		private void ReloadLibrary()
+		{
+			Librarys.Clear();
+			Hub.Instance.AppSettings.Librarys.ToList().ConvertAll(li => new LibraryViewModel(li)).ForEach(Librarys.Add);
 		}
 
 		private void DeleteLibrary(object o)
 		{
-			Library library = (Library) o;
+			LibraryViewModel library = (LibraryViewModel)o;
 
 			var settings = DialogHelpers.GetDefaultDialogSettings();
 
-			string message = $"Do you want to delete the library '{library.Name}'?\nAll files will be left untouched, it's just the connection that is removed.";
+			string message = $"Do you want to delete the library '{library.Library.Name}'?\nAll files will be left untouched, it's just the connection that is removed.";
 			MainWindowInstance.ShowMessageAsync("Delete library", message, MessageDialogStyle.AffirmativeAndNegative, settings).
 				ContinueWith(delegate (Task<MessageDialogResult> task)
 				{
@@ -272,7 +289,7 @@ namespace Noterium.ViewModels
 					{
 						InvokeOnCurrentDispatcher(() =>
 						{
-							Hub.Instance.AppSettings.Librarys.Remove(library);
+							Hub.Instance.AppSettings.Librarys.Remove(library.Library);
 							Hub.Instance.AppSettings.Save();
 						});
 					}
@@ -307,7 +324,7 @@ namespace Noterium.ViewModels
 					Hub.Instance.AppSettings.Librarys.Add(library);
 					Hub.Instance.AppSettings.Save();
 
-					ChangeLibraryCommand?.Execute(library);
+					ChangeLibraryCommand?.Execute(new LibraryViewModel(library));
 				}
 			}
 		}
@@ -415,8 +432,7 @@ namespace Noterium.ViewModels
 
 		private void ShowAboutWindow(object arg)
 		{
-			AboutWindow win = new AboutWindow();
-			win.DataContext = new AboutWindowViewModel();
+			AboutWindow win = new AboutWindow { DataContext = new AboutWindowViewModel() };
 			win.ShowDialog();
 		}
 
@@ -471,7 +487,7 @@ namespace Noterium.ViewModels
 				throw new Exception("Password required.");
 			});
 
-			if (pass == null || pass.Result == null)
+			if (pass?.Result == null)
 				throw new Exception("Password required.");
 
 			return pass.Result;
@@ -757,14 +773,17 @@ namespace Noterium.ViewModels
 				if (string.IsNullOrEmpty(newName))
 					return;
 
-				Notebook nb = new Notebook();
-				nb.Name = newName;
-				nb.Created = DateTime.Now;
-				nb.SortIndex = 0;
+				Notebook nb = new Notebook
+				{
+					Name = newName,
+					Created = DateTime.Now,
+					SortIndex = 0
+				};
 				nb.Save();
 				var item = new NotebookMenuItem(nb);
 
-				List<NotebookMenuItem> temp = new List<NotebookMenuItem>(MenuContext.Notebooks.ToArray());
+				List<NotebookMenuItem> temp = new List<NotebookMenuItem>();
+				temp.AddRange(MenuContext.Notebooks.ToArray());
 				temp.Add(item);
 				temp.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
@@ -884,7 +903,7 @@ namespace Noterium.ViewModels
 						return;
 					}
 
-					MainWindowInstance.ShowMessageAsync("Delete", string.Format("Do you want to delete the notebook {0}?", MenuContext.SelectedNotebook.Name), MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
+					MainWindowInstance.ShowMessageAsync("Delete", $"Do you want to delete the notebook {MenuContext.SelectedNotebook.Name}?", MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
 					{
 						if (task.Result == MessageDialogResult.Affirmative)
 						{
@@ -927,7 +946,7 @@ namespace Noterium.ViewModels
 
 			var settings = DialogHelpers.GetDefaultDialogSettings();
 
-			MainWindowInstance.ShowMessageAsync("Delete", string.Format("Do you want to delete {0}?", NoteMenuContext.SelectedNote.Note.Name), MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
+			MainWindowInstance.ShowMessageAsync("Delete", $"Do you want to delete {NoteMenuContext.SelectedNote.Note.Name}?", MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
 			{
 				if (task.Result == MessageDialogResult.Affirmative)
 				{
