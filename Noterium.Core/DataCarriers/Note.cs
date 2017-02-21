@@ -255,8 +255,11 @@ namespace Noterium.Core.DataCarriers
             get { return _encrypted; }
             set
             {
+	            bool raiseChanged = _encrypted != value;
                 _encrypted = value;
-                RaiseOnPropetyChanged();
+
+				if(raiseChanged)
+					RaiseOnPropetyChanged();
             }
         }
 
