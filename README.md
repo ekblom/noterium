@@ -6,6 +6,8 @@ A little helper to keep your notes organized.
 
 ![maindemowindow01](./docs/mainwindow1.png)
 
+![maindemowindow01](./docs/mainwindow1_light.png)
+
 ##Features
 
 - Write notes in Markdown
