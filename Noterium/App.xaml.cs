@@ -242,7 +242,7 @@ namespace Noterium
 
 		void OnActivity(object sender, PreProcessInputEventArgs e)
 		{
-			if (e.StagingItem == null || e.StagingItem.Input == null || _activityTimer == null)
+			if (_activityTimer == null || _mainWindow == null)
 				return;
 
 			InputEventArgs inputEventArgs = e.StagingItem.Input;
