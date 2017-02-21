@@ -201,6 +201,7 @@ namespace Noterium
 				_mainWindow.Lock(true);
 			}
 			_mainWindowLoaded = true;
+			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
 
 		private void LoadLibrary(object obj)
@@ -215,8 +216,6 @@ namespace Noterium
 			_mainWindowLoaded = false;
 
 			LoadLibrary(library);
-
-			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

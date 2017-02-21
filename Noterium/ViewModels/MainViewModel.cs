@@ -270,8 +270,11 @@ namespace Noterium.ViewModels
 				{
 					if (task.Result == MessageDialogResult.Affirmative)
 					{
-						Hub.Instance.AppSettings.Librarys.Remove(library);
-						Hub.Instance.AppSettings.Save();
+						InvokeOnCurrentDispatcher(() =>
+						{
+							Hub.Instance.AppSettings.Librarys.Remove(library);
+							Hub.Instance.AppSettings.Save();
+						});
 					}
 				});
 		}
