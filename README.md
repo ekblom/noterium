@@ -6,13 +6,24 @@ A little helper to keep your notes organized.
 
 ##Features
 
-- Write notes in Markdown
+### Application
+
 - Multiple librarys (e.g. one private and one for your work)
-- Secure your notes with encryption (using https://gist.github.com/4336842)
 - Light and Dark theme
 - Search all notes (inluding secure notes)
-- Do todo-lists
 - It's all backed upp daily (if you want)
+
+### Notes
+
+- Write notes in Markdown
+- Do todo-lists
+- Inline images stored as attachment
+
+### Secure notes
+- Secure your notes with encryption (using https://gist.github.com/4336842)
+- Auto lock application when inactive
+
+## Screenshots
 
 ![maindemowindow01](./docs/mainwindow1.png)
 
