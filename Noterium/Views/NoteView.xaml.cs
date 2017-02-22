@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using GalaSoft.MvvmLight.CommandWpf;
 using Noterium.Code.Commands;
 using Noterium.Code.Markdown;
 using Noterium.Core;
@@ -68,8 +69,8 @@ namespace Noterium.Views
 
 			SelectViewMode();
 
-			CurrentModel.EditNoteCommand = new BasicCommand(SwitchToEditPanel);
-			CurrentModel.SaveNoteCommand = new BasicCommand(SaveNote);
+			CurrentModel.EditNoteCommand = new RelayCommand(SwitchToEditPanel);
+			CurrentModel.SaveNoteCommand = new RelayCommand(SaveNote);
 		}
 
 		void NoteViewPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -83,20 +84,18 @@ namespace Noterium.Views
 			}
 		}
 
-		private bool SwitchToEditPanel(object arg)
+		private void SwitchToEditPanel()
 		{
 			ViewTabItem.IsSelected = false;
 			EditTabItem.IsSelected = true;
 			TabControl.SelectedIndex = 0;
 			TabControl.SelectedItem = EditTabItem;
-			return true;
 		}
 
-		private bool SaveNote(object arg)
+		private void SaveNote()
 		{
 			CurrentModel?.SaveNote();
 			SelectViewMode();
-			return true;
 		}
 
 		private void SelectViewMode()
@@ -174,17 +173,14 @@ namespace Noterium.Views
 			_markdown = Resources["Markdown"] as Markdown;
 			_markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
 			if (_markdown != null)
-				_markdown.CheckBoxCheckedCommand = new BasicCommand(DocumentCheckBoxChecked);
+				_markdown.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 		}
 
-		private bool DocumentCheckBoxChecked(object arg)
+		private void DocumentCheckBoxChecked(object arg)
 		{
-
 			_markdownToFlowDocumentConverter.Pause = true;
 			CurrentModel.DocumentCheckBoxCheckedCommand?.Execute(arg);
 			_markdownToFlowDocumentConverter.Pause = false;
-
-			return true;
 		}
 
 		private void ViewModeButtonClicked(object sender, RoutedEventArgs e)

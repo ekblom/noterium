@@ -190,7 +190,7 @@ namespace Noterium
 			_mainWindow.Height = Hub.Instance.AppSettings.WindowSize.Height;
 			_mainWindow.WindowState = Hub.Instance.AppSettings.WindowState;
 
-			_mainWindow.Model.LockCommand = new BasicCommand(Lock);
+			_mainWindow.Model.LockCommand = new SimpleCommand(Lock);
 			Current.MainWindow = _mainWindow;
 
 			SetTheme(_mainWindow);
@@ -307,10 +307,9 @@ namespace Noterium
 			}
 		}
 
-		private bool Lock(object param)
+		private void Lock(object param)
 		{
 			Lock();
-			return true;
 		}
 
 		private void Lock()

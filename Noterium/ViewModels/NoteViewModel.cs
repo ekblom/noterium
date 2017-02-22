@@ -193,10 +193,10 @@ namespace Noterium.ViewModels
 
 		private void InitCommands()
 		{
-			DocumentCheckBoxCheckedCommand = new BasicCommand(DocumentCheckBoxChecked);
+			DocumentCheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 		}
 
-		private bool DocumentCheckBoxChecked(object arg)
+		private void DocumentCheckBoxChecked(object arg)
 		{
 			CheckBox cb = arg as CheckBox;
 			if (cb != null)
@@ -229,7 +229,6 @@ namespace Noterium.ViewModels
 				Note.DecryptedText = string.Join("\n", lines);
 				CheckBoxCheckUpdatedTextCommand?.Execute(Note.DecryptedText);
 			}
-			return true;
 		}
 
 		void TagsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -25,8 +25,8 @@ namespace Noterium.Components.NoteMenu
 		{
 			DataSource = new ObservableCollection<NoteViewModel>();
 
-			FilterNotesCommand = new BasicCommand(FilterNotes);
-			ClearFilterCommand = new BasicCommand(ClearFilter);
+			FilterNotesCommand = new SimpleCommand(FilterNotes);
+			ClearFilterCommand = new SimpleCommand(ClearFilter);
 			ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
 
 			PropertyChanged += OnPropertyChanged;
@@ -62,16 +62,13 @@ namespace Noterium.Components.NoteMenu
 				SelectedNote.SaveNote();
 		}
 
-		private bool ClearFilter(object arg)
+		private void ClearFilter(object arg)
 		{
 			foreach (NoteViewModel model in DataSource)
-			{
 				model.Visible = true;
-			}
-			return true;
 		}
 
-		private bool FilterNotes(object o)
+		private void FilterNotes(object o)
 		{
 			var arg = o as TextChangedEventArgs;
 			if (arg != null)
@@ -89,10 +86,7 @@ namespace Noterium.Components.NoteMenu
 						model.Visible = false;
 					}
 				}
-
-				return true;
 			}
-			return false;
 		}
 
 		private bool ContainsTag(NoteViewModel model, string text)

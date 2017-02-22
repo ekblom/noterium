@@ -216,7 +216,7 @@ namespace Noterium.ViewModels
 		public MainViewModel(Library library)
 		{
 			CurrentLibrary = library;
-
+			
 			CreateNewNoteCommand = new RelayCommand(CreateNewNote);
 			CreateNewSecureNoteCommand = new RelayCommand(CreateNewSecureNote);
 			DeleteNoteCommand = new RelayCommand(DeleteCurrentNote);
@@ -228,8 +228,7 @@ namespace Noterium.ViewModels
 			ShowAboutWindowCommand = new SimpleCommand(ShowAboutWindow);
 			ToggleNoteMenu = new SimpleCommand(ToggleNoteMenuVisibility);
 			ToggleNotebookMenu = new SimpleCommand(ToggleNotebookMenuVisibility);
-			SelectedNoteContainerChangedCommand = new BasicCommand(SelectedNoteContainerChanged);
-			SelectedNoteChangedCommand = new BasicCommand(SelectedNoteChanged);
+			SelectedNoteContainerChangedCommand = new SimpleCommand(SelectedNoteContainerChanged);
 			ToggleSearchFlyoutCommand = new SimpleCommand(ToggleSearchFlyout);
 			//SearchTextChangedCommand = new SimpleCommand(Search);
 			SearchResultSelectedCommand = new SimpleCommand(SearchResultSelected);
@@ -592,7 +591,7 @@ namespace Noterium.ViewModels
 				{
 					SelectedItemChangedCommand = SelectedNoteChangedCommand,
 					DeleteItemCommand = DeleteNoteCommand,
-					RenameItemCommand = new BasicCommand(RenameNoteItem),
+					RenameItemCommand = new SimpleCommand(RenameNoteItem),
 					EditItemCommand = EditNoteCommand
 				};
 				BindingOperations.EnableCollectionSynchronization(NoteMenuContext.DataSource, _currentNotesLockObject);
@@ -608,9 +607,9 @@ namespace Noterium.ViewModels
 				NoteMenuContext.SelectedNote = models.Any() ? models[0] : null;
 		}
 
-		private bool SelectedNoteContainerChanged(object p)
+		private void SelectedNoteContainerChanged(object p)
 		{
-			return SelectedNoteContainerChanged(p, null);
+			SelectedNoteContainerChanged(p, null);
 		}
 		private bool SelectedNoteContainerChanged(object p, NoteViewModel selected)
 		{
@@ -699,24 +698,6 @@ namespace Noterium.ViewModels
 			return ntvm;
 		}
 
-		private bool SelectedNoteChanged(object param)
-		{
-			return true;
-			//SelectionChangedEventArgs args = (SelectionChangedEventArgs)param;
-			//if (args.AddedItems.Count == 0)
-			//    return false;
-
-			//NoteViewModel noteViewModel = args.AddedItems[0] as NoteViewModel;
-			//if (noteViewModel != null && NoteMenuContext.SelectedNote.Note != noteViewModel.Note)
-			//{
-			//    NoteMenuContext.SelectedNote.Note.Save();
-			//    NoteMenuContext.SelectedNote = noteViewModel;
-			//    return true;
-			//}
-
-			//return false;
-		}
-
 		private void InitMainMenu()
 		{
 			List<NotebookMenuItem> items = new List<NotebookMenuItem>();
@@ -733,11 +714,11 @@ namespace Noterium.ViewModels
 			MenuContext = new NotebookMenuViewModel
 			{
 				Notebooks = new ObservableCollection<NotebookMenuItem>(items),
-				SelectedItemChangedCommand = new BasicCommand(SelectedNoteContainerChanged),
-				RenameItemCommand = new BasicCommand(RenameItem),
-				DeleteItemCommand = new BasicCommand(DeleteItem),
-				AddNotebookCommand = new BasicCommand(CreateNotebook),
-				EmptyTrashCommand = new BasicCommand(EmptyTrash)
+				SelectedItemChangedCommand = new SimpleCommand(SelectedNoteContainerChanged),
+				RenameItemCommand = new SimpleCommand(RenameItem),
+				DeleteItemCommand = new SimpleCommand(DeleteItem),
+				AddNotebookCommand = new SimpleCommand(CreateNotebook),
+				EmptyTrashCommand = new SimpleCommand(EmptyTrash)
 			};
 
 			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled && items.Any())
@@ -749,7 +730,7 @@ namespace Noterium.ViewModels
 			BindingOperations.EnableCollectionSynchronization(MenuContext.Notebooks, _mainMenuListLockObject);
 		}
 
-		private bool EmptyTrash(object arg)
+		private void EmptyTrash(object arg)
 		{
 			var settings = DialogHelpers.GetDefaultDialogSettings();
 
@@ -771,10 +752,9 @@ namespace Noterium.ViewModels
 						NoteMenuContext.DataSource.Clear();
 					}
 				});
-			return true;
 		}
 
-		private bool CreateNotebook(object arg)
+		private void CreateNotebook(object arg)
 		{
 			MainWindowInstance.ShowInputAsync("Add notebook", "Name:").ContinueWith(delegate (Task<string> task)
 			{
@@ -802,25 +782,18 @@ namespace Noterium.ViewModels
 				MenuContext.SelectedNotebook = item;
 				MenuContext.SelectedNotebook.IsSelected = true;
 			});
-
-			return true;
 		}
 
-		private bool DeleteItem(object arg)
+		private void DeleteItem(object arg)
 		{
 			if (SelectedMenuItem is TagMenuItem)
-				return false;
+				return;
 
 			if (SelectedMenuItem is NotebookMenuItem)
-			{
 				DeleteCurrentNoteBook();
-				return true;
-			}
-
-			return true;
 		}
 
-		private bool RenameNoteItem(object arg)
+		private void RenameNoteItem(object arg)
 		{
 			if (NoteMenuContext.SelectedNote != null)
 			{
@@ -837,14 +810,12 @@ namespace Noterium.ViewModels
 					}
 				});
 			}
-
-			return true;
 		}
 
-		private bool RenameItem(object arg)
+		private void RenameItem(object arg)
 		{
 			if (SelectedMenuItem is TagMenuItem)
-				return false;
+				return;
 
 			string name = SelectedMenuItem.Name;
 			var settings = DialogHelpers.GetDefaultDialogSettings();
@@ -861,8 +832,6 @@ namespace Noterium.ViewModels
 					   }
 				   }
 			   });
-
-			return true;
 		}
 
 		private void CreateNewSecureNote()

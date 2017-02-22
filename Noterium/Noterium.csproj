@@ -215,7 +215,6 @@
     <Compile Include="Code\Behaviors\DataGridBehavior.cs" />
     <Compile Include="Code\Commands\SimpleCommand.cs" />
     <Compile Include="Code\Controls\BindingProxy.cs" />
-    <Compile Include="Code\Controls\DragDropScrollViewer.cs" />
     <Compile Include="Code\Converters\BooleanConverter.cs" />
     <Compile Include="Code\Converters\BindingNullToVisibilityConverter.cs" />
     <Compile Include="Code\Converters\BooleanToVisibilityConverter.cs" />
