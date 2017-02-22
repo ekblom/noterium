@@ -219,7 +219,6 @@
     <Compile Include="Code\Converters\BindingNullToVisibilityConverter.cs" />
     <Compile Include="Code\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Code\BoundObservableCollection.cs" />
-    <Compile Include="Code\Commands\BasicCommand.cs" />
     <Compile Include="Code\Commands\CustomCommandInvoker.cs" />
     <Compile Include="Code\Commands\ToDoItemCommand.cs" />
     <Compile Include="Code\Commands\NoteFileCommand.cs" />
