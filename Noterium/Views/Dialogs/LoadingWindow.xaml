@@ -5,6 +5,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+		xmlns:p="clr-namespace:Noterium.Properties"
         mc:Ignorable="d"
 		WindowStyle="None" ShowTitleBar="False" ShowCloseButton="False"
 		
@@ -26,6 +27,6 @@
         </Grid.ColumnDefinitions>
 
 		<iconPacks:PackIconMaterial Margin="15" Width="130" Height="130" Kind="NoteMultiple" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-		<TextBlock Name="LoadingText" Grid.Column="1" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250" Height="25" Text="Loading"/>
+		<TextBlock Name="LoadingText" Grid.Column="1" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250" Height="25" Text="{x:Static p:Resources.Loading_Loading}"/>
     </Grid>
 </controls:MetroWindow>

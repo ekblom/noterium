@@ -14,7 +14,8 @@
 		xmlns:views="clr-namespace:Noterium.Views"
 		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 		xmlns:dataCarriers="clr-namespace:Noterium.Core.DataCarriers;assembly=Noterium.Core"
-		Title="Noterium" Height="768" Width="1024"
+		xmlns:p="clr-namespace:Noterium.Properties"
+		Title="{x:Static p:Resources.Title}" Height="768" Width="1024"
 		mc:Ignorable="d"
 		RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextFormattingMode="Display"
@@ -69,6 +70,8 @@
 				x:Key="ReversedBooleanToVisibilityConverter"
 				True="Collapsed"
 				False="Visible" />
+			<converters:XamlTextToFlowDocumentConverter
+				x:Key="XamlTextToFlowDocumentConverter" />
 			<converters:MultiValueBindingConverter x:Key="MultiValueBindingConverter" />
 
 			<Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
@@ -98,9 +101,9 @@
 				</controls:Flyout.HeaderTemplate>
 				<Border BorderThickness="1,0,1,1" BorderBrush="{StaticResource AccentColorBrush}">
 					<StackPanel Margin="10" Name="SearchStackPanel">
-						<TextBlock Margin="0,0,0,15" FontSize="18" Text="Find a note" />
+						<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Search_FindANote}" />
 						<TextBox Name="SearchFlyoutTextBox"
-                                 controls:TextBoxHelper.Watermark="Search..."
+                                 controls:TextBoxHelper.Watermark="{x:Static p:Resources.Search_SearchBoxWatermark}"
                                  PreviewKeyDown="SearchFlyoutTextBox_OnKeyDown" Text="{Binding SearchTerm, Mode=TwoWay}"
 								 TextChanged="SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged">
 						</TextBox>
@@ -140,44 +143,42 @@
 				</Border>
 			</controls:Flyout>
 			<controls:Flyout AnimateOnPositionChange="true"
-                             Header="AboutWindow" Theme="Adapt"
+                             Header="{x:Static p:Resources.Settings_FlyoutTitle}" Theme="Adapt"
                              Position="Right" Name="SettingsFlyout"
                              IsOpen="{Binding SettingsFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Width="250" Margin="15">
 						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15"
-                           FontSize="18"
-                           Text="Security" />
+							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Security}" />
 							<PasswordBox Name="PasswordBox" Height="25" HorizontalAlignment="Left"
-                             controls:TextBoxHelper.Watermark="Encryption password"
+                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
                              controls:TextBoxHelper.UseFloatingWatermark="False"
                              controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
                              Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
 								<controls:PasswordBoxHelper.CapsLockWarningToolTip>
 									<TextBlock>
-								<Run Text="You have" />
-								<Run Text="CAPS LOCK" TextDecorations="Underline" Foreground="Red" />
-								<Run Text=" on. This can result in you entering another password than you excpect." />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
 									</TextBlock>
 								</controls:PasswordBoxHelper.CapsLockWarningToolTip>
 							</PasswordBox>
 							<PasswordBox Name="PasswordBoxVerify" Height="25" HorizontalAlignment="Left"
-                             controls:TextBoxHelper.Watermark="Repeat password"
+                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_RepeatEncryptionPassword}"
                              controls:TextBoxHelper.UseFloatingWatermark="False"
                              controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
                              Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
 								<controls:PasswordBoxHelper.CapsLockWarningToolTip>
 									<TextBlock>
-								<Run Text="You have" />
-								<Run Text="CAPS LOCK" TextDecorations="Underline" Foreground="Red" />
-								<Run Text=" on. This can result in you entering another password than you excpect." />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
+										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
 									</TextBlock>
 								</controls:PasswordBoxHelper.CapsLockWarningToolTip>
 							</PasswordBox>
 
-							<Button Content="Enable secure notes" Command="{Binding SettingsViewModel.TurnOnEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
+							<Button Content="{x:Static p:Resources.Settings_EnableSecureNotes}" Command="{Binding SettingsViewModel.TurnOnEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
 							Visibility="{Binding SettingsViewModel.SecureNotesEnabled, Mode=OneWay, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Visible}">
 								<Button.CommandParameter>
 									<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
@@ -186,7 +187,7 @@
 									</MultiBinding>
 								</Button.CommandParameter>
 							</Button>
-							<Button Content="Disable secure notes" Command="{Binding SettingsViewModel.TurnOffEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
+							<Button Content="{x:Static p:Resources.Settings_DisableSecureNotes}" Command="{Binding SettingsViewModel.TurnOffEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
 							Visibility="{Binding SettingsViewModel.SecureNotesEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
 								<Button.CommandParameter>
 									<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
@@ -197,7 +198,7 @@
 							</Button>
 
 							<TextBlock>
-							<Run>Lock main window after (minutes):</Run>
+								<Run Text="{x:Static p:Resources.Settings_LockMainWindowAfterMinutes}" />
 							</TextBlock>
 							<controls:NumericUpDown Value="{Binding SettingsViewModel.Settings.AutoLockMainWindowAfter, Mode=TwoWay}"
 										Maximum="30"
@@ -213,7 +214,7 @@
 						</StackPanel>
 
 						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="Visual" />
+							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Visual}" />
 							<!--<TextBlock>
 								<Run>Theme:</Run>
 							</TextBlock>
@@ -228,9 +229,8 @@
 								</i:Interaction.Triggers>
 							</ComboBox>-->
 
-							<TextBlock>
-								<Run>Theme:</Run>
-							</TextBlock>
+							<TextBlock Text="{x:Static p:Resources.Settings_Theme}" />
+							
 							<ComboBox SelectedItem="{Binding SettingsViewModel.SelectedAccent, Mode=TwoWay}"
                                   ItemsSource="{Binding SettingsViewModel.AccentColors, Mode=TwoWay}"
                                    Margin="0,0,0,25" Width="100">
@@ -245,10 +245,8 @@
 						</StackPanel>
 
 						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="Behavior" />
-							<TextBlock>
-								<Run>Default view for notes:</Run>
-							</TextBlock>
+							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Behaviour}" />
+							<TextBlock Text="{x:Static p:Resources.Settings_DefaultNoteView}"/>
 							<ComboBox SelectedItem="{Binding SettingsViewModel.Settings.DefaultNoteView}"
                                   ItemsSource="{Binding SettingsViewModel.NoteViewModes, Mode=TwoWay}"
                                    Margin="0,0,0,25">
@@ -267,13 +265,11 @@
 										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-								<TextBlock>Enable experimental stuff</TextBlock>
+								<TextBlock Text="{x:Static p:Resources.Settings_EnableExperimentalFeatures}"/>
 							</CheckBox>
 						</StackPanel>
 						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15"
-                           FontSize="18"
-                           Text="Backups" />
+							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Backups}" />
 							<CheckBox IsChecked="{Binding SettingsViewModel.Settings.AutoBackup, Mode=TwoWay}" Margin="0,0,0,15">
 								<i:Interaction.Triggers>
 									<i:EventTrigger EventName="Checked">
@@ -283,10 +279,10 @@
 										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-								<TextBlock>Automatically backup</TextBlock>
+								<TextBlock Text="{x:Static p:Resources.Settings_AutomaticallyBackup}"/>
 							</CheckBox>
 
-							<TextBlock>Number of backups to keep:</TextBlock>
+							<TextBlock Text="{x:Static p:Resources.Settings_BackupsToKeep}"/>
 							<controls:NumericUpDown Value="{Binding SettingsViewModel.Settings.NumberOfBackupsToKeep, Mode=TwoWay}" Margin="0,0,0,15"
 										Maximum="30"
 										Minimum="0"
@@ -297,16 +293,16 @@
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
 							</controls:NumericUpDown>
-							<Button Content="Backup now" Width="100" Command="{Binding SettingsViewModel.BackupNowCommand}" HorizontalAlignment="Left" Margin="0,0,0,15" />
+							<Button Content="{x:Static p:Resources.Settings_BackupNow}" Width="100" Command="{Binding SettingsViewModel.BackupNowCommand}" HorizontalAlignment="Left" Margin="0,0,0,15" />
 							<TextBlock Margin="0,0,0,15">
-						    <Run>Last backup occured on: </Run>
+						    <Run Text="{x:Static p:Resources.Settings_LastBackup}"/>
 						    <Run Name="LastBackupDate" Text="{Binding SettingsViewModel.LastBackupDate}"></Run>
 							</TextBlock>
-							<Button Content="Open backup manager" Click="OpenBackupManager" HorizontalAlignment="Left" />
+							<Button Content="{x:Static p:Resources.Settings_OpenBackupManager}" Click="OpenBackupManager" HorizontalAlignment="Left" />
 						</StackPanel>
 
 						<StackPanel HorizontalAlignment="Left" Orientation="Vertical">
-							<Button Content="About Noterium" Command="{Binding ShowAboutWindowCommand}" />
+							<Button Content="{x:Static p:Resources.Settings_AboutNoterium}" Command="{Binding ShowAboutWindowCommand}" />
 						</StackPanel>
 					</StackPanel>
 				</ScrollViewer>
@@ -378,25 +374,7 @@
 				</DockPanel.Background>
 
 				<StackPanel Width="340" Height="340">
-					<TextBlock Foreground="White" FontWeight="Bold" FontSize="18" FontFamily="Consolas" TextWrapping="Wrap">
-                        <Run>CTRL+N Create new note</Run>
-                        <LineBreak />
-                        <Run>CTRL+S Save note (switch to view)</Run>
-                        <LineBreak />
-                        <Run>CTRL+E Edit note (switch to edit)</Run>
-                        <LineBreak />
-                        <Run>CTRL+- Toggle note-list</Run>
-                        <LineBreak />
-                        <Run>CTRL+. Toggle notebook-list</Run>
-                        <LineBreak />
-                        <Run>CTRL+H Show this help</Run>
-                        <LineBreak />
-                        <LineBreak />
-                        <Run>CTRL+F Open search</Run>
-                        <LineBreak />
-                        <LineBreak />
-                        <Run>When you get a result, you can step through the notes by first pressing the Down-key, then use Up- and Down-key. To go to a note, just press the Enter-key or double click that note.</Run>
-					</TextBlock>
+					<FlowDocumentReader Document="{Binding HelpDocumentText, Mode=OneWay, Converter={StaticResource XamlTextToFlowDocumentConverter}}" />
 				</StackPanel>
 			</DockPanel>
 
@@ -424,7 +402,7 @@
 								<DataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
 										<iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
-										<TextBlock>Librarys - <Run Text="{Binding CurrentLibrary.Name}"/></TextBlock>
+										<TextBlock Text="{x:Static p:Resources.Main_Librarys}" />
 									</StackPanel>
 								</DataTemplate>
 							</Button.ContentTemplate>
@@ -456,7 +434,7 @@
 														<DataTemplate DataType="dataCarriers:Library">
 															<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3">
 																<iconPacks:PackIconMaterial Kind="Reload" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-																<TextBlock Text="Load" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+																<TextBlock Text="{x:Static p:Resources.Librarys_Load}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 															</StackPanel>
 														</DataTemplate>
 													</Button.ContentTemplate>
@@ -468,7 +446,7 @@
 														<DataTemplate DataType="dataCarriers:Library">
 															<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3">
 																<iconPacks:PackIconMaterial Kind="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-																<TextBlock Text="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+																<TextBlock Text="{x:Static p:Resources.Librarys_Delete}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 															</StackPanel>
 														</DataTemplate>
 													</Button.ContentTemplate>
@@ -483,7 +461,7 @@
 										<DataTemplate>
 											<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
 												<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-												<TextBlock>Add library</TextBlock>
+												<TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
 											</StackPanel>
 										</DataTemplate>
 									</Button.ContentTemplate>
@@ -533,8 +511,8 @@
 						</Button.ContentTemplate>
 						<Button.ContextMenu>
 							<ContextMenu >
-								<MenuItem Header="Add note" Command="{Binding CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-								<MenuItem Header="Add secure note" Command="{Binding CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
+								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
                                            Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
 							</ContextMenu>
 						</Button.ContextMenu>
@@ -553,9 +531,7 @@
 				<DockPanel Margin="0" Grid.Column="4" Grid.Row="0"
 					Visibility="{Binding NoteMenuContext.SelectedNote, Converter={StaticResource BindingNullVisibilityConverterReversed}, FallbackValue=Collapsed, Mode=OneWay}">
 					<StackPanel>
-						<TextBlock FontSize="22" FontWeight="SemiBold" Margin="15">
-							Select a note to view and edit it.
-						</TextBlock>
+						<TextBlock FontSize="22" FontWeight="SemiBold" Margin="15" Text="{x:Static p:Resources.Main_NoNotesMessage}"/>
 					</StackPanel>
 
 				</DockPanel>

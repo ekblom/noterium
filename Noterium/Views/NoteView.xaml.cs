@@ -125,15 +125,15 @@ namespace Noterium.Views
 
 			FlowDocument doc = _markdown.Transform(ContextNote.DecryptedText);
 
-			Stream s = new MemoryStream();
-			XamlWriter.Save(doc, s);
+			//Stream s = new MemoryStream();
+			string xaml = XamlWriter.Save(doc);
+			Clipboard.SetText(xaml);
+			//s.Seek(0, SeekOrigin.Begin);
 
-			s.Seek(0, SeekOrigin.Begin);
-
-			FileStream fs = File.Create("C:\\Temp\\doc.xaml");
-			s.CopyTo(fs);
-			fs.Close();
-			s.Close();
+			//FileStream fs = File.Create("C:\\Temp\\doc.xaml");
+			//s.CopyTo(fs);
+			//fs.Close();
+			//s.Close();
 		}
 
 		private void GoToPage_OnExecuted(object sender, ExecutedRoutedEventArgs e)

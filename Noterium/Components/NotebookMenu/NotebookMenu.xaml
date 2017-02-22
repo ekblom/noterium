@@ -11,6 +11,7 @@
              xmlns:commands1="clr-namespace:Noterium.Code.Commands"
              xmlns:controls1="clr-namespace:Noterium.Code.Controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 xmlns:p="clr-namespace:Noterium.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="200"
 			 d:DataContext="{d:DesignInstance notebookMenu1:NotebookMenuViewModel}"
@@ -35,7 +36,7 @@
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
                         <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Star" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="Favorites" ToolTip="A complete list of your favorites"
+						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Favourites}"
                                    Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
@@ -48,7 +49,7 @@
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
                         <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="Recent" ToolTip="A list of recenttly changed notes."
+						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Recent}"
                                    Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
@@ -62,7 +63,7 @@
 							<ColumnDefinition Width="25" />
 						</Grid.ColumnDefinitions>
                         <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                        <TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="Trash" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Trash}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 						<Button Grid.Column="2" Style="{StaticResource ChromelessButtonStyle}" Command="{Binding ElementName=UserControl, Path=DataContext.EmptyTrashCommand}"
                                 Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clean" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
@@ -78,7 +79,7 @@
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
                         <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="CabinetFilesVariant" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                        <TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="All notes" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+                        <TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_AllNotes}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
 			</DataTemplate>
@@ -94,7 +95,7 @@
 				<Setter Property="HorizontalAlignment" Value="Center" />
 			</Style>
 		</TabControl.Resources>
-		<TabItem Header="Notebooks" controls:ControlsHelper.HeaderFontSize="16" Style="{StaticResource NoteriumCustomTabItem}" Background="Transparent" BorderThickness="0 0 0 2">
+		<TabItem Header="{x:Static p:Resources.Main_Notebooks}" controls:ControlsHelper.HeaderFontSize="16" Style="{StaticResource NoteriumCustomTabItem}" Background="Transparent" BorderThickness="0 0 0 2">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="25" />
@@ -104,7 +105,7 @@
 				</Grid.RowDefinitions>
 				<Border Grid.Row="0" Margin="5,0,0,0">
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                        <TextBlock TextAlignment="Left" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Library" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+						<TextBlock TextAlignment="Left" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Library}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</StackPanel>
 				</Border>
 				<DockPanel Grid.Row="1">
@@ -185,7 +186,7 @@
 											<MenuItem.Header>
 												<StackPanel Orientation="Horizontal">
 													<iconPacks:PackIconMaterial Name="DeleteNoteButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-													<TextBlock Text="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+													<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 												</StackPanel>
 											</MenuItem.Header>
 										</MenuItem>
@@ -193,7 +194,7 @@
 											<MenuItem.Header>
 												<StackPanel Orientation="Horizontal">
 													<iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-													<TextBlock Text="Rename" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+													<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 												</StackPanel>
 											</MenuItem.Header>
 										</MenuItem>
@@ -213,7 +214,7 @@
 				</ListView>
 			</Grid>
 		</TabItem>
-		<TabItem Header="Tags" controls:ControlsHelper.HeaderFontSize="16" Style="{StaticResource NoteriumCustomTabItem}" Background="Transparent" BorderThickness="0 0 0 2">
+		<TabItem Header="{x:Static p:Resources.Main_Tags}" controls:ControlsHelper.HeaderFontSize="16" Style="{StaticResource NoteriumCustomTabItem}" Background="Transparent" BorderThickness="0 0 0 2">
 			<DockPanel>
 				<ListView Name="TagsTree" DockPanel.Dock="Top"
                     Background="{DynamicResource TransparentWhiteBrush}"

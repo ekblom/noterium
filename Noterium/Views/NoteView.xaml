@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-    xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
+			xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+			xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
              xmlns:views1="clr-namespace:Noterium.Views"
-             xmlns:converters="clr-namespace:Noterium.Code.Converters"
              xmlns:dataCarriers="clr-namespace:Noterium.Core.DataCarriers;assembly=Noterium.Core"
              xmlns:controls1="clr-namespace:Noterium.Controls"
              xmlns:markdown="clr-namespace:Noterium.Code.Markdown"
@@ -198,9 +197,11 @@
 					<iconPacks:PackIconMaterial Kind="Pencil" />
 				</Button>
 
-				<Button Margin="5,0,0,0" x:Name="XamlButton" Visibility="Collapsed" Width="30" Height="30"
-                            Style="{DynamicResource MetroFlatButton}" Click="GetXamlButton_OnClick" HorizontalAlignment="Left">
-					<iconPacks:PackIconMaterial Kind="CodeTags" Foreground="{DynamicResource IdealForegroundColorBrush}"/>
+				<Button Margin="5,0,0,0" x:Name="XamlButton" Width="30" Height="30"
+                            Style="{DynamicResource NoStyleButton}" Click="GetXamlButton_OnClick" HorizontalAlignment="Left">
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+						<iconPacks:PackIconMaterial Kind="CodeTags" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+					</StackPanel>
 				</Button>
 
 				<Button Margin="5,0,0,0" x:Name="PrintButton" Width="30" Height="30"

@@ -117,6 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authentication_EnterMasterPassword" xml:space="preserve">
+    <value>Enter master password:</value>
+  </data>
+  <data name="Authentication_PasswordBoxWatermark" xml:space="preserve">
+    <value>Enter password</value>
+  </data>
+  <data name="BackupManager_Restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="BackupManager_SelectSet" xml:space="preserve">
+    <value>Select backup set:</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Help_Document" xml:space="preserve">
+    <value>&lt;FlowDocument PagePadding="0,0,0,0" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&gt;&lt;FlowDocument.Style&gt;&lt;Style TargetType="FlowDocument"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;Setter Property="TextElement.FontFamily"&gt;&lt;Setter.Value&gt;&lt;FontFamily&gt;Segoe UI&lt;/FontFamily&gt;&lt;/Setter.Value&gt;&lt;/Setter&gt;&lt;Setter Property="Block.TextAlignment"&gt;&lt;Setter.Value&gt;&lt;x:Static Member="TextAlignment.Left" /&gt;&lt;/Setter.Value&gt;&lt;/Setter&gt;&lt;Setter Property="TextElement.Foreground"&gt;&lt;Setter.Value&gt;&lt;DynamicResource ResourceKey="IdealForegroundColorBrush" /&gt;&lt;/Setter.Value&gt;&lt;/Setter&gt;&lt;/Style&gt;&lt;/FlowDocument.Style&gt;&lt;Paragraph&gt;&lt;Paragraph.Style&gt;&lt;Style TargetType="Paragraph"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Paragraph.Style&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+N Create new note&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+S Save note (switch to view)&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+E Edit note (switch to edit)&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+- Toggle note-list&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+. Toggle notebook-list&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+H Show this help&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run xml:space="preserve"&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;CTRL+F Open search &lt;/Run&gt;&lt;/Paragraph&gt;&lt;Paragraph&gt;&lt;Paragraph.Style&gt;&lt;Style TargetType="Paragraph"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Paragraph.Style&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;When you get a result, you can step through the notes by&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;first pressing the Down-key, then use Up- and Down-key.&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;To go to a note, just press the Enter-key or double click&lt;/Run&gt;&lt;LineBreak /&gt;&lt;Run xml:space="preserve"&gt;&lt;Run.Style&gt;&lt;Style TargetType="Run"&gt;&lt;Style.Resources&gt;&lt;ResourceDictionary /&gt;&lt;/Style.Resources&gt;&lt;/Style&gt;&lt;/Run.Style&gt;that note. &lt;/Run&gt;&lt;/Paragraph&gt;&lt;/FlowDocument&gt;</value>
+  </data>
+  <data name="Librarys_AddLibrary" xml:space="preserve">
+    <value>Add library</value>
+  </data>
+  <data name="Librarys_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Librarys_Load" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="Loading_Loading" xml:space="preserve">
+    <value>Loading library</value>
+  </data>
   <data name="LogXml" xml:space="preserve">
     <value>&lt;log4net&gt;
     &lt;root&gt;
@@ -143,5 +173,165 @@
       &lt;/layout&gt;
     &lt;/appender&gt;
   &lt;/log4net&gt;</value>
+  </data>
+  <data name="Main_AddNote" xml:space="preserve">
+    <value>Add note</value>
+  </data>
+  <data name="Main_AddNotebook" xml:space="preserve">
+    <value>Add notebook</value>
+  </data>
+  <data name="Main_AddSecureNote" xml:space="preserve">
+    <value>Add secure note</value>
+  </data>
+  <data name="Main_AllNotes" xml:space="preserve">
+    <value>All notes</value>
+  </data>
+  <data name="Main_Favourites" xml:space="preserve">
+    <value>Favourites</value>
+  </data>
+  <data name="Main_Library" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="Main_Librarys" xml:space="preserve">
+    <value>Librarys</value>
+  </data>
+  <data name="Main_NoNotesMessage" xml:space="preserve">
+    <value>Select a note to view and edit it.</value>
+  </data>
+  <data name="Main_Notebooks" xml:space="preserve">
+    <value>Notebooks</value>
+  </data>
+  <data name="Main_Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Main_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Main_Trash" xml:space="preserve">
+    <value>Trash</value>
+  </data>
+  <data name="NoteEditor_FilesAreaLabel" xml:space="preserve">
+    <value>Files (drag and drop files below):</value>
+  </data>
+  <data name="NoteEditor_Tags_Watermark" xml:space="preserve">
+    <value>Click here to add tags...</value>
+  </data>
+  <data name="NoteEditor_Toolbar_Code" xml:space="preserve">
+    <value>Format text as code</value>
+  </data>
+  <data name="NoteEditor_Toolbar_Comment" xml:space="preserve">
+    <value>Insert comment</value>
+  </data>
+  <data name="NoteEditor_Toolbar_Image" xml:space="preserve">
+    <value>Insert image tag</value>
+  </data>
+  <data name="NoteEditor_Toolbar_ToggleWordWrap" xml:space="preserve">
+    <value>Toggle word wrap</value>
+  </data>
+  <data name="Notes_Encrypted" xml:space="preserve">
+    <value>Encrypted</value>
+  </data>
+  <data name="Notes_Favourite" xml:space="preserve">
+    <value>Favourite</value>
+  </data>
+  <data name="Notes_ProtectFromDelete" xml:space="preserve">
+    <value>Protect from delete</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="Search_FindANote" xml:space="preserve">
+    <value>Find a note</value>
+  </data>
+  <data name="Search_SearchBoxWatermark" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="Settings_AboutNoterium" xml:space="preserve">
+    <value>About Noterium</value>
+  </data>
+  <data name="Settings_AutomaticallyBackup" xml:space="preserve">
+    <value>Automatically backup</value>
+  </data>
+  <data name="Settings_BackupNow" xml:space="preserve">
+    <value>Backup now</value>
+  </data>
+  <data name="Settings_Backups" xml:space="preserve">
+    <value>Backups</value>
+  </data>
+  <data name="Settings_BackupsToKeep" xml:space="preserve">
+    <value>Number of backup to keep</value>
+  </data>
+  <data name="Settings_Behaviour" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="Settings_CapsLockWarning1" xml:space="preserve">
+    <value>You have</value>
+  </data>
+  <data name="Settings_CapsLockWarning2" xml:space="preserve">
+    <value>CAPS LOCK</value>
+  </data>
+  <data name="Settings_CapsLockWarning3" xml:space="preserve">
+    <value>on. This can result in you entering another password than you excpect.</value>
+  </data>
+  <data name="Settings_DefaultNoteView" xml:space="preserve">
+    <value>Default view for notes:</value>
+  </data>
+  <data name="Settings_DisableSecureNotes" xml:space="preserve">
+    <value>Disable secure notes</value>
+  </data>
+  <data name="Settings_EnableExperimentalFeatures" xml:space="preserve">
+    <value>Enable experimental features</value>
+  </data>
+  <data name="Settings_EnableSecureNotes" xml:space="preserve">
+    <value>Enable secure notes</value>
+  </data>
+  <data name="Settings_EncryptionPassword" xml:space="preserve">
+    <value>Encryption password</value>
+  </data>
+  <data name="Settings_FlyoutTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_LastBackup" xml:space="preserve">
+    <value>Last backup occured on:</value>
+  </data>
+  <data name="Settings_LockMainWindowAfterMinutes" xml:space="preserve">
+    <value>Lock main window after (minutes):</value>
+  </data>
+  <data name="Settings_OpenBackupManager" xml:space="preserve">
+    <value>Open backup manager</value>
+  </data>
+  <data name="Settings_RepeatEncryptionPassword" xml:space="preserve">
+    <value>Repeat password</value>
+  </data>
+  <data name="Settings_Security" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Theme:</value>
+  </data>
+  <data name="Settings_Visual" xml:space="preserve">
+    <value>Visual</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>day</value>
+  </data>
+  <data name="Time_Days" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="Time_Min" xml:space="preserve">
+    <value>min</value>
+    <comment>Short for minutes</comment>
+  </data>
+  <data name="Time_NoteCreatedDateFormat" xml:space="preserve">
+    <value>d MMMM, yyyy</value>
+  </data>
+  <data name="Time_NoteCreatedDateFormatSameYear" xml:space="preserve">
+    <value>dd MMM</value>
+  </data>
+  <data name="Time_Now" xml:space="preserve">
+    <value>now</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Noterium</value>
   </data>
 </root>

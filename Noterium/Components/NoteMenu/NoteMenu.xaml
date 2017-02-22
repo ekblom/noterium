@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
-             xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
              xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:noteMenu="clr-namespace:Noterium.Components.NoteMenu"
              xmlns:converters="clr-namespace:Noterium.Code.Converters"
              xmlns:controls="clr-namespace:Noterium.Code.Controls"
-             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:p="clr-namespace:Noterium.Properties"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -36,23 +35,23 @@
     </UserControl.Resources>
 
     <ListView Name="NotesList" 
-                      SelectedItem="{Binding SelectedNote, Mode=TwoWay}" 
-              ItemsSource="{Binding DataSource, Mode=OneWay}"
-              Background="{DynamicResource TransparentWhiteBrush}"
-                      dragDrop:DragDrop.IsDragSource="True"
-                      dragDrop:DragDrop.IsDropTarget="True"
-                      dragDrop:DragDrop.UseDefaultDragAdorner="True"
-                      dragDrop:DragDrop.DragHandler="{Binding}"
-                      BorderBrush="Transparent" BorderThickness="0"
+				SelectedItem="{Binding SelectedNote, Mode=TwoWay}" 
+				ItemsSource="{Binding DataSource, Mode=OneWay}"
+				Background="{DynamicResource TransparentWhiteBrush}"
+				dragDrop:DragDrop.IsDragSource="True"
+				dragDrop:DragDrop.IsDropTarget="True"
+				dragDrop:DragDrop.UseDefaultDragAdorner="True"
+				dragDrop:DragDrop.DragHandler="{Binding}"
+				BorderBrush="Transparent" BorderThickness="0"
                   
-                    VirtualizingStackPanel.IsVirtualizing="True"
-                    VirtualizingStackPanel.VirtualizationMode="Standard"
-                    ScrollViewer.IsDeferredScrollingEnabled="False"      
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    Style="{DynamicResource VirtualisedMetroListBox}"
+				VirtualizingStackPanel.IsVirtualizing="True"
+				VirtualizingStackPanel.VirtualizationMode="Standard"
+				ScrollViewer.IsDeferredScrollingEnabled="False"      
+				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				Style="{DynamicResource VirtualisedMetroListBox}"
                   
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch">
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch">
 
         <ListView.Resources>
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource TransparentScrollBars}" />
@@ -76,7 +75,7 @@
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Name="DeleteNoteButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-										<TextBlock Text="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -84,7 +83,7 @@
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-										<TextBlock Text="Rename" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -94,7 +93,7 @@
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Kind="Lock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-										<TextBlock Text="Encrypted" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Notes_Encrypted}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -102,7 +101,7 @@
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Kind="Shield" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-										<TextBlock Text="Protect from deletion" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Notes_ProtectFromDelete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -110,7 +109,7 @@
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Kind="Star" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-										<TextBlock Text="Favourite" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Notes_Favourite}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>

@@ -71,20 +71,20 @@ namespace Noterium.ViewModels
 				{
 					TimeSpan ts = DateTime.Now - Note.Created;
 					if (ts.TotalMinutes < 1)
-						return "now";
+						return Properties.Resources.Time_Now;
 					if (ts.TotalHours < 1)
-						return Convert.ToInt32(Math.Floor(ts.TotalMinutes)) + " min";
+						return Convert.ToInt32(Math.Floor(ts.TotalMinutes)) + " " + Properties.Resources.Time_Min;
 					if (ts.TotalDays > 1 && ts.TotalDays < 31)
 					{
 						int totalDays = Convert.ToInt32(Math.Floor(ts.TotalDays));
-						string suffix = totalDays == 1 ? " day" : " days";
+						string suffix = " "+  (totalDays == 1 ? Properties.Resources.Time_Day : Properties.Resources.Time_Days);
 						return totalDays + suffix;
 					}
 					if (Note.Created.Month != DateTime.Now.Month)
-						return Note.Created.ToString("dd MMM");
+						return Note.Created.ToString(Properties.Resources.Time_NoteCreatedDateFormatSameYear);
 				}
 
-				return Note.Created.ToString("d MMMM, yyyy");
+				return Note.Created.ToString(Properties.Resources.Time_NoteCreatedDateFormat);
 			}
 		}
 

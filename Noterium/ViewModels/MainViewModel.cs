@@ -85,6 +85,7 @@ namespace Noterium.ViewModels
 		private bool _isHelpVisible;
 		private bool _settingsFlyoutIsVisible;
 		private Library _currentLibrary;
+		private string _helpDocumentText;
 
 		#endregion
 
@@ -201,6 +202,12 @@ namespace Noterium.ViewModels
 			set { _currentLibrary = value; RaisePropertyChanged(); }
 		}
 
+		public string HelpDocumentText
+		{
+			get { return _helpDocumentText; }
+			set { _helpDocumentText = value; RaisePropertyChanged(); }
+		}
+
 		#endregion
 
 		/// <summary>
@@ -262,6 +269,8 @@ namespace Noterium.ViewModels
 			_searchTimer.Interval = 250;
 
 			Hub.Instance.AppSettings.Librarys.CollectionChanged += LibrarysOnCollectionChanged;
+
+			HelpDocumentText = Properties.Resources.Help_Document;
 		}
 
 		private void LibrarysOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

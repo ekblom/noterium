@@ -5,15 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 xmlns:p="clr-namespace:Noterium.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="170" d:DesignWidth="440">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
-
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
@@ -27,18 +25,18 @@
 		<iconPacks:PackIconMaterial Kind="Lock" Width="130" Height="130" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
         
 		<StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Left">
-			<TextBlock Foreground="{DynamicResource Foreground}">Enter master password:</TextBlock>
+			<TextBlock Foreground="{DynamicResource IdealForegroundColorBrush}" Text="{x:Static p:Resources.Settings_EncryptionPassword}"/>
 			<PasswordBox Name="Password" HorizontalAlignment="Right"
-                             controls:TextBoxHelper.Watermark="Enter password"
+                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
                              controls:TextBoxHelper.UseFloatingWatermark="False"
                              controls:PasswordBoxHelper.CapsLockIcon="CAPS"
 							 VerticalAlignment="Center"
                              Style="{DynamicResource MetroButtonPasswordBox}" Width="250" Height="25" PreviewKeyDown="PasswordBox_OnPreviewKeyDown">
 				<controls:PasswordBoxHelper.CapsLockWarningToolTip>
 					<TextBlock>
-								<Run Text="You have" />
-								<Run Text="CAPS LOCK" TextDecorations="Underline" Foreground="Red" />
-								<Run Text=" on. This can result in you entering another password than you excpect." />
+						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
+						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
 					</TextBlock>
 				</controls:PasswordBoxHelper.CapsLockWarningToolTip>
 			</PasswordBox>

@@ -227,6 +227,7 @@
     <Compile Include="Code\Converters\BindingNullConverter.cs" />
     <Compile Include="Code\Converters\MultiValueBindingConverter.cs" />
     <Compile Include="Code\Converters\StaticResourceConverter.cs" />
+    <Compile Include="Code\Converters\XamlTextToFlowDocumentConverter.cs" />
     <Compile Include="Code\Data\DocumentEntitiy.cs" />
     <Compile Include="Code\Extensions\SecureStringExtensions.cs" />
     <Compile Include="Code\Helpers\DialogHelpers.cs" />
@@ -387,7 +388,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
