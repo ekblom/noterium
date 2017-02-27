@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Noterium.Core.DataCarriers;
-using Noterium.Core.License;
 using Noterium.Core.Search;
 using Noterium.Core.Security;
 using Noterium.Core.Services;
@@ -28,8 +27,6 @@ namespace Noterium.Core
 
         public static Hub Instance { get; } = new Hub();
 
-        public LicenseManager LicenseManager { get; private set; }
-
         public SearchManager SearchManager { get; private set; }
 
         public Storage Storage => _storage;
@@ -53,7 +50,6 @@ namespace Noterium.Core
         public void Init(Library l)
         {
             _storage.Init(l);
-            LicenseManager = new LicenseManager(_storage);
             SearchManager = new SearchManager(_storage);
             _settings = new Settings(_storage);
             _gc = new GoogleCalendar(ref _settings);

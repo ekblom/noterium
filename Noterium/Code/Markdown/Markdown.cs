@@ -17,7 +17,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Noterium.Core.DataCarriers;
 using Image = System.Windows.Controls.Image;
-using org.mariuszgromada.math.mxparser;
 
 namespace Noterium.Code.Markdown
 {
@@ -30,7 +29,7 @@ namespace Noterium.Code.Markdown
 		private Regex _highlightReg;
 		private bool _highlight;
 		private List<Run> _highlights;
-		private List<PrimitiveElement> _mathParams = new List<PrimitiveElement>();
+		//private List<PrimitiveElement> _mathParams = new List<PrimitiveElement>();
 
 		#region -- Propertys --
 		/// <summary>
@@ -266,7 +265,7 @@ namespace Noterium.Code.Markdown
 			_checkBoxNumber = 0;
 			text = Normalize(text);
 
-			text = InitMathVariables(text);
+			//text = InitMathVariables(text);
 			text = RegularExpressions.CommentBlock.Replace(text, string.Empty);
 			text = text.Trim() + Environment.NewLine;
 
@@ -290,30 +289,30 @@ namespace Noterium.Code.Markdown
 			return document;
 		}
 
-		private string InitMathVariables(string text)
-		{
-			if (text == null)
-			{
-				throw new ArgumentNullException(nameof(text));
-			}
+		//private string InitMathVariables(string text)
+		//{
+		//	if (text == null)
+		//	{
+		//		throw new ArgumentNullException(nameof(text));
+		//	}
 
-			_mathParams.Clear();
+		//	_mathParams.Clear();
 
-			var matches = RegularExpressions.ConstantVariables.Matches(text);
-			foreach (Match m in matches)
-			{
-				string name = m.Groups[1].Value;
-				string value = m.Groups[2].Value;
+		//	var matches = RegularExpressions.ConstantVariables.Matches(text);
+		//	foreach (Match m in matches)
+		//	{
+		//		string name = m.Groups[1].Value;
+		//		string value = m.Groups[2].Value;
 
-				double doubleValue;
-				if (double.TryParse(value, out doubleValue))
-					_mathParams.Add(new Constant(name, doubleValue));
+		//		double doubleValue;
+		//		if (double.TryParse(value, out doubleValue))
+		//			_mathParams.Add(new Constant(name, doubleValue));
 
-				text = text.Replace(m.Value, string.Empty);
-			}
+		//		text = text.Replace(m.Value, string.Empty);
+		//	}
 
-			return text;
-		}
+		//	return text;
+		//}
 
 		public string StripMarkdown(string text)
 		{
@@ -874,12 +873,12 @@ namespace Noterium.Code.Markdown
 
 			try
 			{
-				org.mariuszgromada.math.mxparser.Expression e = new org.mariuszgromada.math.mxparser.Expression(math, _mathParams.ToArray());
-				double expressionResult = e.calculate();
-				message = e.getErrorMessage();
+				//org.mariuszgromada.math.mxparser.Expression e = new org.mariuszgromada.math.mxparser.Expression(math, _mathParams.ToArray());
+				//double expressionResult = e.calculate();
+				//message = e.getErrorMessage();
 
-				if (expressionResult == double.NaN)
-					throw new Exception(message);
+				//if (expressionResult == double.NaN)
+				//	throw new Exception(message);
 
 				//using (DataTable dt = new DataTable())
 				//{
@@ -894,9 +893,9 @@ namespace Noterium.Code.Markdown
 				//        message = o.ToString();
 				//}
 
-				result = new Run(expressionResult.ToString(CultureInfo.CurrentCulture));
-				if (!string.IsNullOrWhiteSpace(message))
-					result.ToolTip = message;
+				//result = new Run(expressionResult.ToString(CultureInfo.CurrentCulture));
+				//if (!string.IsNullOrWhiteSpace(message))
+				//	result.ToolTip = message;
 			}
 			catch (Exception e)
 			{

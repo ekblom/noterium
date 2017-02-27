@@ -17,7 +17,7 @@ namespace Noterium.Code.Markdown
 		{
 			_settings = CommonMarkSettings.Default.Clone();
 			_settings.OutputFormat = OutputFormat.CustomDelegate;
-			_settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
+			_settings.AdditionalFeatures = CommonMarkAdditionalFeatures.StrikethroughTilde;
 		}
 		public XamlFormatter XamlFormatter
 		{

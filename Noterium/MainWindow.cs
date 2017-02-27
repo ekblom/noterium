@@ -10,7 +10,6 @@ using Microsoft.Win32;
 using Noterium.Core;
 using Noterium.ViewModels;
 using Noterium.Windows;
-using Portable.Licensing.Prime;
 
 namespace Noterium
 {
@@ -29,11 +28,6 @@ namespace Noterium
 			InitializeComponent();
 
 			SystemEvents.PowerModeChanged += OnPowerChange;
-
-			if (Hub.Instance.LicenseManager.ValidLicense && Hub.Instance.LicenseManager.License.Type == LicenseType.Trial)
-			{
-				Title = Title + " - Trail";
-			}
 		}
 
 		private void AuthenticationForm1_OnAuthenticated()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using org.mariuszgromada.math.mxparser;
 
 namespace Noterium.Code.Helpers
 {
@@ -21,7 +20,7 @@ namespace Noterium.Code.Helpers
 			return text;
 		}
 
-		private static string ReplaceMathTokensPrivate(string text, List<PrimitiveElement> vars)
+		private static string ReplaceMathTokensPrivate(string text, Dictionary<string, double> vars)
 		{
 			var match = Math.Match(text);
 			using (DataTable dt = new DataTable())
@@ -64,14 +63,14 @@ namespace Noterium.Code.Helpers
 			return text;
 		}
 
-		private static List<PrimitiveElement> InitMathVariables(ref string text)
+		private static Dictionary<string, double> InitMathVariables(ref string text)
 		{
 			if (text == null)
 			{
 				throw new ArgumentNullException(nameof(text));
 			}
 
-			List<PrimitiveElement> mathParams = new List<PrimitiveElement>();
+			Dictionary<string, double> mathParams = new Dictionary<string, double>();
 
 			var matches = ConstantVariables.Matches(text);
 			foreach (Match m in matches)
@@ -80,8 +79,8 @@ namespace Noterium.Code.Helpers
 				string value = m.Groups[2].Value;
 
 				double doubleValue;
-				if (double.TryParse(value, out doubleValue))
-					mathParams.Add(new Constant(name, doubleValue));
+				if (double.TryParse(value, out doubleValue) && !mathParams.ContainsKey(name))
+					mathParams.Add(name, doubleValue);
 
 				text = text.Replace(m.Value, string.Empty);
 			}

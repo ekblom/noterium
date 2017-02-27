@@ -21,6 +21,8 @@ namespace Noterium.Code.Markdown
 {
 	public class XamlFormatter : DependencyObject
 	{
+		//private int _checkBoxNumber = 0;
+
 		#region -- Propertys --
 
 		public ICommand HyperlinkCommand { get; set; }
@@ -31,7 +33,7 @@ namespace Noterium.Code.Markdown
 			get { return (Style)GetValue(DocumentStyleProperty); }
 			set { SetValue(DocumentStyleProperty, value); }
 		}
-		
+
 		public static readonly DependencyProperty DocumentStyleProperty =
 			DependencyProperty.Register("DocumentStyle", typeof(Style), typeof(Markdown), new PropertyMetadata(null));
 		public Style LineStyle
@@ -39,7 +41,7 @@ namespace Noterium.Code.Markdown
 			get { return (Style)GetValue(LineStyleProperty); }
 			set { SetValue(LineStyleProperty, value); }
 		}
-		
+
 		public static readonly DependencyProperty LineStyleProperty =
 			DependencyProperty.Register("LineStyle", typeof(Style), typeof(Markdown), new PropertyMetadata(null));
 
@@ -244,6 +246,7 @@ namespace Noterium.Code.Markdown
 
 		public FlowDocument BlocksToXaml(Block block, CommonMarkSettings settings)
 		{
+			//_checkBoxNumber = 0;
 			FlowDocument document = new FlowDocument();
 			document.PagePadding = new Thickness(0);
 			if (DocumentStyle != null)
@@ -593,7 +596,22 @@ namespace Noterium.Code.Markdown
 				switch (inline.Tag)
 				{
 					case InlineTag.String:
-						blockParent.AddText(inline.LiteralContent);
+						//if (inline.LiteralContent.StartsWith("[ ]") || inline.LiteralContent.StartsWith("[x]"))
+						//{
+						//	CheckBox bt = new CheckBox
+						//	{
+						//		IsChecked = inline.LiteralContent.Contains("[x]"),
+						//		Content = inline.LiteralContent.Substring(2),
+						//		Tag = _checkBoxNumber
+						//	};
+						//	bt.CommandParameter = bt;
+						//	bt.Command = CheckBoxCheckedCommand;
+						//	bt.Style = TodoCheckBoxStyle;
+						//	blockParent.AddChild(new BlockUIContainer(bt));
+						//	_checkBoxNumber++;
+						//}
+						//else
+							blockParent.AddText(inline.LiteralContent);
 						break;
 					case InlineTag.LineBreak:
 						blockParent.AddChild(new LineBreak());

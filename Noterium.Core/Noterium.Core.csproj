@@ -186,7 +186,6 @@
     <Compile Include="Hub.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="Interfaces\ISortable.cs" />
-    <Compile Include="License\LicenseManager.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
