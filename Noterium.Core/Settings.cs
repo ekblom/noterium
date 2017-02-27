@@ -136,6 +136,9 @@ namespace Noterium.Core
                     {
                         foreach (var t in note.Tags)
                         {
+							if(t == null)
+								continue;
+	                        
                             var tag = t.ToLower().Trim();
                             if (!tagCounts.ContainsKey(tag))
                                 tagCounts.Add(tag, 1);

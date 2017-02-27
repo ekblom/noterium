@@ -233,28 +233,35 @@ namespace Noterium.ViewModels
 
 		void TagsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Remove)
-			{
-				foreach (object o in e.OldItems)
-				{
-					string tagName = (string)o;
-					if (tagName != null)
-					{
-						Note.Tags.Remove(tagName);
-					}
-				}
-			}
-			else if (e.Action == NotifyCollectionChangedAction.Add)
+			//if (e.Action == NotifyCollectionChangedAction.Remove)
+			//{
+			//	foreach (object o in e.OldItems)
+			//	{
+			//		TokenizedTagItem tag = (TokenizedTagItem)o;
+			//		if (tag != null)
+			//		{
+			//			Note.Tags.Remove(tag.Text);
+			//		}
+			//	}
+			//}
+			if (e.Action == NotifyCollectionChangedAction.Add)
 			{
 				foreach (object o in e.NewItems)
 				{
-					string tagName = (string)o;
-					if (tagName != null)
+					TokenizedTagItem tag = (TokenizedTagItem)o;
+					if (tag != null)
 					{
-						Note.Tags.Add(tagName);
+						tag.PropertyChanged += Tag_PropertyChanged;
+						//Note.Tags.Add(tag.Text);
 					}
 				}
 			}
+		}
+
+		private void Tag_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			StoreTags();
+			IsDirty = true;
 		}
 
 		void NotePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -304,6 +311,16 @@ namespace Noterium.ViewModels
 			{
 				Hub.Instance.Settings.RefreshTags();
 			});
+		}
+
+		private void StoreTags()
+		{
+			Note.Tags.Clear();
+			foreach (TokenizedTagItem t in Tags)
+			{
+				if(!string.IsNullOrWhiteSpace(t.Name))
+					Note.Tags.Add(t.Text);
+			}
 		}
 
 		public bool IsSaving { get; set; }

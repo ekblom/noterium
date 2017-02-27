@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -203,7 +204,7 @@ namespace Noterium.Controls
 			{
 				itemToSelect = (TokenizedTagItem) SelectedItem;
 			}
-			((IList) ItemsSource).Add(tag); // assume IList for convenience
+			((ObservableCollection<TokenizedTagItem>) ItemsSource).Add(tag); // assume IList for convenience
 			Items.Refresh();
 
 			// select the previous item
