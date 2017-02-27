@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using CommonMark;
 using Noterium.Core.DataCarriers;
 
 namespace Noterium.Code.Markdown
 {
 	public class TextToFlowDocumentConverter : DependencyObject, IMultiValueConverter
 	{
-		public Markdown Markdown
+		public TextToFlowDocumentConverter()
 		{
-			get { return (Markdown)GetValue(MarkdownProperty); }
+			_settings = CommonMarkSettings.Default.Clone();
+			_settings.OutputFormat = OutputFormat.CustomDelegate;
+			_settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
+		}
+		public XamlFormatter Markdown
+		{
+			get { return (XamlFormatter)GetValue(MarkdownProperty); }
 			set { SetValue(MarkdownProperty, value); }
 		}
 
 	    public bool Pause { get; set; }
 
 	    // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MarkdownProperty = DependencyProperty.Register("Markdown", typeof(Markdown), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
+		public static readonly DependencyProperty MarkdownProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
 
 		/// <summary>
 		/// Converts a value. 
@@ -47,27 +55,33 @@ namespace Noterium.Code.Markdown
 			var note = (Note)value[1];
 
 			var engine = Markdown ?? _markdown.Value;
-			engine.Note = note;
+			engine.CurrentNote = note;
 
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
 			else
-			{
-				CurrentDocument = engine.Transform(_text, searchText);
-			}
+            {
+	            CurrentDocument = GetNewDocument();
+            }
 
 		    CurrentDocument.FocusVisualStyle = null;
             CurrentDocument.PagePadding = new Thickness(20);
             CurrentDocument.PreviewKeyDown += CurrentDocument_PreviewKeyDown;
 
-            return CurrentDocument;
+			return CurrentDocument;
 		}
 
 	    public FlowDocument GetNewDocument()
 	    {
-            var engine = Markdown ?? _markdown.Value;
-            return engine.Transform(_text, string.Empty);
-        }
+			using (var reader = new StringReader(_text))
+			{
+				var document = CommonMarkConverter.ProcessStage1(reader, _settings);
+				CommonMarkConverter.ProcessStage2(document, _settings);
+
+				var engine = Markdown ?? _markdown.Value;
+				return engine.BlocksToXaml(document, _settings);
+			}
+		}
 
         private void CurrentDocument_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -99,7 +113,8 @@ namespace Noterium.Code.Markdown
 			throw new NotImplementedException();
 		}
 
-		private readonly Lazy<Markdown> _markdown = new Lazy<Markdown>(() => new Markdown());
+		private readonly Lazy<XamlFormatter> _markdown = new Lazy<XamlFormatter>(() => new XamlFormatter());
 	    private string _text;
+		private readonly CommonMarkSettings _settings;
 	}
 }
