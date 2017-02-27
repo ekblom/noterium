@@ -86,8 +86,13 @@
 				<Setter Property="BorderBrush" Value="#c8c8c0" />
 				<Setter Property="BorderThickness" Value="4,0,0,0" />
 				<Setter Property="Padding" Value="5" />
+				<Setter Property="Margin" Value="30,0,0,0" />
 			</Style>
 
+			<Style x:Key="Line" TargetType="{x:Type Line}">
+				<Setter Property="StrokeThickness" Value="2" />
+				<Setter Property="Fill" Value="{DynamicResource IdealForegroundColorBrush}" />
+			</Style>
 			<Style x:Key="Code" TargetType="{x:Type Span}">
 				<Setter Property="FontFamily" Value="Consolas" />
 				<Setter Property="Background" Value="#002B36" />
@@ -157,7 +162,7 @@
 				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
 			</Style>
 
-			<markdown:Markdown x:Key="Markdown" DocumentStyle="{StaticResource DocumentStyle}"
+			<markdown:XamlFormatter x:Key="XamlFormatter" DocumentStyle="{StaticResource DocumentStyle}"
                         Heading1Style="{StaticResource PageHeader}"
                         Heading2Style="{StaticResource SubHeader}"
                         Heading3Style="{StaticResource SubHeaderSecondary}"
@@ -175,9 +180,10 @@
                         TodoTextStyle="{StaticResource TodoTextStyle}"
 						TextStyle="{StaticResource TextStyle}"
 						ParagraphStyle="{StaticResource ParagraphStyle}"
+						LineStyle="{StaticResource Line}"
 				/>
 
-			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" Markdown="{StaticResource Markdown}" />
+			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" XamlFormatter="{StaticResource XamlFormatter}" />
 
 		</ResourceDictionary>
 	</UserControl.Resources>

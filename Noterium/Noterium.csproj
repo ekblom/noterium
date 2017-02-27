@@ -103,6 +103,10 @@
     <AssemblyOriginatorKeyFile>noterium.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonMark.NET.0.15.1\lib\net45\CommonMark.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
       <Private>True</Private>
@@ -229,11 +233,13 @@
     <Compile Include="Code\Data\DocumentEntitiy.cs" />
     <Compile Include="Code\Extensions\SecureStringExtensions.cs" />
     <Compile Include="Code\Helpers\DialogHelpers.cs" />
+    <Compile Include="Code\Helpers\NoteMathHelper.cs" />
     <Compile Include="Code\ListViewDragDrop\MouseUtilities.cs" />
     <Compile Include="Code\Markdown\Markdown.cs" />
     <Compile Include="Code\Markdown\RegularExpressions.cs" />
     <Compile Include="Code\Markdown\SharedSettings.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
+    <Compile Include="Code\Markdown\XamlFormatter.cs" />
     <Compile Include="Controls\AdornedControl\AdornedControl.cs" />
     <Compile Include="Controls\AdornedControl\AdornerPlacement.cs" />
     <Compile Include="Controls\AdornedControl\FrameworkElementAdorner.cs" />

@@ -36,8 +36,6 @@ namespace Noterium
 			}
 		}
 
-		
-
 		private void AuthenticationForm1_OnAuthenticated()
 		{
 			AuthenticationForm1.Password.Clear();
