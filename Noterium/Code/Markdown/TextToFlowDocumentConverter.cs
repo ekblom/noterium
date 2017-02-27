@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using CommonMark;
+using Noterium.Code.Helpers;
 using Noterium.Core.DataCarriers;
 
 namespace Noterium.Code.Markdown
@@ -18,16 +19,16 @@ namespace Noterium.Code.Markdown
 			_settings.OutputFormat = OutputFormat.CustomDelegate;
 			_settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
 		}
-		public XamlFormatter Markdown
+		public XamlFormatter XamlFormatter
 		{
-			get { return (XamlFormatter)GetValue(MarkdownProperty); }
-			set { SetValue(MarkdownProperty, value); }
+			get { return (XamlFormatter)GetValue(XamlFormatterProperty); }
+			set { SetValue(XamlFormatterProperty, value); }
 		}
 
 	    public bool Pause { get; set; }
 
 	    // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MarkdownProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
+		public static readonly DependencyProperty XamlFormatterProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
 
 		/// <summary>
 		/// Converts a value. 
@@ -54,14 +55,16 @@ namespace Noterium.Code.Markdown
 			var searchText = (string)value[2];
 			var note = (Note)value[1];
 
-			var engine = Markdown ?? _markdown.Value;
+
+
+			var engine = XamlFormatter ?? _markdown.Value;
 			engine.CurrentNote = note;
 
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
 			else
             {
-	            CurrentDocument = GetNewDocument();
+				CurrentDocument = GetNewDocument();
             }
 
 		    CurrentDocument.FocusVisualStyle = null;
@@ -73,12 +76,13 @@ namespace Noterium.Code.Markdown
 
 	    public FlowDocument GetNewDocument()
 	    {
-			using (var reader = new StringReader(_text))
+			string text = NoteMathHelper.ReplaceMathTokens(_text);
+			using (var reader = new StringReader(text))
 			{
 				var document = CommonMarkConverter.ProcessStage1(reader, _settings);
 				CommonMarkConverter.ProcessStage2(document, _settings);
 
-				var engine = Markdown ?? _markdown.Value;
+				var engine = XamlFormatter ?? _markdown.Value;
 				return engine.BlocksToXaml(document, _settings);
 			}
 		}

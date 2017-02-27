@@ -162,7 +162,7 @@
 				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
 			</Style>
 
-			<markdown:XamlFormatter x:Key="Markdown" DocumentStyle="{StaticResource DocumentStyle}"
+			<markdown:XamlFormatter x:Key="XamlFormatter" DocumentStyle="{StaticResource DocumentStyle}"
                         Heading1Style="{StaticResource PageHeader}"
                         Heading2Style="{StaticResource SubHeader}"
                         Heading3Style="{StaticResource SubHeaderSecondary}"
@@ -183,7 +183,7 @@
 						LineStyle="{StaticResource Line}"
 				/>
 
-			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" Markdown="{StaticResource Markdown}" />
+			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" XamlFormatter="{StaticResource XamlFormatter}" />
 
 		</ResourceDictionary>
 	</UserControl.Resources>

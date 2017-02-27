@@ -233,6 +233,7 @@
     <Compile Include="Code\Data\DocumentEntitiy.cs" />
     <Compile Include="Code\Extensions\SecureStringExtensions.cs" />
     <Compile Include="Code\Helpers\DialogHelpers.cs" />
+    <Compile Include="Code\Helpers\NoteMathHelper.cs" />
     <Compile Include="Code\ListViewDragDrop\MouseUtilities.cs" />
     <Compile Include="Code\Markdown\Markdown.cs" />
     <Compile Include="Code\Markdown\RegularExpressions.cs" />
