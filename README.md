@@ -15,7 +15,7 @@ A little helper to keep your notes organized.
 
 ### Notes
 
-- Write notes in Markdown
+- Write notes in [CommonMark](http://commonmark.org/)
 - Inline images stored as attachment
 - Attachment files linkable in the notes
 - Do todo-lists (not working at the moment)
