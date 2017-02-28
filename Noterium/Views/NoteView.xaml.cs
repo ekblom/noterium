@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using GalaSoft.MvvmLight.CommandWpf;
+using MahApps.Metro;
 using Noterium.Code.Commands;
 using Noterium.Code.Markdown;
 using Noterium.Core;
@@ -259,6 +260,11 @@ namespace Noterium.Views
 
 			// Create a XpsDocumentWriter object, implicitly opening a Windows common print dialog,
 			// and allowing the user to select a printer.
+
+			var theme = ThemeManager.GetAppTheme(Hub.Instance.Settings.Theme);
+			var accent = ThemeManager.GetAccent("VSLight");
+
+			ThemeManager.ChangeAppStyle(copy.Resources, accent, theme);
 
 			// get information about the dimensions of the seleted printer+media.
 			System.Printing.PrintDocumentImageableArea ia = null;
