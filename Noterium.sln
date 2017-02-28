@@ -20,12 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		CHANGELOG.md = CHANGELOG.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB8491F7-FFFA-4F42-8184-6CD3CD188130}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-		WE-Markdown.css = WE-Markdown.css
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
