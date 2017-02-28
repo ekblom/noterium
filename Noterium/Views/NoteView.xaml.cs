@@ -34,8 +34,8 @@ namespace Noterium.Views
 		}
 
 		private string _searchText;
-		private Markdown _markdown;
 		private TextToFlowDocumentConverter _markdownToFlowDocumentConverter;
+		private XamlFormatter _xamlFormatter;
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		[NotifyPropertyChangedInvocator]
@@ -78,10 +78,10 @@ namespace Noterium.Views
 		{
 			if (e.PropertyName == "SearchText")
 			{
-				if (_markdown.Highlights.Count > 0)
-				{
-					_markdown.Highlights[0].BringIntoView();
-				}
+				//if (_markdown.Highlights.Count > 0)
+				//{
+				//	_markdown.Highlights[0].BringIntoView();
+				//}
 			}
 		}
 
@@ -120,10 +120,10 @@ namespace Noterium.Views
 
 		private void GetXamlButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			if (_markdown == null)
+			if (_markdownToFlowDocumentConverter == null)
 				return;
 
-			FlowDocument doc = _markdown.Transform(ContextNote.DecryptedText);
+			FlowDocument doc = _markdownToFlowDocumentConverter.GetNewDocument();
 
 			//Stream s = new MemoryStream();
 			string xaml = XamlWriter.Save(doc);
@@ -171,10 +171,10 @@ namespace Noterium.Views
 
 		private void NoteView_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			_markdown = Resources["Markdown"] as Markdown;
+			_xamlFormatter = Resources["XamlFormatter"] as XamlFormatter;
 			_markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
-			if (_markdown != null)
-				_markdown.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
+			if (_xamlFormatter != null)
+				_xamlFormatter.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 		}
 
 		private void DocumentCheckBoxChecked(object arg)

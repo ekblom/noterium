@@ -308,7 +308,7 @@ namespace Noterium.Code.Markdown
 						}
 						break;
 					case BlockTag.BlockQuote:
-						Paragraph blockquoteParagraph = new Paragraph();
+						Section blockquoteParagraph = new Section();
 						if (trackPositions)
 							PrintPosition(blockquoteParagraph, block);
 
@@ -581,7 +581,7 @@ namespace Noterium.Code.Markdown
 			bool trackPositions = settings.TrackSourcePosition;
 
 			IAddChild blockParent = parent;
-			if (blockParent is ListItem)
+			if (blockParent is ListItem || blockParent is Section)
 			{
 				Paragraph p = new Paragraph();
 				blockParent.AddChild(p);

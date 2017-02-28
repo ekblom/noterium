@@ -81,12 +81,19 @@
 				<Setter Property="Margin" Value="0" />
 			</Style>
 
-			<Style x:Key="Quote" TargetType="{x:Type Paragraph}">
+			<Style x:Key="Quote" TargetType="{x:Type Section}">
 				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
 				<Setter Property="BorderBrush" Value="#c8c8c0" />
 				<Setter Property="BorderThickness" Value="4,0,0,0" />
-				<Setter Property="Padding" Value="5" />
+				<Setter Property="Padding" Value="0" />
 				<Setter Property="Margin" Value="30,0,0,0" />
+				<Style.Resources>
+					<Style TargetType="Paragraph">
+						<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+						<Setter Property="Padding" Value="5" />
+						<Setter Property="Margin" Value="5" />
+					</Style>
+				</Style.Resources>
 			</Style>
 
 			<Style x:Key="Line" TargetType="{x:Type Line}">
