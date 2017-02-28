@@ -259,6 +259,11 @@
     <Compile Include="Components\NoteMenu\NoteMenu.xaml.cs">
       <DependentUpon>NoteMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\BackupManagerViewModel.cs" />
     <Compile Include="ViewModels\LibraryViewModel.cs" />
@@ -385,8 +390,8 @@
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="noterium.pfx" />
     <None Include="packages.config" />

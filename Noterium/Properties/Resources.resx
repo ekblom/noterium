@@ -237,6 +237,9 @@
   <data name="Notes_ProtectFromDelete" xml:space="preserve">
     <value>Protect from delete</value>
   </data>
+  <data name="Note_Copy" xml:space="preserve">
+    <value>Copy note</value>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Rename</value>
   </data>
@@ -333,5 +336,14 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>Noterium</value>
+  </data>
+  <data name="Note_Paste" xml:space="preserve">
+    <value>Paste note</value>
+  </data>
+  <data name="Note_Copy_SecureText" xml:space="preserve">
+    <value>You are aboute to copy a secure note, this will decrypt the note contents and store it in plain text in clipboard. Continue?</value>
+  </data>
+  <data name="Note_Copy_SecureTitle" xml:space="preserve">
+    <value>Copying secure note</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -10,7 +11,10 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
+using MimeTypes;
 using Noterium.Code.Commands;
+using Noterium.Core.DataCarriers;
+using Noterium.Core.Helpers;
 using Noterium.ViewModels;
 using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
 
@@ -28,7 +32,7 @@ namespace Noterium.Components.NoteMenu
 			FilterNotesCommand = new SimpleCommand(FilterNotes);
 			ClearFilterCommand = new SimpleCommand(ClearFilter);
 			ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
-
+			
 			PropertyChanged += OnPropertyChanged;
 
 			var saveTimer = new Timer(1000)
@@ -40,6 +44,7 @@ namespace Noterium.Components.NoteMenu
 			saveTimer.Start();
 		}
 
+		
 		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "SortMode")
@@ -101,6 +106,8 @@ namespace Noterium.Components.NoteMenu
 		public ICommand ClearFilterCommand { get; set; }
 		public ICommand RenameItemCommand { get; set; }
 		public ICommand AddNoteCommand { get; set; }
+
+		public ICommand CopyNoteCommand { get; set; }
 
 		public ICommand ShowNoteCommandsCommand { get; set; }
 

@@ -27,6 +27,7 @@ namespace Noterium.Components.NotebookMenu
 		public ICommand RenameItemCommand { get; set; }
 		public ICommand AddNotebookCommand { get; set; }
 		public ICommand EmptyTrashCommand { get; set; }
+		public ICommand PasteNoteCommand { get; set; }
 
 		public ObservableCollection<NotebookMenuItem> Notebooks { get; set; }
 

@@ -7,12 +7,14 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using MimeTypes;
 using Noterium.Code.Commands;
 using Noterium.Code.Helpers;
 using Noterium.Core;
@@ -592,7 +594,8 @@ namespace Noterium.ViewModels
 					SelectedItemChangedCommand = SelectedNoteChangedCommand,
 					DeleteItemCommand = DeleteNoteCommand,
 					RenameItemCommand = new SimpleCommand(RenameNoteItem),
-					EditItemCommand = EditNoteCommand
+					EditItemCommand = EditNoteCommand,
+					CopyNoteCommand = new SimpleCommand(CopyNote)
 				};
 				BindingOperations.EnableCollectionSynchronization(NoteMenuContext.DataSource, _currentNotesLockObject);
 			}
@@ -605,6 +608,58 @@ namespace Noterium.ViewModels
 				NoteMenuContext.SelectedNote = selected;
 			else
 				NoteMenuContext.SelectedNote = models.Any() ? models[0] : null;
+		}
+
+		private void CopyNote(object obj)
+		{
+			Note note = obj as Note;
+			if (note != null)
+			{
+				if (note.Encrypted)
+				{
+					var settings = DialogHelpers.GetDefaultDialogSettings();
+					MainWindowInstance.ShowMessageAsync(Properties.Resources.Note_Copy_SecureTitle, Properties.Resources.Note_Copy_SecureText, MessageDialogStyle.AffirmativeAndNegative, settings).
+					ContinueWith(delegate (Task<MessageDialogResult> task)
+					{
+						if (task.Result == MessageDialogResult.Affirmative)
+							DoCopyNote(note);
+					});
+				}
+				else
+					DoCopyNote(note);
+			}
+		}
+
+		private static void DoCopyNote(Note note)
+		{
+			NoteClipboardData data = new NoteClipboardData
+			{
+				Name = note.Name,
+				Text = note.DecryptedText,
+				Tags = new List<string>(note.Tags)
+			};
+
+			if (note.Files.Any())
+			{
+				data.Files = new List<ClipboardFile>();
+				foreach (NoteFile noteFile in note.Files)
+				{
+					ClipboardFile file = new ClipboardFile
+					{
+						Name = noteFile.Name,
+						Data = File.ReadAllBytes(noteFile.FullName),
+						FileName = noteFile.FileName,
+						MimeType = MimeTypeMap.GetMimeType(Path.GetExtension(noteFile.FileName))
+					};
+					data.Files.Add(file);
+				}
+			}
+
+			DataFormat format = DataFormats.GetDataFormat(typeof(NoteClipboardData).FullName);
+
+			IDataObject dataObj = new DataObject();
+			dataObj.SetData(format.Name, data, false);
+			Clipboard.SetDataObject(dataObj, false);
 		}
 
 		private void SelectedNoteContainerChanged(object p)
@@ -718,7 +773,8 @@ namespace Noterium.ViewModels
 				RenameItemCommand = new SimpleCommand(RenameItem),
 				DeleteItemCommand = new SimpleCommand(DeleteItem),
 				AddNotebookCommand = new SimpleCommand(CreateNotebook),
-				EmptyTrashCommand = new SimpleCommand(EmptyTrash)
+				EmptyTrashCommand = new SimpleCommand(EmptyTrash),
+				PasteNoteCommand = new SimpleCommand(PasteNote)
 			};
 
 			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled && items.Any())
@@ -728,6 +784,38 @@ namespace Noterium.ViewModels
 			}
 
 			BindingOperations.EnableCollectionSynchronization(MenuContext.Notebooks, _mainMenuListLockObject);
+		}
+
+		private void PasteNote(object obj)
+		{
+			Notebook notebook = obj as Notebook;
+			if (notebook != null)
+			{
+				DataFormat format = DataFormats.GetDataFormat(typeof(NoteClipboardData).FullName);
+				if (!Clipboard.ContainsData(format.Name))
+					return;
+
+				NoteClipboardData data = Clipboard.GetData(format.Name) as NoteClipboardData;
+				if (data != null)
+				{
+					int index = Hub.Instance.Storage.GetNoteCount(notebook);
+					Note note = CreateNewNote(data.Name, notebook.ID, false, index, false);
+					note.Text = data.Text;
+					if (data.Files != null && data.Files.Any())
+					{
+						foreach (ClipboardFile file in data.Files)
+						{
+							NoteFile nf = NoteFile.Create(file.Name, file.MimeType, file.Data, note);
+							note.Text = note.Text.Replace(file.FileName, nf.FileName);
+						}
+					}
+
+					note.Save();
+
+					FocusNote(note);
+				}
+			}
+
 		}
 
 		private void EmptyTrash(object arg)
@@ -952,18 +1040,31 @@ namespace Noterium.ViewModels
 
 		private void CreateNewNote(string name, bool secure = false)
 		{
+			CreateNewNote(name, MenuContext.SelectedNotebook.Notebook.ID, secure, NoteMenuContext.DataSource.Count);
+		}
+
+		private Note CreateNewNote(string name, Guid notebookId, bool secure, int sortIndex, bool focusNote = true)
+		{
 			Note note = new Note
 			{
 				ID = Guid.NewGuid(),
 				Name = name,
-				Notebook = MenuContext.SelectedNotebook.Notebook.ID,
+				Notebook = notebookId,
 				Created = DateTime.Now,
 				Encrypted = secure,
-				SortIndex = NoteMenuContext.DataSource.Count
+				SortIndex = sortIndex
 			};
 
 			note.Save();
 
+			if (focusNote)
+				FocusNote(note);
+
+			return note;
+		}
+
+		private void FocusNote(Note note)
+		{
 			var nvm = GetNoteViewModel(note);
 			InvokeOnCurrentDispatcher(() =>
 			{

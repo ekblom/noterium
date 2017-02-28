@@ -113,7 +113,16 @@
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
-                        </ContextMenu>
+							<Separator />
+							<MenuItem Command="{Binding Data.CopyNoteCommand, Source={StaticResource Proxy}}" CommandParameter="{Binding Note}">
+								<MenuItem.Header>
+									<StackPanel Orientation="Horizontal">
+										<iconPacks:PackIconMaterial Kind="ContentCopy" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+										<TextBlock Text="{x:Static p:Resources.Note_Copy}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+									</StackPanel>
+								</MenuItem.Header>
+							</MenuItem>
+						</ContextMenu>
                     </StackPanel.ContextMenu>
                     <Grid>
                         <Grid.RowDefinitions>

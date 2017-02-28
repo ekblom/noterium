@@ -161,6 +161,7 @@
     <Compile Include="Constants\File.cs" />
     <Compile Include="Constants\Frequency.cs" />
     <Compile Include="DataCarriers\Library.cs" />
+    <Compile Include="DataCarriers\NoteClipboardData.cs" />
     <Compile Include="DataCarriers\NoteFile.cs" />
     <Compile Include="DataCarriers\Note.cs" />
     <Compile Include="DataCarriers\NoteBook.cs" />

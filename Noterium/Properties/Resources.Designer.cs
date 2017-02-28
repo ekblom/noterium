@@ -280,6 +280,42 @@ namespace Noterium.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy note.
+        /// </summary>
+        public static string Note_Copy {
+            get {
+                return ResourceManager.GetString("Note_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are aboute to copy a secure note, this will decrypt the note contents and store it in plain text in clipboard. Continue?.
+        /// </summary>
+        public static string Note_Copy_SecureText {
+            get {
+                return ResourceManager.GetString("Note_Copy_SecureText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copying secure note.
+        /// </summary>
+        public static string Note_Copy_SecureTitle {
+            get {
+                return ResourceManager.GetString("Note_Copy_SecureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste note.
+        /// </summary>
+        public static string Note_Paste {
+            get {
+                return ResourceManager.GetString("Note_Paste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files (drag and drop files below):.
         /// </summary>
         public static string NoteEditor_FilesAreaLabel {

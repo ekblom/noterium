@@ -198,6 +198,15 @@
 												</StackPanel>
 											</MenuItem.Header>
 										</MenuItem>
+										<Separator/>
+										<MenuItem Command="{Binding Data.PasteNoteCommand, Source={StaticResource Proxy}}" CommandParameter="{Binding Notebook}">
+											<MenuItem.Header>
+												<StackPanel Orientation="Horizontal">
+													<iconPacks:PackIconMaterial Kind="ContentPaste" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+													<TextBlock Text="{x:Static p:Resources.Note_Paste}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+												</StackPanel>
+											</MenuItem.Header>
+										</MenuItem>
 									</ContextMenu>
 								</Border.ContextMenu>
 								<Grid x:Name="listItemPanel">
