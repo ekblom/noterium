@@ -16,12 +16,18 @@ A little helper to keep your notes organized.
 ### Notes
 
 - Write notes in Markdown
-- Do todo-lists
 - Inline images stored as attachment
+- Attachment files linkable in the notes
+- Do todo-lists (not working at the moment)
 
 ### Secure notes
 - Secure your notes with encryption (using https://gist.github.com/4336842)
 - Auto lock application when inactive
+
+### Cloud
+Store your files anywhere you want, i.e. in DropBox, Google Drive or just a folder on your hard drive. 
+
+When using a cloud provider and using Noterium on multiple computers, Noterium will automatically sync the notes to reflect changes made on the other computer.
 
 ## Screenshots
 
