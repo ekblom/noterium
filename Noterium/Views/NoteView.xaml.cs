@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media.Media3D;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro;
 using Noterium.Code.Commands;
@@ -61,6 +62,36 @@ namespace Noterium.Views
 			PropertyChanged += NoteViewPropertyChanged;
 
 			DataContextChanged += NoteViewDataContextChanged;
+
+			DataObject.AddCopyingHandler(FlowDocumentPageViewer, OnTextCopy);
+		}
+
+		private void OnTextCopy(object sender, DataObjectCopyingEventArgs e)
+		{
+			e.CancelCommand();
+			if (FlowDocumentPageViewer.Selection != null)
+			{
+				using (var ms = new MemoryStream())
+				{
+					TextPointer potStart = FlowDocumentPageViewer.Selection.Start;
+					TextPointer potEnd = FlowDocumentPageViewer.Selection.End;
+					TextRange range = new TextRange(potStart, potEnd);
+
+					range.Save(ms, DataFormats.Xaml, true);
+
+					ms.Position = 0;
+					var sr = new StreamReader(ms);
+					var xamlString = sr.ReadToEnd();
+
+					var dto = new DataObject();
+					dto.SetText(xamlString, TextDataFormat.Xaml);
+					string unformattedText = range.Text.Replace("\n", Environment.NewLine);
+					dto.SetText(unformattedText, TextDataFormat.UnicodeText);
+
+					Clipboard.Clear();
+					Clipboard.SetDataObject(dto);
+				}
+			}
 		}
 
 		private void NoteViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
