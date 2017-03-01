@@ -184,6 +184,7 @@ namespace Noterium
 			MainViewModel model = new MainViewModel(_currentLibrary);
 			model.ChangeLibraryCommand = new SimpleCommand(LoadLibrary);
 
+			_mainWindow.Title = Noterium.Properties.Resources.Title + " - " + _currentLibrary.Name;
 			_mainWindow.DataContext = model;
 			_mainWindow.Model = model;
 			_mainWindow.Width = Hub.Instance.AppSettings.WindowSize.Width;

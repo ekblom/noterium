@@ -15,7 +15,7 @@
 		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 		xmlns:dataCarriers="clr-namespace:Noterium.Core.DataCarriers;assembly=Noterium.Core"
 		xmlns:p="clr-namespace:Noterium.Properties"
-		Title="{x:Static p:Resources.Title}" Height="768" Width="1024"
+		Height="768" Width="1024"
 		mc:Ignorable="d"
 		RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextFormattingMode="Display"
