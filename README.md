@@ -1,6 +1,6 @@
-##Noteray
+##Noterium
 
-A little helper to keep your notes organized.
+An app for taking total control over your notes.
 
 [![Issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
