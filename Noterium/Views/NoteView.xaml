@@ -81,6 +81,21 @@
 				<Setter Property="Margin" Value="0" />
 			</Style>
 
+
+			<Style x:Key="List" TargetType="{x:Type List}">
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="Margin" Value="0" />
+				<Setter Property="Padding" Value="15,0,0,15" />
+			</Style>
+
+
+			<Style x:Key="ListItem" TargetType="{x:Type ListItem}">
+				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+				<Setter Property="Margin" Value="0" />
+				<Setter Property="Padding" Value="0" />
+
+			</Style>
+
 			<Style x:Key="Quote" TargetType="{x:Type Section}">
 				<Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
 				<Setter Property="BorderBrush" Value="#c8c8c0" />
@@ -188,6 +203,8 @@
 						TextStyle="{StaticResource TextStyle}"
 						ParagraphStyle="{StaticResource ParagraphStyle}"
 						LineStyle="{StaticResource Line}"
+						ListStyle="{StaticResource List}"
+						ListItemStyle="{StaticResource ListItem}"
 				/>
 
 			<markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" XamlFormatter="{StaticResource XamlFormatter}" />

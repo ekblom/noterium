@@ -218,6 +218,24 @@ namespace Noterium.Code.Markdown
 			set { SetValue(TodoTextStyleProperty, value); }
 		}
 
+
+		public static readonly DependencyProperty ListStyleProperty = DependencyProperty.Register("ListStyle", typeof(Style), typeof(Markdown), new PropertyMetadata(null));
+
+		public Style ListStyle
+		{
+			get { return (Style)GetValue(ListStyleProperty); }
+			set { SetValue(ListStyleProperty, value); }
+		}
+
+
+		public static readonly DependencyProperty ListItemStyleProperty = DependencyProperty.Register("ListItemStyle", typeof(Style), typeof(Markdown), new PropertyMetadata(null));
+
+		public Style ListItemStyle
+		{
+			get { return (Style)GetValue(ListItemStyleProperty); }
+			set { SetValue(ListItemStyleProperty, value); }
+		}
+
 		public Note CurrentNote
 		{
 			get { return (Note)GetValue(CurrentNoteProperty); }
@@ -325,6 +343,9 @@ namespace Noterium.Code.Markdown
 
 					case BlockTag.ListItem:
 						ListItem listItem = new ListItem();
+						if (ListItemStyle != null)
+							listItem.Style = ListItemStyle;
+
 						if (trackPositions)
 							PrintPosition(listItem, block);
 
@@ -337,8 +358,10 @@ namespace Noterium.Code.Markdown
 						break;
 
 					case BlockTag.List:
-						// make sure a list starts at the beginning of the line:
 						List list = new List();
+						if (ListStyle != null)
+							list.Style = ListStyle;
+
 						if (trackPositions)
 							PrintPosition(list, block);
 
@@ -346,7 +369,7 @@ namespace Noterium.Code.Markdown
 						list.MarkerStyle = data.ListType == ListType.Bullet ? TextMarkerStyle.Disc : TextMarkerStyle.Decimal;
 
 						// TODO: Check if first child starts with [ ] then it is a todo-list item
-						// 
+						// TODO: Set list.StartIndex if > 1
 
 						blockParent.AddChild(list);
 						lastParent = blockParent;
@@ -653,12 +676,15 @@ namespace Noterium.Code.Markdown
 							if (LinkStyle != null)
 								hyperlink.Style = LinkStyle;
 
+							string url = inline.TargetUrl;
 							if (uriResolver != null)
-								hyperlink.CommandParameter = new Uri(uriResolver(inline.TargetUrl));
-							else
 							{
-								hyperlink.CommandParameter = inline.TargetUrl;
+								url = uriResolver(inline.TargetUrl);
 							}
+
+							hyperlink.CommandParameter = url;
+							if(Uri.IsWellFormedUriString(url, UriKind.Absolute))
+								hyperlink.NavigateUri = new Uri(url);
 
 							if (inline.LiteralContent.Length > 0)
 								hyperlink.ToolTip = inline.LiteralContent;

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro;
@@ -76,7 +77,6 @@ namespace Noterium.Views
 					TextPointer potStart = FlowDocumentPageViewer.Selection.Start;
 					TextPointer potEnd = FlowDocumentPageViewer.Selection.End;
 					TextRange range = new TextRange(potStart, potEnd);
-
 					range.Save(ms, DataFormats.Xaml, true);
 
 					ms.Position = 0;
@@ -84,12 +84,41 @@ namespace Noterium.Views
 					var xamlString = sr.ReadToEnd();
 
 					var dto = new DataObject();
-					dto.SetText(xamlString, TextDataFormat.Xaml);
+					dto.SetText(ConvertXamlToRtf(xamlString), TextDataFormat.Rtf);
 					string unformattedText = range.Text.Replace("\n", Environment.NewLine);
 					dto.SetText(unformattedText, TextDataFormat.UnicodeText);
 
 					Clipboard.Clear();
 					Clipboard.SetDataObject(dto);
+				}
+			}
+		}
+
+		private static string ConvertXamlToRtf(string xamlText)
+		{
+			var richTextBox = new RichTextBox();
+			if (string.IsNullOrEmpty(xamlText)) return "";
+			var textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+			using (var xamlMemoryStream = new MemoryStream())
+			{
+				using (var xamlStreamWriter = new StreamWriter(xamlMemoryStream))
+				{
+					xamlStreamWriter.Write(xamlText);
+					xamlStreamWriter.Flush();
+					xamlMemoryStream.Seek(0, SeekOrigin.Begin);
+					textRange.Load(xamlMemoryStream, DataFormats.Xaml);
+				}
+			}
+			using (var rtfMemoryStream = new MemoryStream())
+			{
+				textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+				textRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
+
+				textRange.Save(rtfMemoryStream, DataFormats.Rtf);
+				rtfMemoryStream.Seek(0, SeekOrigin.Begin);
+				using (var rtfStreamReader = new StreamReader(rtfMemoryStream))
+				{
+					return rtfStreamReader.ReadToEnd();
 				}
 			}
 		}
