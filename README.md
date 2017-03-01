@@ -4,7 +4,7 @@ An app for taking total control over your notes.
 
 [![issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
-[![downloads](https://img.shields.io/github/downloads/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/ekblom/noterium/total.svg?style=flat-square)](https://github.com/ekblom/noterium/releases)
 
 ![downloads](https://img.shields.io/github/license/ekblom/noterium.svg?style=flat-square)
 
