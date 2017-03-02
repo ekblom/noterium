@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
 using log4net;
-using Microsoft.Win32.SafeHandles;
 using Newtonsoft.Json;
 using Noterium.Core.DataCarriers;
-using Noterium.Core.Exceptions;
 using Noterium.Core.Helpers;
 using File = Noterium.Core.Constants.File;
 
@@ -27,10 +21,6 @@ namespace Noterium.Core.DropBox
         private readonly DirectoryInfo _backupFolder;
         private readonly DirectoryInfo _dataFolder;
 
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore
-        };
 
         private readonly ILog _log = LogManager.GetLogger(typeof(DataStore));
         private readonly DirectoryInfo _remindersFolder;
@@ -124,7 +114,7 @@ namespace Noterium.Core.DropBox
                 {
                     if (e.ChangeType == WatcherChangeTypes.Changed)
                     {
-                        Note tempNote = LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
+                        Note tempNote = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             tempNote?.CopyProperties(n);
@@ -138,7 +128,7 @@ namespace Noterium.Core.DropBox
                 }
                 else
                 {
-                    n = LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
+                    n = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
                     if(n != null)
                     {
                         Notebook nb = GetNoteBook(n.Notebook);
@@ -170,7 +160,7 @@ namespace Noterium.Core.DropBox
                 {
                     if (e.ChangeType == WatcherChangeTypes.Changed)
                     {
-                        Notebook tempNotebook = LoadObjectFromFile<Notebook>(new FileInfo(e.FullPath));
+                        Notebook tempNotebook = FileHelpers.LoadObjectFromFile<Notebook>(new FileInfo(e.FullPath));
                         Application.Current.Dispatcher.Invoke(() =>
                        {
                            tempNotebook?.CopyProperties(nb);
@@ -205,12 +195,19 @@ namespace Noterium.Core.DropBox
             Save(settings, filePath);
         }
 
-        public DataCarriers.Settings GetSettings()
+	    private void Save<T>(T o, string filePath)
+	    {
+			DisableWatcher();
+		    FileHelpers.Save(o, filePath);
+			EnableWatcher();
+		}
+
+		public DataCarriers.Settings GetSettings()
         {
             var filePath = _rootFolder.FullName + "\\settings.json";
             var fi = new FileInfo(filePath);
             if (fi.Exists)
-                return LoadObjectFromFile<DataCarriers.Settings>(fi);
+                return FileHelpers.LoadObjectFromFile<DataCarriers.Settings>(fi);
 
             var settings = new DataCarriers.Settings();
             SaveSettings(settings);
@@ -626,63 +623,7 @@ And you can make tables:
             return folderPath + "\\noterium";
         }
 
-        private List<T> ConvertFileInfos<T>(IEnumerable<FileInfo> files)
-        {
-            var result = new List<T>();
-            foreach (var file in files)
-            {
-                var m = LoadObjectFromFile<T>(file);
-                if (m != null)
-                    result.Add(m);
-            }
-            return result;
-        }
-
-        private T LoadObjectFromFile<T>(FileInfo file)
-        {
-            if (!file.Exists)
-                return default(T);
-
-            var fs = FileHelpers.WaitForFileAccess(file.FullName, FileMode.Open, FileAccess.Read, FileShare.None, new TimeSpan(0, 0, 0, 10));
-            if (fs == null)
-            {
-                _log.Error("Unable to open " + file.FullName);
-                throw new Exception("Unable to open " + file.Name);
-            }
-            string fileContent;
-            using (StreamReader sr = new StreamReader(fs, Encoding.UTF8, true, 1024, false))
-                fileContent = sr.ReadToEnd();
-
-            var result = JsonConvert.DeserializeObject<T>(fileContent);
-            if (result == null)
-                _log.Error("Unable do deserialize " + file.FullName + "\n\n" + fileContent);
-
-            return result;
-        }
-
-        private void Save<T>(T o, string filePath)
-        {
-            FileStream fs = null;
-            try
-            {
-                DisableWatcher();
-                fs = FileHelpers.WaitForFileAccess(filePath, FileMode.Create, FileAccess.Write, FileShare.None, new TimeSpan(0, 0, 0, 10));
-                if (fs == null)
-                    throw new SaveException(o);
-
-                var json = JsonConvert.SerializeObject(o, Formatting.Indented, _jsonSerializerSettings);
-                var bytes = Encoding.UTF8.GetBytes(json);
-                if (bytes.Length == 0)
-                    throw new Exception("Error when saving note, 0 bytes of data. Note: " + filePath);
-
-                fs.Write(bytes, 0, Encoding.UTF8.GetByteCount(json));
-            }
-            finally
-            {
-                fs?.Close();
-                EnableWatcher();
-            }
-        }
+        
 
         #endregion
 
@@ -713,7 +654,7 @@ And you can make tables:
         private List<SimpleReminder> GetRemindersFromDisc()
         {
             var files = _remindersFolder.GetFiles("*." + File.ReminderFileExtension);
-            return ConvertFileInfos<SimpleReminder>(files);
+            return FileHelpers.ConvertFileInfos<SimpleReminder>(files);
         }
 
         private void ReloadNotebook(Guid notebookId)
@@ -742,14 +683,14 @@ And you can make tables:
 
             var files = di.GetFiles("*." + File.NoteFileExtension);
 
-            return ConvertFileInfos<Note>(files);
+            return FileHelpers.ConvertFileInfos<Note>(files);
         }
 
         public List<Notebook> GetNotebookFromDisc()
         {
             var files = _dataFolder.GetFiles("*." + File.NotebookFileExtension, SearchOption.AllDirectories);
 
-            return ConvertFileInfos<Notebook>(files);
+            return FileHelpers.ConvertFileInfos<Notebook>(files);
         }
 
         #endregion

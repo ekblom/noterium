@@ -53,14 +53,18 @@ namespace Noterium.Views.Dialogs
                     string dbPath = DataStore.GetDropBoxPath();
                     if (!string.IsNullOrWhiteSpace(dbPath))
                     {
-                        Hub.Instance.AppSettings.Librarys.Add(new Library
-                        {
-                            Name = "DropBox",
-                            StorageType = StorageType.DropBox
-                        });
-                        Hub.Instance.AppSettings.Save();
+	                    var lib = new Library
+	                    {
+		                    Name = "DropBox",
+		                    StorageType = StorageType.DropBox
+	                    };
+						lib.Save();
 
-                        DialogResult = true;
+						Hub.Instance.AppSettings.Librarys.Add(lib);
+						Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
+						Hub.Instance.AppSettings.Save();
+
+						DialogResult = true;
                     }
                     else
                     {
@@ -85,15 +89,17 @@ namespace Noterium.Views.Dialogs
                         {
                             string path = dialog.FileName;
                             string name = Path.GetFileName(path);
-                            Hub.Instance.AppSettings.Librarys.Add(new Library
-                            {
-                                Name = name,
-                                Path = path,
-                                StorageType = StorageType.Disc
-                            });
-                            Hub.Instance.AppSettings.Save();
-
-                            DialogResult = true;
+	                        var lib = new Library
+	                        {
+		                        Name = name,
+		                        Path = path,
+		                        StorageType = StorageType.Disc
+	                        };
+							lib.Save();
+                            Hub.Instance.AppSettings.Librarys.Add(lib);
+							Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
+							Hub.Instance.AppSettings.Save();
+							DialogResult = true;
                         }
                     }
                 }

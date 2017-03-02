@@ -49,6 +49,7 @@ namespace Noterium.Core
 
         public void Init(Library l)
         {
+	        CurrentLibrary = l;
             _storage.Init(l);
             SearchManager = new SearchManager(_storage);
             _settings = new Settings(_storage);
@@ -59,5 +60,7 @@ namespace Noterium.Core
             EncryptionManager = new EncryptionManager(_storage.DataStore);
             TagManager = new TagManager();
         }
+
+	    public Library CurrentLibrary { get; set; }
     }
 }

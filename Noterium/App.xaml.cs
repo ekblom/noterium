@@ -42,7 +42,13 @@ namespace Noterium
 
 		public void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
-			_log.Error(e.Exception.Message, e.Exception);
+			if (_log != null)
+			{
+				_log.Error(e.Exception.Message, e.Exception);
+				return;
+			}
+
+			Hub.Instance.AppSettings.LogFatal(e.Exception.ToString());
 		}
 
 
@@ -88,7 +94,7 @@ namespace Noterium
 			LoadLibrary(library);
 
 			InputManager.Current.PreProcessInput += OnActivity;
-			
+
 			Current.Deactivated += OnDeactivated;
 		}
 
@@ -108,7 +114,7 @@ namespace Noterium
 			}
 			else
 			{
-				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(Hub.Instance.AppSettings.SelectedLibrary));
+				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(Hub.Instance.AppSettings.DefaultLibrary));
 			}
 
 			return library ?? Hub.Instance.AppSettings.Librarys.FirstOrDefault();
@@ -187,9 +193,9 @@ namespace Noterium
 			_mainWindow.Title = Noterium.Properties.Resources.Title + " - " + _currentLibrary.Name;
 			_mainWindow.DataContext = model;
 			_mainWindow.Model = model;
-			_mainWindow.Width = Hub.Instance.AppSettings.WindowSize.Width;
-			_mainWindow.Height = Hub.Instance.AppSettings.WindowSize.Height;
-			_mainWindow.WindowState = Hub.Instance.AppSettings.WindowState;
+			_mainWindow.Width = _currentLibrary.WindowSize.Width;
+			_mainWindow.Height = _currentLibrary.WindowSize.Height;
+			_mainWindow.WindowState = _currentLibrary.WindowState;
 
 			_mainWindow.Model.LockCommand = new SimpleCommand(Lock);
 			Current.MainWindow = _mainWindow;
@@ -207,7 +213,7 @@ namespace Noterium
 
 		private void LoadLibrary(object obj)
 		{
-			LibraryViewModel library = (LibraryViewModel) obj;
+			LibraryViewModel library = (LibraryViewModel)obj;
 			if (_currentLibrary != null && library.Library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
 				return;
 

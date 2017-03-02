@@ -300,7 +300,7 @@ namespace Noterium.ViewModels
 						InvokeOnCurrentDispatcher(() =>
 						{
 							Hub.Instance.AppSettings.Librarys.Remove(library.Library);
-							Hub.Instance.AppSettings.Save();
+							library.Library.Delete();
 						});
 					}
 				});
@@ -330,8 +330,10 @@ namespace Noterium.ViewModels
 						Path = path,
 						StorageType = StorageType.Disc
 					};
+					library.Save();
 
 					Hub.Instance.AppSettings.Librarys.Add(library);
+					Hub.Instance.AppSettings.LibraryFiles.Add(library.FilePath);
 					Hub.Instance.AppSettings.Save();
 
 					ChangeLibraryCommand?.Execute(new LibraryViewModel(library));

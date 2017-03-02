@@ -1,25 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Noterium.Core.DataCarriers;
 using Noterium.Core.Helpers;
 
 namespace Noterium.Core
 {
+	[DataContract]
 	public class AppSettings
 	{
 		private string _settingsFilePath;
 		public ObservableCollection<Library> Librarys { get; set; } = new ObservableCollection<Library>();
-		public double NoteColumnWidth { get; set; } = 250;
-		public double NotebookColumnWidth { get; set; } = 205;
-		public Size WindowSize { get; set; } = new Size(1024, 768);
-		public WindowState WindowState { get; set; } = WindowState.Normal;
-		public string SelectedLibrary { get; set; } = string.Empty;
+		
+		[DataMember]
+		public string DefaultLibrary { get; set; } = string.Empty;
+
+		[DataMember]
+		public List<string> LibraryFiles { get; set; } = new List<string>(); 
+
+		public string SettingsFolder
+		{
+			get
+			{
+				var appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				var appFolder = Path.Combine(appdataFolder, "Viktor Ekblom", "Noterium");
+				return appFolder;
+			}
+		}
 
 		public void Init()
 		{
+			if (!Directory.Exists(SettingsFolder))
+				Directory.CreateDirectory(SettingsFolder);
+
 			_settingsFilePath = GetSettingsFilePath();
 
 			if (File.Exists(_settingsFilePath))
@@ -28,6 +44,8 @@ namespace Noterium.Core
 				{
 					var json = File.ReadAllText(_settingsFilePath);
 					JsonConvert.PopulateObject(json, this);
+
+					LoadLibrarys();
 				}
 				catch (Exception e)
 				{
@@ -36,20 +54,28 @@ namespace Noterium.Core
 			}
 		}
 
+		private void LoadLibrarys()
+		{
+			foreach (string libraryFile in LibraryFiles)
+			{
+				if (File.Exists(libraryFile))
+				{
+					var lib = FileHelpers.LoadObjectFromFile<Library>(new FileInfo(libraryFile));
+					if (lib != null)
+						Librarys.Add(lib);
+				}
+			}
+		}
+
 		private string GetSettingsFilePath()
 		{
-			var appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			var appFolder = Path.Combine(appdataFolder, "Viktor Ekblom", "Noterium");
-			if (!Directory.Exists(appFolder))
-				Directory.CreateDirectory(appFolder);
-
 #if DEBUG
 			const string configurationFileName = "configuration.debug.json";
 #else
                 const string configurationFileName = "configuration.json";
 #endif
 
-			return Path.Combine(appFolder, configurationFileName);
+			return Path.Combine(SettingsFolder, configurationFileName);
 		}
 
 		public void Save()

@@ -2,6 +2,8 @@
 
 An app for taking total control over your notes.
 
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/noterium)
+
 [![issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
 [![Github All Releases](https://img.shields.io/github/downloads/ekblom/noterium/total.svg?style=flat-square)](https://github.com/ekblom/noterium/releases)

@@ -259,16 +259,16 @@ namespace Noterium
 			bool changed = false;
 			if (NoteColumn.ActualWidth > 0)
 			{
-				Hub.Instance.AppSettings.NoteColumnWidth = NoteColumn.ActualWidth;
+				Hub.Instance.CurrentLibrary.NoteColumnWidth = NoteColumn.ActualWidth;
 				changed = true;
 			}
 			if (NotebookColumn.ActualWidth > 0)
 			{
-				Hub.Instance.AppSettings.NotebookColumnWidth = NotebookColumn.ActualWidth;
+				Hub.Instance.CurrentLibrary.NotebookColumnWidth = NotebookColumn.ActualWidth;
 				changed = true;
 			}
 			if (changed)
-				Hub.Instance.AppSettings.Save();
+				Hub.Instance.CurrentLibrary.Save();
 		}
 
 		private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -276,8 +276,8 @@ namespace Noterium
 			if (!_loaded)
 				return;
 
-			Hub.Instance.AppSettings.WindowSize = e.NewSize;
-			Hub.Instance.AppSettings.Save();
+			Hub.Instance.CurrentLibrary.WindowSize = e.NewSize;
+			Hub.Instance.CurrentLibrary.Save();
 		}
 
 		private void MainWindow_OnStateChanged(object sender, EventArgs e)
@@ -285,14 +285,14 @@ namespace Noterium
 			if (!_loaded)
 				return;
 
-			Hub.Instance.AppSettings.WindowState = WindowState;
-			Hub.Instance.AppSettings.Save();
+			Hub.Instance.CurrentLibrary.WindowState = WindowState;
+			Hub.Instance.CurrentLibrary.Save();
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			NoteColumn.Width = new GridLength(Hub.Instance.AppSettings.NoteColumnWidth);
-			NotebookColumn.Width = new GridLength(Hub.Instance.AppSettings.NotebookColumnWidth);
+			NoteColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NoteColumnWidth);
+			NotebookColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NotebookColumnWidth);
 
 			_loaded = true;
 		}
