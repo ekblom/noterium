@@ -33,8 +33,7 @@ namespace Noterium.Controls
             SetValue(ColorProperty, Color.FromArgb(204, 17, 158, 218));
 		}
 
-		public TokenizedTagItem(string text)
-			: this()
+		public TokenizedTagItem(string text) : this()
 		{
 			Text = text;
 		}

@@ -215,8 +215,7 @@ namespace Noterium.Controls
 					SelectedItem = itemToSelect;
 			}
 
-			if (TagAdded != null)
-				TagAdded(this, new TokenizedTagEventArgs(tag));
+			TagAdded?.Invoke(this, new TokenizedTagEventArgs(tag));
 		}
 
 		/// <summary>
@@ -254,10 +253,7 @@ namespace Noterium.Controls
 		/// </summary>
 		internal void RaiseTagClick(TokenizedTagItem tag)
 		{
-			if (TagClick != null)
-			{
-				TagClick(this, new TokenizedTagEventArgs(tag));
-			}
+			TagClick?.Invoke(this, new TokenizedTagEventArgs(tag));
 		}
 
 		/// <summary>
@@ -265,10 +261,7 @@ namespace Noterium.Controls
 		/// </summary>
 		internal void RaiseTagApplied(TokenizedTagItem tag)
 		{
-			if (TagApplied != null)
-			{
-				TagApplied(this, new TokenizedTagEventArgs(tag));
-			}
+			TagApplied?.Invoke(this, new TokenizedTagEventArgs(tag));
 		}
 
 		/// <summary>

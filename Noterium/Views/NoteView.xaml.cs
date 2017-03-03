@@ -147,10 +147,7 @@ namespace Noterium.Views
 
 		private void SwitchToEditPanel()
 		{
-			ViewTabItem.IsSelected = false;
-			EditTabItem.IsSelected = true;
-			TabControl.SelectedIndex = 0;
-			TabControl.SelectedItem = EditTabItem;
+			ViewModeButtonClicked(EditModeButton, null);
 		}
 
 		private void SaveNote()
