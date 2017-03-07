@@ -36,6 +36,25 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style x:Key="LinkButton" TargetType="{x:Type Button}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<TextBlock x:Name="PART_Content">
+						<ContentPresenter />
+					</TextBlock>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="TextDecorations" TargetName="PART_Content" Value="Underline" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		
+	</Style>
+
 	<Style TargetType="{x:Type controls:WindowButtonCommands}">
 		<Setter Property="DarkCloseButtonStyle" Value="{StaticResource VSWindowButtonStyle}" />
 		<Setter Property="DarkMaxButtonStyle" Value="{StaticResource VSWindowButtonStyle}" />

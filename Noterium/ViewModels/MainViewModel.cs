@@ -50,6 +50,7 @@ namespace Noterium.ViewModels
 		public ICommand PerformLockActionsCommand { get; set; }
 		public ICommand ToggleSettingsFlyoutCommand { get; set; }
 		public ICommand ChangeLibraryCommand { get; set; }
+		public ICommand SetDefaultLibraryCommand { get; set; }
 		public ICommand DeleteLibraryCommand { get; set; }
 		public ICommand AddLibraryCommand { get; set; }
 
@@ -86,6 +87,7 @@ namespace Noterium.ViewModels
 		private bool _isSearching;
 		private bool _isHelpVisible;
 		private bool _settingsFlyoutIsVisible;
+		private bool _librarysFlyoutIsVisible;
 		private Library _currentLibrary;
 		private string _helpDocumentText;
 
@@ -198,6 +200,12 @@ namespace Noterium.ViewModels
 			set { _settingsFlyoutIsVisible = value; RaisePropertyChanged(); }
 		}
 
+		public bool LibrarysFlyoutIsVisible
+		{
+			get { return _librarysFlyoutIsVisible; }
+			set { _librarysFlyoutIsVisible = value; RaisePropertyChanged(); }
+		}
+
 		public Library CurrentLibrary
 		{
 			get { return _currentLibrary; }
@@ -240,6 +248,7 @@ namespace Noterium.ViewModels
 			ToggleSettingsFlyoutCommand = new RelayCommand(ToggleSettingsFlyout);
 			AddLibraryCommand = new RelayCommand(AddLibrary);
 			DeleteLibraryCommand = new SimpleCommand(DeleteLibrary);
+			SetDefaultLibraryCommand = new SimpleCommand(SetDefaultLibrary);
 
 			NotebookMenuItems = new ObservableCollection<NotebookMenuItem>();
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
@@ -272,6 +281,21 @@ namespace Noterium.ViewModels
 			Hub.Instance.AppSettings.Librarys.CollectionChanged += LibrarysOnCollectionChanged;
 
 			HelpDocumentText = Properties.Resources.Help_Document;
+		}
+
+		private void SetDefaultLibrary(object obj)
+		{
+			LibraryViewModel model = obj as LibraryViewModel;
+			if (model != null)
+			{
+				Hub.Instance.AppSettings.Librarys.ToList().ForEach(l =>
+				{
+					l.Default = model.Library == l;
+					l.Save();
+				});
+				Hub.Instance.AppSettings.DefaultLibrary = model.Library.Name;
+				Hub.Instance.AppSettings.Save();
+			}
 		}
 
 		private void LibrarysOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

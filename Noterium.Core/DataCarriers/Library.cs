@@ -12,6 +12,7 @@ namespace Noterium.Core.DataCarriers
 	public class Library : IComparable, IComparable<Note>, IEquatable<Note>, INotifyPropertyChanged
 	{
 		private string _name;
+		private bool _default;
 
 		[DataMember]
 		public string Name
@@ -60,6 +61,17 @@ namespace Noterium.Core.DataCarriers
 		public Size WindowSize { get; set; } = new Size(1024, 768);
 		[DataMember]
 		public WindowState WindowState { get; set; } = WindowState.Normal;
+
+		public bool Default
+		{
+			get { return _default; }
+			set { _default = value; RaiseOnPropetyChanged(); }
+		}
+
+		public Library()
+		{
+			_default = Hub.Instance.AppSettings.DefaultLibrary.Equals(Name);
+		}
 
 		public int CompareTo(object obj)
 		{

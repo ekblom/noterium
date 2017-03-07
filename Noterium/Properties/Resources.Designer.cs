@@ -124,11 +124,29 @@ namespace Noterium.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select defalut library:.
+        /// </summary>
+        public static string Librarys_DefaultLibrary {
+            get {
+                return ResourceManager.GetString("Librarys_DefaultLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Librarys_Delete {
             get {
                 return ResourceManager.GetString("Librarys_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Librarys.
+        /// </summary>
+        public static string Librarys_FlyoutTitle {
+            get {
+                return ResourceManager.GetString("Librarys_FlyoutTitle", resourceCulture);
             }
         }
         
@@ -388,7 +406,7 @@ namespace Noterium.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Protect from delete.
+        ///   Looks up a localized string similar to Protect from deletion.
         /// </summary>
         public static string Notes_ProtectFromDelete {
             get {

@@ -41,6 +41,7 @@ namespace Noterium
 			AuthenticationForm1.OnlyVerifyPassword = !authenticate;
 
 			SettingsFlyout.IsOpen = false;
+			LibrarysFlyout.IsOpen = false;
 			IsLocked = true;
 			MainGrid.Effect = new BlurEffect { Radius = 17 };
 			AuthenticationForm1.Reset();
@@ -196,7 +197,7 @@ namespace Noterium
 
 		private void SettingsFlyout_OnIsOpenChanged(object sender, RoutedEventArgs e)
 		{
-			if (SettingsFlyout.IsOpen)
+			if (SettingsFlyout.IsOpen || LibrarysFlyout.IsOpen)
 			{
 				ShowOverlayPanel();
 				LockButton.IsEnabled = false;
@@ -245,6 +246,10 @@ namespace Noterium
 		{
 			if (SettingsFlyout.IsOpen)
 				SettingsFlyout.IsOpen = false;
+
+			if (LibrarysFlyout.IsOpen)
+				LibrarysFlyout.IsOpen = false;
+
 			if (SearchFlyout.IsOpen)
 			{
 				Model.CloseSearchCommand.Execute(null);
@@ -419,7 +424,7 @@ namespace Noterium
 
 		private void LibrarysButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			LibrarysPopup.IsOpen = true;
+			Model.LibrarysFlyoutIsVisible = true;
 		}
 
 		public void Dispose()

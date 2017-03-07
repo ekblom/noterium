@@ -142,9 +142,10 @@
 					</StackPanel>
 				</Border>
 			</controls:Flyout>
-			<controls:Flyout AnimateOnPositionChange="true"
+			<controls:Flyout Name="SettingsFlyout"
+							 AnimateOnPositionChange="true"
                              Header="{x:Static p:Resources.Settings_FlyoutTitle}" Theme="Adapt"
-                             Position="Right" Name="SettingsFlyout"
+                             Position="Right" 
                              IsOpen="{Binding SettingsFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -230,7 +231,7 @@
 							</ComboBox>-->
 
 							<TextBlock Text="{x:Static p:Resources.Settings_Theme}" />
-							
+
 							<ComboBox SelectedItem="{Binding SettingsViewModel.SelectedAccent, Mode=TwoWay}"
                                   ItemsSource="{Binding SettingsViewModel.AccentColors, Mode=TwoWay}"
                                    Margin="0,0,0,25" Width="100">
@@ -312,6 +313,91 @@
 					<TextBlock Name="QuickInformationMessage" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding QuickInformationMessage}" />
 				</DockPanel>
 			</controls:Flyout>
+			<controls:Flyout Name="LibrarysFlyout" 
+							 AnimateOnPositionChange="true"
+                             Header="{x:Static p:Resources.Librarys_FlyoutTitle}" 
+							 Theme="Adapt"
+                             Position="Left" 
+                             IsOpen="{Binding LibrarysFlyoutIsVisible}"
+                             IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
+				<StackPanel Width="250">
+					<TextBlock Margin="15" Text="{x:Static p:Resources.Librarys_DefaultLibrary}"/>
+					<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
+						<ItemsControl.ItemContainerStyle>
+							<Style>
+								<Setter Property="ItemsControl.BorderBrush" Value="Transparent"/>
+								<Style.Triggers>
+									<Trigger Property="Border.IsMouseOver" Value="True">
+										<Setter Property="Border.BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</ItemsControl.ItemContainerStyle>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Name="LibraryItemBorder">
+									<Grid Margin="15, 0, 15, 3">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="25"/>
+											<ColumnDefinition Width="25"/>
+										</Grid.ColumnDefinitions>
+										<DockPanel Grid.Row="0" Grid.Column="0">
+											<RadioButton GroupName="DefaultLibrary" IsChecked="{Binding Library.Default}" VerticalAlignment="Center" HorizontalAlignment="Left"
+													 Content="{Binding Library.Name}">
+												<i:Interaction.Triggers>
+													<i:EventTrigger EventName="Checked">
+														<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.SetDefaultLibraryCommand}" CommandParameter="{Binding}"/>
+													</i:EventTrigger>
+												</i:Interaction.Triggers>
+											</RadioButton>
+										</DockPanel>
+
+										<Button Grid.Column="1" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" 
+												CommandParameter="{Binding}" 
+												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.ChangeLibraryCommand}"
+												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+											<Button.ContentTemplate>
+												<DataTemplate DataType="dataCarriers:Library">
+													<iconPacks:PackIconEntypo Kind="Upload" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												</DataTemplate>
+											</Button.ContentTemplate>
+										</Button>
+										<Button Grid.Column="2" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" CommandParameter="{Binding}" 
+												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.DeleteLibraryCommand}"
+												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+											<Button.ContentTemplate>
+												<DataTemplate DataType="dataCarriers:Library">
+													<iconPacks:PackIconMaterial Kind="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												</DataTemplate>
+											</Button.ContentTemplate>
+										</Button>
+									</Grid>
+								</Border>
+
+								<DataTemplate.Triggers>
+									<Trigger Property="ItemsControl.IsMouseOver" Value="True">
+										<Setter Property="Background" TargetName="LibraryItemBorder" Value="{DynamicResource MenuItemHighlightedBackground}" />
+									</Trigger>
+								</DataTemplate.Triggers>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Command="{Binding AddLibraryCommand}">
+						<Button.ContentTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,5,15,5">
+									<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
+									<TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
+								</StackPanel>
+							</DataTemplate>
+						</Button.ContentTemplate>
+					</Button>
+				</StackPanel>
+
+			</controls:Flyout>
+
 		</controls:FlyoutsControl>
 	</controls:MetroWindow.Flyouts>
 
@@ -409,67 +495,6 @@
 						</Button>
 
 					</DockPanel>
-					<Popup Grid.Row="0" StaysOpen="False" PlacementTarget="{Binding ElementName=LibrarysButton}" Placement="MousePoint" Name="LibrarysPopup"
-					Width="{Binding ElementName=LibrarysButton, Path=ActualWidth}">
-						<Border BorderBrush="{DynamicResource WindowGlowBrush}" Background="{DynamicResource BackgroundNormal}" BorderThickness="1">
-							<StackPanel>
-								<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Grid Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
-												<Grid.RowDefinitions>
-													<RowDefinition Height="25"/>
-													<RowDefinition Height="25"/>
-												</Grid.RowDefinitions>
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*"/>
-													<ColumnDefinition Width="*"/>
-												</Grid.ColumnDefinitions>
-												<StackPanel Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
-													<TextBlock Text="{Binding Library.Name}" FontWeight="Bold" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="15 0 0 0" />
-												</StackPanel>
-												<Button Grid.Row="1" Grid.Column="0" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" CommandParameter="{Binding}" 
-												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.ChangeLibraryCommand}">
-													<Button.ContentTemplate>
-														<DataTemplate DataType="dataCarriers:Library">
-															<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3">
-																<iconPacks:PackIconMaterial Kind="Reload" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-																<TextBlock Text="{x:Static p:Resources.Librarys_Load}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-															</StackPanel>
-														</DataTemplate>
-													</Button.ContentTemplate>
-												</Button>
-
-												<Button Grid.Row="1" Grid.Column="1" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" CommandParameter="{Binding}" 
-												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.DeleteLibraryCommand}">
-													<Button.ContentTemplate>
-														<DataTemplate DataType="dataCarriers:Library">
-															<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3">
-																<iconPacks:PackIconMaterial Kind="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-																<TextBlock Text="{x:Static p:Resources.Librarys_Delete}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-															</StackPanel>
-														</DataTemplate>
-													</Button.ContentTemplate>
-												</Button>
-											</Grid>
-
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-								<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Command="{Binding AddLibraryCommand}">
-									<Button.ContentTemplate>
-										<DataTemplate>
-											<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
-												<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-												<TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
-											</StackPanel>
-										</DataTemplate>
-									</Button.ContentTemplate>
-								</Button>
-							</StackPanel>
-						</Border>
-
-					</Popup>
 					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" DataContext="{Binding MenuContext}"
 					AdornerLayer="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedLayer}"
 					AdornedElement="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedElement}"

@@ -13,6 +13,7 @@ namespace Noterium.Core
 	public class AppSettings
 	{
 		private string _settingsFilePath;
+		private FileSystemWatcher _watcher;
 		public ObservableCollection<Library> Librarys { get; set; } = new ObservableCollection<Library>();
 		
 		[DataMember]
@@ -42,10 +43,16 @@ namespace Noterium.Core
 			{
 				try
 				{
-					var json = File.ReadAllText(_settingsFilePath);
-					JsonConvert.PopulateObject(json, this);
+					InitInstance();
 
-					LoadLibrarys();
+					_watcher = new FileSystemWatcher
+					{
+						Path = Path.GetDirectoryName(SettingsFolder),
+						Filter = Path.GetFileName(_settingsFilePath),
+						NotifyFilter = NotifyFilters.LastWrite
+					};
+					_watcher.Changed += OnChanged;
+					_watcher.EnableRaisingEvents = true;
 				}
 				catch (Exception e)
 				{
@@ -54,15 +61,31 @@ namespace Noterium.Core
 			}
 		}
 
+		private void InitInstance()
+		{
+			var json = File.ReadAllText(_settingsFilePath);
+			JsonConvert.PopulateObject(json, this);
+			LoadLibrarys();
+		}
+
+		private void OnChanged(object sender, FileSystemEventArgs e)
+		{
+			InitInstance();
+		}
+
 		private void LoadLibrarys()
 		{
+			Librarys.Clear();
 			foreach (string libraryFile in LibraryFiles)
 			{
 				if (File.Exists(libraryFile))
 				{
 					var lib = FileHelpers.LoadObjectFromFile<Library>(new FileInfo(libraryFile));
 					if (lib != null)
+					{
+						lib.Default = lib.Name.Equals(DefaultLibrary);
 						Librarys.Add(lib);
+					}
 				}
 			}
 		}
@@ -83,13 +106,17 @@ namespace Noterium.Core
 			lock (_settingsFilePath)
 			{
 				var json = this.ToJson();
+
+				_watcher.EnableRaisingEvents = false;
 				File.WriteAllText(_settingsFilePath, json);
+				_watcher.EnableRaisingEvents = true;
 			}
 		}
 
 		public void LogFatal(string message)
 		{
-			string logFile = Path.Combine(GetSettingsFilePath(), "log", $"noterium_fatal_error_{DateTime.Now.Ticks}.log");
+			var di = Directory.CreateDirectory(Path.Combine(SettingsFolder, "log"));
+			string logFile = Path.Combine(di.FullName, $"noterium_fatal_error_{DateTime.Now.Ticks}.log");
 			File.WriteAllText(logFile, message);
 		}
 	}

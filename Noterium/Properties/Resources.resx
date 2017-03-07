@@ -235,7 +235,7 @@
     <value>Favourite</value>
   </data>
   <data name="Notes_ProtectFromDelete" xml:space="preserve">
-    <value>Protect from delete</value>
+    <value>Protect from deletion</value>
   </data>
   <data name="Note_Copy" xml:space="preserve">
     <value>Copy note</value>
@@ -345,5 +345,11 @@
   </data>
   <data name="Note_Copy_SecureTitle" xml:space="preserve">
     <value>Copying secure note</value>
+  </data>
+  <data name="Librarys_FlyoutTitle" xml:space="preserve">
+    <value>Librarys</value>
+  </data>
+  <data name="Librarys_DefaultLibrary" xml:space="preserve">
+    <value>Select defalut library:</value>
   </data>
 </root>
