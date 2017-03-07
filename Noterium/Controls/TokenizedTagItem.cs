@@ -171,8 +171,8 @@ namespace Noterium.Controls
 			{
 				var tb = acb.Template.FindName("Text", acb) as TextBox;
 
-				if (tb != null)
-					tb.Focus();
+				tb?.Focus();
+
 				// PreviewKeyDown, because KeyDown does not bubble up for Enter
 				acb.PreviewKeyDown += (s, e1) =>
 				{

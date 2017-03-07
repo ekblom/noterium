@@ -1,18 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls1="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
-                    xmlns:converters="http://metro.mahapps.com/winfx/xaml/shared"
                     xmlns:controls2="clr-namespace:Noterium.Controls"
-                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro">
-	<ResourceDictionary.MergedDictionaries>
-		
-		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/styles/controls.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.treeview.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.buttons.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.scrollbars.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TabControl.xaml" />
-	</ResourceDictionary.MergedDictionaries>
+                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
 
 	<controls2:InvertedBoolToVisibility x:Key="InvertedBoolToVisibility"/>
 	<Grid Background="Transparent" x:Key="PlaceholderPanel" x:Shared="false" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -202,18 +192,18 @@
 
 							<controls1:AutoCompleteBox x:Name="PART_InputBox"
                                                      Margin="0" Padding="0 4" VerticalAlignment="Center"
-                                                     Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" 
+                                                     Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
                                                      ItemsSource="{Binding AllTags, RelativeSource={RelativeSource AncestorType={x:Type controls2:TokenizedTagControl}}}"
                                                      IsTextCompletionEnabled="False"
                                                      FilterMode="ContainsOrdinal"
 													 
 													 FontFamily="{DynamicResource ContentFontFamily}" 
 													 FontSize="{DynamicResource ContentFontSize}"
-													 Foreground="{DynamicResource TextBrush}"
+													 Foreground="{DynamicResource BlackColorBrush}"
 													 BorderBrush="{DynamicResource TextBoxBorderBrush}"
 													 controls:ControlsHelper.FocusBorderBrush="{DynamicResource TextBoxFocusBorderBrush}"
 													 controls:ControlsHelper.MouseOverBorderBrush="{DynamicResource TextBoxMouseOverBorderBrush}"
-													 
+													  
                                                      />
 						</ControlTemplate>
 					</Setter.Value>

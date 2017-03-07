@@ -200,7 +200,7 @@ namespace Noterium.Controls
 		internal void AddTag(TokenizedTagItem tag)
 		{
 			TokenizedTagItem itemToSelect = null;
-			if (SelectedItem == null && Items.Count > 0)
+			if (SelectedItem != null && Items.Count > 0)
 			{
 				itemToSelect = (TokenizedTagItem) SelectedItem;
 			}

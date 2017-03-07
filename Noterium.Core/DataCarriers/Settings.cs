@@ -16,11 +16,6 @@ namespace Noterium.Core.DataCarriers
         private int _numberOfBackupsToKeep = 10;
         private string _theme = "BaseDark";
 
-        public Settings()
-        {
-            Tags = new ObservableCollection<Tag>();
-        }
-
         public bool EnableAdvancedControls
         {
             get { return _enableAdvancedControls; }
