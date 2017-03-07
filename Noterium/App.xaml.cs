@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,6 +15,7 @@ using Noterium.Core.DataCarriers;
 using Noterium.Core.Helpers;
 using Noterium.ViewModels;
 using Noterium.Views.Dialogs;
+using Mono.Options;
 
 namespace Noterium
 {
@@ -28,6 +30,7 @@ namespace Noterium
 		private DispatcherTimer _activityTimer;
 		private Point _inactiveMousePosition = new Point(0, 0);
 		private Library _currentLibrary;
+		private Dictionary<string, string> _args;
 
 		public App()
 		{
@@ -56,6 +59,9 @@ namespace Noterium
 		{
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
+			string libraryName;
+			InitCommandArgs(out libraryName);
+
 			RegisterCustomAccents();
 
 			try
@@ -82,7 +88,7 @@ namespace Noterium
 				return;
 			}
 
-			var library = GetLibrary();
+			var library = GetLibrary(libraryName);
 			if (library == null)
 			{
 				Current.Shutdown(1);
@@ -98,13 +104,54 @@ namespace Noterium
 			Current.Deactivated += OnDeactivated;
 		}
 
+		private void InitCommandArgs(out string libraryName)
+		{
+			libraryName = null;
+			string library = null;
+			bool shouldShowHelp = false;
+
+			var options = new OptionSet {
+				{ "l|library=", "The name of a library to load", l => library = l },
+				{ "h|help", "show this message and exit", h => shouldShowHelp = h != null },
+			};
+
+			string[] args = Environment.GetCommandLineArgs();
+			List<string> extra;
+			try
+			{
+				// parse the command line
+				extra = options.Parse(args);
+			}
+			catch (OptionException e)
+			{
+				// output some error message
+				Console.Write("noterium: ");
+				Console.WriteLine(e.Message);
+				Console.WriteLine("Try `noterium --help' for more information.");
+				Current.Shutdown(0);
+				return;
+			}
+
+			if(shouldShowHelp)
+			{
+				Console.WriteLine("Usage: noterium.exe [OPTIONS]");
+				Console.WriteLine();
+				Console.WriteLine("Options:");
+				options.WriteOptionDescriptions(Console.Out);
+				Current.Shutdown(0);
+				return;
+			}
+
+			libraryName = library;
+		}
+
 		private static void RegisterCustomAccents()
 		{
 			ThemeManager.AddAccent("VSDark", new Uri("pack://application:,,,/Resources/VSDark.xaml"));
 			ThemeManager.AddAccent("VSLight", new Uri("pack://application:,,,/Resources/VSLight.xaml"));
 		}
 
-		private static Library GetLibrary()
+		private static Library GetLibrary(string libraryName)
 		{
 			Library library = null;
 			if (!Hub.Instance.AppSettings.Librarys.Any())
@@ -114,7 +161,8 @@ namespace Noterium
 			}
 			else
 			{
-				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(Hub.Instance.AppSettings.DefaultLibrary));
+				string libName = libraryName ?? Hub.Instance.AppSettings.DefaultLibrary ?? string.Empty;
+				library = Hub.Instance.AppSettings.Librarys.FirstOrDefault(l => l.Name.Equals(libName));
 			}
 
 			return library ?? Hub.Instance.AppSettings.Librarys.FirstOrDefault();
