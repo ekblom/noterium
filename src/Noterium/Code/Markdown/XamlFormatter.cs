@@ -458,7 +458,9 @@ namespace Noterium.Code.Markdown
 
 						blockParent.AddChild(container);
 						break;
-
+					case BlockTag.Table:
+						WriteTable(block, blockParent, settings, inlineStack);
+						break;
 					case BlockTag.ReferenceDefinition:
 						break;
 
@@ -604,7 +606,7 @@ namespace Noterium.Code.Markdown
 			bool trackPositions = settings.TrackSourcePosition;
 
 			IAddChild blockParent = parent;
-			if (blockParent is ListItem || blockParent is Section)
+			if (blockParent is ListItem || blockParent is Section || blockParent is TableCell)
 			{
 				Paragraph p = new Paragraph();
 				blockParent.AddChild(p);
@@ -634,7 +636,7 @@ namespace Noterium.Code.Markdown
 						//	_checkBoxNumber++;
 						//}
 						//else
-							blockParent.AddText(inline.LiteralContent);
+						blockParent.AddText(inline.LiteralContent);
 						break;
 					case InlineTag.LineBreak:
 						blockParent.AddChild(new LineBreak());
@@ -683,7 +685,7 @@ namespace Noterium.Code.Markdown
 							}
 
 							hyperlink.CommandParameter = url;
-							if(Uri.IsWellFormedUriString(url, UriKind.Absolute))
+							if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
 								hyperlink.NavigateUri = new Uri(url);
 
 							if (inline.LiteralContent.Length > 0)
@@ -835,6 +837,119 @@ namespace Noterium.Code.Markdown
 			else if (nf != null)
 			{
 				result.Inlines.Add(new Run("Missing file: " + nf.FullName));
+			}
+		}
+
+		private void WriteTable(Block table, IAddChild parent, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
+		{
+			if ((settings.AdditionalFeatures & CommonMarkAdditionalFeatures.GithubStyleTables) == 0)
+			{
+				throw new CommonMarkException("Table encountered in AST, but GithubStyleTables are not enabled");
+			}
+
+			var header = table.FirstChild;
+			var firstRow = table.FirstChild.NextSibling;
+
+			Table t = new Table();
+			parent.AddChild(t);
+
+			if (TableStyle != null)
+				t.Style = TableStyle;
+
+			var tableHeadRowGroup = new TableRowGroup();
+			t.RowGroups.Add(tableHeadRowGroup);
+			TableRow headRow = new TableRow();
+			if (TableHeadStyle != null)
+				headRow.Style = TableHeadStyle;
+			tableHeadRowGroup.Rows.Add(headRow);
+
+			var numHeadings = 0;
+
+			var curHeaderCell = header.FirstChild;
+			while (curHeaderCell != null)
+			{
+				var alignment = table.TableHeaderAlignments[numHeadings];
+
+				numHeadings++;
+
+				TableCell cell = new TableCell();
+				if (TableCellStyle != null)
+					cell.Style = TableCellStyle;
+
+				InlinesToXaml(cell, curHeaderCell.InlineContent, settings, stack);
+
+				if (alignment != TableHeaderAlignment.None)
+				{
+					switch (alignment)
+					{
+						case TableHeaderAlignment.Center: cell.TextAlignment = TextAlignment.Center; break;
+						case TableHeaderAlignment.Left: cell.TextAlignment = TextAlignment.Left; break;
+						case TableHeaderAlignment.Right: cell.TextAlignment = TextAlignment.Right; break;
+						default: throw new CommonMarkException("Unexpected TableHeaderAlignment [" + alignment + "]");
+					}
+				}
+
+				headRow.Cells.Add(cell);
+
+				curHeaderCell = curHeaderCell.NextSibling;
+			}
+
+			var tableBodyRowGroup = new TableRowGroup();
+			t.RowGroups.Add(tableBodyRowGroup);
+
+			var curRow = firstRow;
+			while (curRow != null)
+			{
+				TableRow row = new TableRow();
+				if (TableRowStyle != null)
+					row.Style = TableRowStyle;
+
+				tableBodyRowGroup.Rows.Add(row);
+
+				var curRowCell = curRow.FirstChild;
+
+				var numCells = 0;
+
+				while (curRowCell != null && numCells < numHeadings)
+				{
+					var alignment = table.TableHeaderAlignments[numCells];
+
+					numCells++;
+
+					TableCell cell = new TableCell();
+					if (TableCellStyle != null)
+						cell.Style = TableCellStyle;
+
+					row.Cells.Add(cell);
+
+					if (alignment != TableHeaderAlignment.None)
+					{
+						switch (alignment)
+						{
+							case TableHeaderAlignment.Center: cell.TextAlignment = TextAlignment.Center; break;
+							case TableHeaderAlignment.Left: cell.TextAlignment = TextAlignment.Left; break;
+							case TableHeaderAlignment.Right: cell.TextAlignment = TextAlignment.Right; break;
+							default: throw new CommonMarkException("Unexpected TableHeaderAlignment [" + alignment + "]");
+						}
+					}
+
+					InlinesToXaml(cell, curRowCell.InlineContent, settings, stack);
+
+					curRowCell = curRowCell.NextSibling;
+				}
+
+				while (numCells < numHeadings)
+				{
+					numCells++;
+
+					TableCell cell = new TableCell();
+					if (TableCellStyle != null)
+						cell.Style = TableCellStyle;
+
+					row.Cells.Add(cell);
+				}
+
+				curRow = curRow.NextSibling;
 			}
 		}
 
