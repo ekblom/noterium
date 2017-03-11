@@ -6,7 +6,6 @@ using GongSolutions.Wpf.DragDrop;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using Noterium.ViewModels;
-using Settings = Noterium.Core.Settings;
 
 namespace Noterium.Components.NotebookMenu
 {

@@ -23,13 +23,11 @@ namespace Noterium.Core.DropBox
 
 
         private readonly ILog _log = LogManager.GetLogger(typeof(DataStore));
-        private readonly DirectoryInfo _remindersFolder;
         private readonly DirectoryInfo _rootFolder;
 
         private readonly string _rootPath;
 
         private Dictionary<Notebook, List<Note>> _cache;
-        private List<SimpleReminder> _reminders;
         private FileSystemWatcher _watcher;
 
         public DataStore(string path)
@@ -48,10 +46,6 @@ namespace Noterium.Core.DropBox
                 var backupPath = _rootPath + "\\backup";
                 EnsureFolder(backupPath);
                 _backupFolder = new DirectoryInfo(backupPath);
-
-                var remindersPath = dataPath + "\\reminders";
-                EnsureFolder(remindersPath);
-                _remindersFolder = new DirectoryInfo(remindersPath);
             }
         }
 
@@ -540,31 +534,7 @@ And you can make tables:
         {
             return _cache.Keys.FirstOrDefault(key => key.ID == guid);
         }
-
-
-        public List<SimpleReminder> GetReminders()
-        {
-            return _reminders;
-        }
-
-        public void DeleteReminder(SimpleReminder reminder)
-        {
-            var filePath = _remindersFolder.FullName + "\\" + reminder.ID + "." + File.ReminderFileExtension;
-            var fi = new FileInfo(filePath);
-            fi.Delete();
-            _reminders.Remove(reminder);
-        }
-
-        public void SaveReminder(SimpleReminder reminder)
-        {
-            var filePath = _remindersFolder.FullName + "\\" + reminder.ID + "." + File.ReminderFileExtension;
-            var json = JsonConvert.SerializeObject(reminder, Formatting.Indented);
-            System.IO.File.WriteAllText(filePath, json);
-
-            if (!_reminders.Contains(reminder))
-                _reminders.Add(reminder);
-        }
-
+        
         #region -- File system --
 
         private void EnsureFolder(string path)
@@ -644,17 +614,7 @@ And you can make tables:
                 _cache.Add(@group, notes);
             }
 
-            //callback("Loading reminders");
-
-            //_reminders = GetRemindersFromDisc();
-
             StartWatch(DataFolder);
-        }
-
-        private List<SimpleReminder> GetRemindersFromDisc()
-        {
-            var files = _remindersFolder.GetFiles("*." + File.ReminderFileExtension);
-            return FileHelpers.ConvertFileInfos<SimpleReminder>(files);
         }
 
         private void ReloadNotebook(Guid notebookId)

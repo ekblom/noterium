@@ -65,21 +65,6 @@ namespace Noterium.Core
 			DataStore = new DataStore(path);
         }
 
-        internal void SaveReminder(SimpleReminder reminder)
-        {
-            DataStore.SaveReminder(reminder);
-        }
-
-        internal void DeleteReminder(SimpleReminder reminder)
-        {
-            DataStore.DeleteReminder(reminder);
-        }
-
-        internal List<SimpleReminder> GetReminders()
-        {
-            return DataStore.GetReminders();
-        }
-
         internal void SaveNote(Note note)
         {
             DataStore.SaveNote(note);

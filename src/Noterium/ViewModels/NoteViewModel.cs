@@ -23,7 +23,6 @@ using Noterium.Controls;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
-using Settings = Noterium.Core.Settings;
 
 namespace Noterium.ViewModels
 {

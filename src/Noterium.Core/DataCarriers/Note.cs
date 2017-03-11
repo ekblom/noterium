@@ -31,7 +31,6 @@ namespace Noterium.Core.DataCarriers
         private string _name;
         private Guid _notebook;
         private bool _protected;
-        private List<Reminder> _reminders;
         private string _secureText;
         private int _sortIndex;
         private ObservableCollection<string> _tags;
@@ -42,7 +41,6 @@ namespace Noterium.Core.DataCarriers
         public Note()
         {
             ID = Guid.NewGuid();
-            Reminders = new List<Reminder>();
             Tags = new ObservableCollection<string>();
             Tags.CollectionChanged += Tags_CollectionChanged;
             Files = new ObservableCollection<NoteFile>();
@@ -187,17 +185,6 @@ namespace Noterium.Core.DataCarriers
             set
             {
                 _archivedDate = value;
-                RaiseOnPropetyChanged();
-            }
-        }
-
-        [DataMember]
-        public List<Reminder> Reminders
-        {
-            get { return _reminders; }
-            set
-            {
-                _reminders = value;
                 RaiseOnPropetyChanged();
             }
         }

@@ -499,11 +499,6 @@ namespace Noterium.ViewModels
 				//Hub.Instance.TextClipper.OnTextClipped += TextClipper_OnTextClipped;
 			}
 
-			//Hub.Instance.ReminderManager.OnQueueItemHandle += ReminderManagerOnOnQueueItemHandle;
-			//Hub.Instance.ReminderManager.OnQueueItemHandled += ReminderManagerOnOnQueueItemHandled;
-
-			Hub.Instance.Reminders.OnReminderDue += Reminders_OnReminderDue;
-
 			_intervallTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds);
 			_intervallTimer.Elapsed += IntervallTimerOnElapsed;
 			_intervallTimer.Enabled = true;
@@ -541,21 +536,6 @@ namespace Noterium.ViewModels
 					Hub.Instance.Storage.CleanBackupData();
 				}
 			}
-		}
-
-		//private void ReminderManagerOnOnQueueItemHandled(GoogleCalendarReminderManager.QueueItem item)
-		//{
-		//    //ToolStripLabelSyncStatus.Text = string.Empty;
-		//}
-
-		//private void ReminderManagerOnOnQueueItemHandle(GoogleCalendarReminderManager.QueueItem item)
-		//{
-		//    //ToolStripLabelSyncStatus.Text = item.Note.Name;
-		//}
-
-		private void Reminders_OnReminderDue(SimpleReminder simpleReminder)
-		{
-			//ShowReminderDialog(simpleReminder);
 		}
 
 		private void EditNoteName()

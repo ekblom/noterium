@@ -26,7 +26,7 @@ namespace Noterium.ViewModels
 	    private AccentColorMenuData _selectedAccent;
 	    private AccentColorMenuData _selectedTheme;
 	    private List<Tag> _tags;
-	    public Core.Settings Settings { get; }
+	    public Settings Settings { get; }
 
 		public ICommand SaveSettingsCommand { get; set; }
 		public ICommand ChangeThemeCommand { get; set; }
@@ -106,7 +106,7 @@ namespace Noterium.ViewModels
 	        set { _tags = value; RaisePropertyChanged(); }
 	    }
 
-	    public SettingsViewModel(Core.Settings settings)
+	    public SettingsViewModel(Settings settings)
 		{
 			Settings = settings;
 

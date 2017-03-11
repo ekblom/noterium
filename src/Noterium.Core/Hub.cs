@@ -8,8 +8,6 @@ namespace Noterium.Core
 {
     public class Hub
     {
-        private GoogleCalendar _gc;
-
         private Settings _settings;
         private Storage _storage;
 
@@ -31,15 +29,9 @@ namespace Noterium.Core
 
         public Storage Storage => _storage;
 
-        public GoogleCalendarReminderManager ReminderManager { get; private set; }
-
         public Settings Settings => _settings;
 
-        public GoogleCalendar GoogleCalendar => _gc;
-
         public TextClipper TextClipper { get; private set; }
-
-        public Reminders Reminders { get; private set; }
 
         public EncryptionManager EncryptionManager { get; private set; }
 
@@ -52,11 +44,8 @@ namespace Noterium.Core
 	        CurrentLibrary = l;
             _storage.Init(l);
             SearchManager = new SearchManager(_storage);
-            _settings = new Settings(_storage);
-            _gc = new GoogleCalendar(ref _settings);
-            ReminderManager = new GoogleCalendarReminderManager(ref _gc);
+            _settings = _storage.GetSettings();
             TextClipper = new TextClipper();
-            Reminders = new Reminders(ref _storage);
             EncryptionManager = new EncryptionManager(_storage.DataStore);
             TagManager = new TagManager();
         }

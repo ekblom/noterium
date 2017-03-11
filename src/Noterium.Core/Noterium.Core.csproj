@@ -170,7 +170,6 @@
     <Compile Include="DataCarriers\TextHistory.cs" />
     <Compile Include="DataCarriers\TodoItem.cs" />
     <Compile Include="DataCarriers\Recurrence.cs" />
-    <Compile Include="DataCarriers\Reminder.cs" />
     <Compile Include="DataCarriers\Settings.cs" />
     <Compile Include="DropBox\DataStore.cs" />
     <Compile Include="Exceptions\SaveException.cs" />
@@ -193,21 +192,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReminderManager.cs" />
-    <Compile Include="Reminders.cs" />
     <Compile Include="Search\SearchManager.cs" />
     <Compile Include="Security\AESGCM.cs" />
     <Compile Include="Security\EncryptionManager.cs" />
     <Compile Include="Services\ClipboardHtmlHelper.cs" />
-    <Compile Include="Services\GoogleCalendar.cs" />
     <Compile Include="Services\TextClipper.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="StorageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="TagManager.cs" />
-    <Compile Include="Utilities\DateUtilities.cs" />
     <Compile Include="Utilities\FileSecurity.cs" />
   </ItemGroup>
   <ItemGroup>
