@@ -34,7 +34,7 @@
 			<RowDefinition Height="100" />
 
 		</Grid.RowDefinitions>
-		<controls1:TokenizedTagControl Grid.Row="2" VerticalContentAlignment="Center" x:Name="TagControl" Placeholder="{x:Static p:Resources.NoteEditor_Tags_Watermark}" Height="26" ItemsSource="{Binding Tags}"/>
+		<controls1:TokenizedTagControl Grid.Row="2" VerticalContentAlignment="Center" x:Name="TagControl" Placeholder="{x:Static p:Resources.NoteEditor_Tags_Watermark}" Height="26" ItemsSource="{Binding Tags}" />
 
 		<ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
 			<Button Name="Header1Button" CommandParameter="H1" Click="ToolbarButtonClick">
@@ -215,7 +215,7 @@
                       Height="Auto">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseDoubleClick">
-						<i:InvokeCommandAction Command="{Binding OpenFileCommand}" CommandParameter="{Binding ElementName=FilesListView, Path=SelectedItem}"/>
+						<i:InvokeCommandAction Command="{Binding OpenFileCommand}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
 				<ListView.ContextMenu>
@@ -223,16 +223,16 @@
 						<MenuItem Command="{Binding RenameFileCommand}" >
 							<MenuItem.Header>
 								<StackPanel Orientation="Horizontal">
-									<iconPacks:PackIconMaterial Name="RenameNoteFileButton" Kind="RenameBox" VerticalAlignment="Center" />
-									<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" />
+									<iconPacks:PackIconMaterial Name="RenameNoteFileButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+									<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 								</StackPanel>
 							</MenuItem.Header>
 						</MenuItem>
 						<MenuItem Command="{Binding DeleteFileCommand}">
 							<MenuItem.Header>
 								<StackPanel Orientation="Horizontal">
-									<iconPacks:PackIconMaterial Name="DeleteNoteFileButton" Kind="Delete" VerticalAlignment="Center" />
-									<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" />
+									<iconPacks:PackIconMaterial Name="DeleteNoteFileButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+									<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 								</StackPanel>
 							</MenuItem.Header>
 						</MenuItem>

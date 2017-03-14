@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -11,12 +10,15 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
-using MimeTypes;
 using Noterium.Code.Commands;
 using Noterium.Core.DataCarriers;
-using Noterium.Core.Helpers;
 using Noterium.ViewModels;
 using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
+using Noterium.Code.Messages;
+using Noterium.Core;
+using Noterium.Code.Helpers;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 
 namespace Noterium.Components.NoteMenu
 {
@@ -24,15 +26,25 @@ namespace Noterium.Components.NoteMenu
 	{
 		private NoteViewModel _selectedNote;
 		private string _sortMode = "Index";
+		private readonly object _currentNotesLockObject = new object();
+
+		public ICommand CreateNewNoteCommand { get; set; }
+		public ICommand CreateNewSecureNoteCommand { get; set; }
+		public ICommand SelectedItemChangedCommand { get; set; }
+		public ICommand FilterNotesCommand { get; set; }
+		public ICommand ClearFilterCommand { get; set; }
+		public ICommand AddNoteCommand { get; set; }
+		public ICommand ShowNoteCommandsCommand { get; set; }
 
 		public NoteMenuViewModel()
 		{
 			DataSource = new ObservableCollection<NoteViewModel>();
+			BindingOperations.EnableCollectionSynchronization(DataSource, _currentNotesLockObject);
 
 			FilterNotesCommand = new SimpleCommand(FilterNotes);
 			ClearFilterCommand = new SimpleCommand(ClearFilter);
 			ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
-			
+
 			PropertyChanged += OnPropertyChanged;
 
 			var saveTimer = new Timer(1000)
@@ -42,9 +54,93 @@ namespace Noterium.Components.NoteMenu
 			};
 			saveTimer.Elapsed += SaveNotIfDirty;
 			saveTimer.Start();
+
+			MessengerInstance.Register<ReloadNoteList>(this, DoReloadNoteList);
+			MessengerInstance.Register<DeleteNote>(this, DoDeleteNote);
 		}
 
-		
+		private void DoDeleteNote(DeleteNote message)
+		{
+			// TODO: i18n
+			Note note = message.Note.Note;
+			if (note.InTrashCan)
+			{
+				return;
+			}
+
+			if (note.Protected)
+			{
+				MessengerInstance.Send(new QuickMessage("You cant delete this note, it's protected from that."));
+
+				return;
+			}
+
+			var settings = DialogHelpers.GetDefaultDialogSettings();
+
+			MainWindowInstance.ShowMessageAsync("Delete", $"Do you want to delete {note.Name}?", MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
+			{
+				if (task.Result == MessageDialogResult.Affirmative)
+				{
+					InvokeOnCurrentDispatcher(() =>
+					{
+						note.InTrashCan = true;
+
+						DataSource.Remove(message.Note);
+						SelectedNote = DataSource.FirstOrDefault();
+						Hub.Instance.Settings.RefreshTags();
+					});
+				}
+			});
+		}
+
+		private void DoReloadNoteList(ReloadNoteList obj)
+		{
+			List<Note> notes = new List<Note>();
+
+			if (obj.Tag != null)
+			{
+				var tempNotes = Hub.Instance.Storage.GetAllNotes();
+				notes = tempNotes.Where(n => n.Tags.Contains(obj.Tag.Name)).Where(n => !n.InTrashCan).ToList();
+			}
+			else if (obj.Notebook != null)
+			{
+				notes = Hub.Instance.Storage.GetNotes(obj.Notebook).Where(n => !n.InTrashCan).ToList();
+			}
+			else if (obj.LibraryType != LibraryType.Undefined)
+			{
+				if (obj.LibraryType == LibraryType.Trashcan)
+				{
+					var tempNotes = Hub.Instance.Storage.GetAllNotes();
+					notes = tempNotes.Where(n => n.InTrashCan).ToList();
+				}
+				else if (obj.LibraryType == LibraryType.Favorites)
+				{
+					var tempNotes = Hub.Instance.Storage.GetAllNotes();
+					notes = tempNotes.Where(n => n.Favourite).Where(n => !n.InTrashCan).ToList();
+				}
+				else if (obj.LibraryType == LibraryType.All)
+				{
+					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Name).ToList();
+				}
+				else if (obj.LibraryType == LibraryType.Recent)
+				{
+					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Changed).Take(15).ToList();
+				}
+			}
+
+			var models = ViewModelLocator.Instance.GetNoteViewModels(notes);
+
+			UpdateDataSource(models);
+
+			if (obj.SelectedNote != null)
+			{
+				var selected = ViewModelLocator.Instance.GetNoteViewModel(obj.SelectedNote);
+				SelectedNote = selected;
+			}
+			else
+				SelectedNote = models.Any() ? models[0] : null;
+		}
+
 		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "SortMode")
@@ -99,18 +195,6 @@ namespace Noterium.Components.NoteMenu
 			return model.Tags.Any(t => t.Text.Contains(text));
 		}
 
-		public ICommand SelectedItemChangedCommand { get; set; }
-		public ICommand DeleteItemCommand { get; set; }
-		public ICommand EditItemCommand { get; set; }
-		public ICommand FilterNotesCommand { get; set; }
-		public ICommand ClearFilterCommand { get; set; }
-		public ICommand RenameItemCommand { get; set; }
-		public ICommand AddNoteCommand { get; set; }
-
-		public ICommand CopyNoteCommand { get; set; }
-
-		public ICommand ShowNoteCommandsCommand { get; set; }
-
 		public ObservableCollection<NoteViewModel> DataSource { get; }
 
 		public string SortMode
@@ -136,6 +220,8 @@ namespace Noterium.Components.NoteMenu
 					_selectedNote.IsSelected = true;
 
 				Console.WriteLine($"Change selected note took {clock.ElapsedMilliseconds} ms.");
+
+				MessengerInstance.Send(new SelectedNoteChanged(_selectedNote));
 
 				RaisePropertyChanged();
 

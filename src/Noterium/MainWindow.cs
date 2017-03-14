@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using Noterium.Core;
 using Noterium.ViewModels;
 using Noterium.Windows;
+using GalaSoft.MvvmLight.Messaging;
+using Noterium.Code.Messages;
 
 namespace Noterium
 {
@@ -58,8 +60,7 @@ namespace Noterium
 
 		public void Unlock()
 		{
-			if (Model.SelectedMenuItem == null)
-				Model.SelectedNoteContainerChangedCommand.Execute(Model.MenuContext.Notebooks.FirstOrDefault());
+			Messenger.Default.Send(new ApplicationUnlocked());
 
 			MainGrid.Effect = null;
 			OverlayPanel.Visibility = Visibility.Collapsed;
@@ -359,18 +360,6 @@ namespace Noterium
 			MainGrid.Effect = HelpOverlayPanel.Visibility == Visibility.Visible ? new BlurEffect { Radius = 3 } : null;
 		}
 
-		private void OpenBackupManager(object sender, RoutedEventArgs e)
-		{
-			BackupManagerViewModel model = new BackupManagerViewModel();
-			BackupManager manager = new BackupManager
-			{
-				DataContext = model,
-				Owner = this
-			};
-			model.Window = manager;
-			manager.ShowDialog();
-		}
-
 		private void SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			TextBox tb = (TextBox)sender;
@@ -418,7 +407,7 @@ namespace Noterium
 				NoteView.NoteEditor.SaveNoteText();
 			if (Model != null && Model.NoteMenuContext != null && Model.NoteMenuContext.SelectedNote != null)
 				Model.NoteMenuContext.SelectedNote.SaveNote();
-			
+
 			SystemEvents.PowerModeChanged -= OnPowerChange;
 		}
 

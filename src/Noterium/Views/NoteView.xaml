@@ -14,7 +14,8 @@
              x:Class="Noterium.Views.NoteView"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500"
-			 d:DataContext="{d:DesignInstance {x:Type viewModels1:NoteViewModel}}" Loaded="NoteView_OnLoaded">
+			 DataContext="{Binding NoteView, Source={StaticResource Locator}}"
+			 Loaded="NoteView_OnLoaded">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -170,11 +171,11 @@
 			</Style>
 
 			<Style x:Key="TextStyle" TargetType="{x:Type Run}">
-				
+
 			</Style>
 
 			<Style x:Key="ParagraphStyle" TargetType="{x:Type Paragraph}">
-				
+
 			</Style>
 
 			<Style x:Key="TodoCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
@@ -241,7 +242,7 @@
 					</StackPanel>
 				</Button>
 
-				<ToggleButton IsChecked="{Binding Note.Favourite, Mode=TwoWay}" Width="30" Height="30" Style="{DynamicResource MetroCircleToggleButtonStyle}">
+				<ToggleButton IsChecked="{Binding CurrentNote.Note.Favourite, Mode=TwoWay}" Width="30" Height="30" Style="{DynamicResource MetroCircleToggleButtonStyle}">
 					<iconPacks:PackIconMaterial Kind="Star" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 				</ToggleButton>
 			</StackPanel>
@@ -269,7 +270,7 @@
 					</Button>
 				</StackPanel>
 
-				<views1:NoteEditor Grid.Column="0" Grid.Row="1" DataContext="{Binding}" x:Name="NoteEditor" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+				<views1:NoteEditor Grid.Column="0" Grid.Row="1" DataContext="{Binding CurrentNote}" x:Name="NoteEditor" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 				<GridSplitter Grid.Column="1" Grid.Row="1" IsEnabled="False" Width="2" Style="{StaticResource CustomGridSplitterStyle}" />
 				<FlowDocumentScrollViewer Grid.Column="2" Grid.Row="1" IsTabStop="False"
                                                 x:Name="FlowDocumentPageViewer"
@@ -283,8 +284,7 @@
                                            RenderOptions.ClearTypeHint="Enabled"
 										   Foreground="{DynamicResource IdealForegroundColorBrush}">
 					<MultiBinding Converter="{StaticResource TextToFlowDocumentConverter}">
-						<Binding Path="Note.DecryptedText" />
-						<Binding Path="Note" />
+						<Binding Path="CurrentNote" />
 						<Binding ElementName="SearchTextBlock" Path="Text" />
 					</MultiBinding>
 				</FlowDocumentScrollViewer>

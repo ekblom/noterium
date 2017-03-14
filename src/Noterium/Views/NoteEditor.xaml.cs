@@ -22,6 +22,7 @@ using Noterium.Core.DropBox;
 using Noterium.Properties;
 using Noterium.ViewModels;
 using Noterium.Windows;
+using GalaSoft.MvvmLight;
 
 namespace Noterium.Views
 {
@@ -48,7 +49,16 @@ namespace Noterium.Views
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		public NoteViewModel CurrentModel => ((NoteViewModel)DataContext);
+		public NoteViewModel CurrentModel
+		{
+			get
+			{
+				if (DataContext is NoteViewModel)
+					return ((NoteViewModel)DataContext);
+				return null;
+			}
+		}
+
 		public bool SupressOnTextChanged { get; set; }
 
 		public NoteEditor()
@@ -56,7 +66,8 @@ namespace Noterium.Views
 			// https://social.msdn.microsoft.com/Forums/vstudio/en-US/e2bf5cc5-618f-4d46-bf22-e07d0b4bc64a/wpf-45-win-8-problem-with-presentationuiaero2?forum=wpf
 			InitializeComponent();
 
-			TagControl.AllTags = Hub.Instance.Settings.Tags.ToList().ConvertAll(t => t.Name);
+			if (Hub.Instance.Settings != null)
+				TagControl.AllTags = Hub.Instance.Settings.Tags.ToList().ConvertAll(t => t.Name);
 			DataContextChanged += OnDataContextChanged;
 
 			//MarkdownText.FontFamily = new FontFamily(new Uri("pack://application:,,,/resources/"), "./#DejaVu Sans Mono");
@@ -134,20 +145,20 @@ namespace Noterium.Views
 		{
 			InvokeOnCurrentDispatcher(() =>
 			{
-				if (CurrentModel?.Note != null)
+				if (CurrentModel != null && CurrentModel?.Note != null)
 				{
 					CurrentModel.Note.DecryptedText = MarkdownText.Text;
 					CurrentModel.SaveNote();
 				}
 			});
-			
+
 		}
 
 		private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs i)
 		{
 			try
 			{
-				if (i.OldValue != null)
+				if (i.OldValue != null && i.OldValue is NoteViewModel)
 				{
 					NoteViewModel oldModel = (NoteViewModel)i.OldValue;
 					oldModel.Note.NoteRefreshedFromDisk -= Note_RefreshedFromDisk;
@@ -165,7 +176,8 @@ namespace Noterium.Views
 
 				UpdateEntities();
 
-				CurrentModel.CheckBoxCheckUpdatedTextCommand = new SimpleCommand(UpdateTextByCheckBox);
+				// TODO: Update text when changed by checkbox.
+				//CurrentModel.CheckBoxCheckUpdatedTextCommand = new SimpleCommand(UpdateTextByCheckBox);
 			}
 			finally
 			{

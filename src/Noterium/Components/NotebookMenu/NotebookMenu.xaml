@@ -17,7 +17,8 @@
 			 d:DataContext="{d:DesignInstance notebookMenu1:NotebookMenuViewModel}"
 			 DataContextChanged="NotebookMenu_OnDataContextChanged"
 			 Loaded="NotebookMenu_OnLoaded"
-             x:Name="UserControl">
+             x:Name="UserControl"
+			 DataContext="{Binding NotebookMenu, Source={StaticResource Locator}}">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>

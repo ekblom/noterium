@@ -11,16 +11,18 @@
         mc:Ignorable="d" WindowStartupLocation="CenterOwner"
 		Style="{DynamicResource VSWindowStyleKey}"
         ShowIconOnTitleBar="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowInTaskbar="True"
-        d:DataContext="{d:DesignInstance viewModels:BackupManagerViewModel}" Title="Backup manager" Height="600" Width="800">
+        d:DataContext="{d:DesignInstance viewModels:BackupManagerViewModel}"
+		Title="Backup manager" Height="600" Width="800"
+		DataContext="{Binding BackupManager, Source={StaticResource Locator}}">
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Resources/Styles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
-			<converters:BooleanToVisibilityConverter 
-				x:Key="BooleanToVisibilityConverter" 
-				True="Visible" 
+			<converters:BooleanToVisibilityConverter
+				x:Key="BooleanToVisibilityConverter"
+				True="Visible"
 				False="Collapsed" />
 		</ResourceDictionary>
 	</Window.Resources>

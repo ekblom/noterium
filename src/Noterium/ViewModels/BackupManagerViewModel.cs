@@ -18,7 +18,7 @@ using Noterium.Windows;
 
 namespace Noterium.ViewModels
 {
-    public class BackupManagerViewModel : INotifyPropertyChanged
+    public class BackupManagerViewModel : NoteriumViewModelBase
     {
         private BackupSet _selectedBackupSet;
         private FileTreeNode _selectedFileNode;
@@ -119,7 +119,7 @@ namespace Noterium.ViewModels
         private void LoadBackupSets()
         {
             BackupSets = new ObservableCollection<BackupSet>();
-            var files = Core.Hub.Instance.Storage.GetBackupFiles();
+            var files = Hub.Instance.Storage.GetBackupFiles();
             foreach (var file in files)
             {
                 BackupSet set = new BackupSet(file);

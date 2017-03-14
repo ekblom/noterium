@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Noterium.Properties;
+using Noterium.Code.Messages;
 
 namespace Noterium.Components.NotebookMenu
 {
@@ -15,15 +16,9 @@ namespace Noterium.Components.NotebookMenu
             set { _name = value; OnPropertyChanged(); }
         }
 
-        public string Type { get; }
-        
-        public bool IsSelected
-        {
-            get { return false; }
-            set { throw new NotSupportedException(); }
-        }
-        
-        public LibraryMenuItem(string name, string type)
+        public LibraryType Type { get; }
+
+        public LibraryMenuItem(string name, LibraryType type)
         {
             _name = name;
             Type = type;

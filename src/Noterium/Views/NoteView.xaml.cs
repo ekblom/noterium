@@ -52,9 +52,7 @@ namespace Noterium.Views
 			set { _searchText = value; OnPropertyChanged(); }
 		}
 
-		public Note ContextNote => CurrentModel.Note;
-
-		public NoteViewModel CurrentModel => ((NoteViewModel)DataContext);
+		public NoteViewerViewModel Model => ((NoteViewerViewModel)DataContext);
 
 		public NoteView()
 		{
@@ -125,13 +123,13 @@ namespace Noterium.Views
 
 		private void NoteViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (CurrentModel == null)
+			if (Model == null)
 				return;
 
 			SelectViewMode();
 
-			CurrentModel.EditNoteCommand = new RelayCommand(SwitchToEditPanel);
-			CurrentModel.SaveNoteCommand = new RelayCommand(SaveNote);
+			Model.EditNoteCommand = new RelayCommand(SwitchToEditPanel);
+			Model.SaveNoteCommand = new RelayCommand(SaveNote);
 		}
 
 		void NoteViewPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -152,13 +150,13 @@ namespace Noterium.Views
 
 		private void SaveNote()
 		{
-			CurrentModel?.SaveNote();
+			Model.CurrentNote?.SaveNote();
 			SelectViewMode();
 		}
 
 		private void SelectViewMode()
 		{
-			if (string.IsNullOrEmpty(CurrentModel.Note.DecryptedText))
+			if (string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
 			{
 				if (Hub.Instance.Settings.DefaultNoteView == "Split")
 					ViewModeButtonClicked(SplitModeButton, null);
@@ -201,7 +199,7 @@ namespace Noterium.Views
 			if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri))
 			{
                 // If the link is not an url, it is probably a path to a note-file, so find it
-				var file = ContextNote.Files.FirstOrDefault(nf => nf.FileName.Equals(url));
+				var file = Model.CurrentNote.Note.Files.FirstOrDefault(nf => nf.FileName.Equals(url));
 				if (file != null)
 					url = file.FullName;
 				else
@@ -215,14 +213,14 @@ namespace Noterium.Views
 		private void ShowNoteFile_OnClick(object sender, RoutedEventArgs e)
 		{
 			string path = Hub.Instance.Storage.DataStore.DataFolder;
-			string args = path + "\\" + ContextNote.Notebook + "\\" + ContextNote.ID + "." + Core.Constants.File.NoteFileExtension;
+			string args = path + "\\" + Model.CurrentNote.Notebook + "\\" + Model.CurrentNote.Note.ID + "." + Core.Constants.File.NoteFileExtension;
 			Process.Start(args);
 		}
 
 		private void ShowNoteFolder_OnClick(object sender, RoutedEventArgs e)
 		{
 			string path = Hub.Instance.Storage.DataStore.DataFolder;
-			string args = "/select,\"" + path + "\\" + ContextNote.Notebook + "\"";
+			string args = "/select,\"" + path + "\\" + Model.CurrentNote.Notebook + "\"";
 			Process.Start("explorer.exe", args);
 		}
 
@@ -237,14 +235,14 @@ namespace Noterium.Views
 		private void DocumentCheckBoxChecked(object arg)
 		{
 			_markdownToFlowDocumentConverter.Pause = true;
-			CurrentModel.DocumentCheckBoxCheckedCommand?.Execute(arg);
+			Model.DocumentCheckBoxCheckedCommand?.Execute(arg);
 			_markdownToFlowDocumentConverter.Pause = false;
 		}
 
 		private void ViewModeButtonClicked(object sender, RoutedEventArgs e)
 		{
 			if (e != null)
-				CurrentModel?.SaveNote();
+				Model.CurrentNote?.SaveNote();
 
 			Button btn = (Button)sender;
 			SplitColumn.Visible = false;
@@ -284,7 +282,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.F)
 			{
 				e.Handled = true;
-				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
+				Model.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 
@@ -293,7 +291,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.SystemKey == Key.LeftCtrl && e.Key == Key.F)
 			{
 				e.Handled = true;
-				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
+				Model.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 

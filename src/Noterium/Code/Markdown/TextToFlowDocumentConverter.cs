@@ -8,6 +8,7 @@ using System.Windows.Input;
 using CommonMark;
 using Noterium.Code.Helpers;
 using Noterium.Core.DataCarriers;
+using Noterium.ViewModels;
 
 namespace Noterium.Code.Markdown
 {
@@ -45,20 +46,18 @@ namespace Noterium.Code.Markdown
 		    if (Pause)
 		        return CurrentDocument;
 
-			if (value == null || value.Length != 3)
+			if (value == null || value.Length != 2)
 				return null;
 
-			if (!(value[0] is string && value[1] is Note && value[2] is string))
+			if (!(value[0] is NoteViewModel && value[1] is string))
 				return null;
 
-			_text = (string)value[0];
-			var searchText = (string)value[2];
-			var note = (Note)value[1];
-
-
+			var note = (NoteViewModel)value[0];
+			var searchText = (string)value[1];
+			_text = note.Note.DecryptedText;
 
 			var engine = XamlFormatter ?? _markdown.Value;
-			engine.CurrentNote = note;
+			engine.CurrentNote = note.Note;
 
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
