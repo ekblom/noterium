@@ -27,12 +27,13 @@ namespace Noterium.Code.Markdown
 		}
 
 	    public bool Pause { get; set; }
+	    public Note CurrentNote { get; set; }
 
 	    // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty XamlFormatterProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
 
 		/// <summary>
-		/// Converts a value. 
+		/// Converts a value.
 		/// </summary>
 		/// <returns>
 		/// A converted value. If the method returns null, the valid null value is used.
@@ -49,15 +50,14 @@ namespace Noterium.Code.Markdown
 			if (value == null || value.Length != 2)
 				return null;
 
-			if (!(value[0] is NoteViewModel && value[1] is string))
+			if (!(value[0] is string))
 				return null;
 
-			var note = (NoteViewModel)value[0];
+			_text = (string)value[0];
 			var searchText = (string)value[1];
-			_text = note.Note.DecryptedText;
 
 			var engine = XamlFormatter ?? _markdown.Value;
-			engine.CurrentNote = note.Note;
+			engine.CurrentNote = CurrentNote;
 
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
@@ -102,7 +102,7 @@ namespace Noterium.Code.Markdown
 		}
 
 		/// <summary>
-		/// Converts a value. 
+		/// Converts a value.
 		/// </summary>
 		/// <returns>
 		/// A converted value. If the method returns null, the valid null value is used.

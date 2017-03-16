@@ -15,6 +15,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500"
 			 DataContext="{Binding NoteView, Source={StaticResource Locator}}"
+			 DataContextChanged="NoteViewDataContextChanged"
 			 Loaded="NoteView_OnLoaded">
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -284,7 +285,7 @@
                                            RenderOptions.ClearTypeHint="Enabled"
 										   Foreground="{DynamicResource IdealForegroundColorBrush}">
 					<MultiBinding Converter="{StaticResource TextToFlowDocumentConverter}">
-						<Binding Path="CurrentNote" />
+						<Binding Path="CurrentNote.Note.DecryptedText" />
 						<Binding ElementName="SearchTextBlock" Path="Text" />
 					</MultiBinding>
 				</FlowDocumentScrollViewer>

@@ -42,6 +42,7 @@ namespace Noterium.ViewModels
 		private Notebook _notebook;
 		private bool _isSelected;
 		private NoteFile _selectedNoteFile;
+		private bool _isDirty;
 
 		public ObservableCollection<TokenizedTagItem> Tags { get; internal set; }
 
@@ -82,9 +83,13 @@ namespace Noterium.ViewModels
 			set { _visible = value; RaisePropertyChanged(); }
 		}
 
-		public bool IsDirty { get; set; }
+		public bool IsDirty
+		{
+			get { return _isDirty; }
+			set { _isDirty = value; RaisePropertyChanged(); }
+		}
 
-		public NoteFile SelectedNoteFile{ get{ return _selectedNoteFile; } set{ _selectedNoteFile = value; RaisePropertyChanged(); } }
+		public NoteFile SelectedNoteFile { get { return _selectedNoteFile; } set { _selectedNoteFile = value; RaisePropertyChanged(); } }
 
 		public void Init(Note note)
 		{
@@ -102,6 +107,13 @@ namespace Noterium.ViewModels
 			RenameFileCommand = new RelayCommand(RenameFile);
 			DeleteFileCommand = new RelayCommand(DeleteFile);
 			DeleteNoteCommand = new RelayCommand(SendDeleteNoteMessage);
+			SaveNoteCommand = new RelayCommand(StopEditing);
+		}
+
+		private void StopEditing()
+		{
+			SaveNote();
+			MessengerInstance.Send(new ChangeViewMode());
 		}
 
 		private void SendDeleteNoteMessage()

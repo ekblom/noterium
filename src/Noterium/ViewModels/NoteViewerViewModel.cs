@@ -33,6 +33,7 @@ namespace Noterium.ViewModels
 
 		private bool _secureNotesEnabled;
 		private NoteFile _selectedNoteFile;
+		private TextToFlowDocumentConverter _markdownConverter;
 
 		public NoteViewModel CurrentNote
 		{
@@ -46,6 +47,12 @@ namespace Noterium.ViewModels
 		{
 			get { return _secureNotesEnabled; }
 			set { _secureNotesEnabled = value; RaisePropertyChanged(); }
+		}
+
+		public TextToFlowDocumentConverter MarkdownConverter
+		{
+			get { return _markdownConverter; }
+			set { _markdownConverter = value; }
 		}
 
 		public NoteViewerViewModel()
@@ -64,6 +71,7 @@ namespace Noterium.ViewModels
 
 		private void UpdateSelectedNote(SelectedNoteChanged obj)
 		{
+			MarkdownConverter.CurrentNote = obj.SelectedNote.Note;
 			CurrentNote = obj.SelectedNote;
 		}
 

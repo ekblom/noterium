@@ -19,6 +19,8 @@ using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using Noterium.Properties;
 using Noterium.ViewModels;
+using GalaSoft.MvvmLight.Messaging;
+using Noterium.Code.Messages;
 
 namespace Noterium.Views
 {
@@ -63,6 +65,7 @@ namespace Noterium.Views
 			DataContextChanged += NoteViewDataContextChanged;
 
 			DataObject.AddCopyingHandler(FlowDocumentPageViewer, OnTextCopy);
+			Messenger.Default.Register<ChangeViewMode>(this, SelectViewMode);
 		}
 
 		private void OnTextCopy(object sender, DataObjectCopyingEventArgs e)
@@ -154,6 +157,11 @@ namespace Noterium.Views
 			SelectViewMode();
 		}
 
+		private void SelectViewMode(ChangeViewMode message)
+		{
+			SelectViewMode();
+		}
+
 		private void SelectViewMode()
 		{
 			if (string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
@@ -198,7 +206,7 @@ namespace Noterium.Views
 			Uri uri;
 			if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri))
 			{
-                // If the link is not an url, it is probably a path to a note-file, so find it
+				// If the link is not an url, it is probably a path to a note-file, so find it
 				var file = Model.CurrentNote.Note.Files.FirstOrDefault(nf => nf.FileName.Equals(url));
 				if (file != null)
 					url = file.FullName;
@@ -228,6 +236,7 @@ namespace Noterium.Views
 		{
 			_xamlFormatter = Resources["XamlFormatter"] as XamlFormatter;
 			_markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
+			Model.MarkdownConverter = _markdownToFlowDocumentConverter;
 			if (_xamlFormatter != null)
 				_xamlFormatter.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 		}
@@ -241,6 +250,9 @@ namespace Noterium.Views
 
 		private void ViewModeButtonClicked(object sender, RoutedEventArgs e)
 		{
+			if (SplitColumn == null)
+				return;
+
 			if (e != null)
 				Model.CurrentNote?.SaveNote();
 

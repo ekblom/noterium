@@ -70,8 +70,6 @@ namespace Noterium.Views
 				TagControl.AllTags = Hub.Instance.Settings.Tags.ToList().ConvertAll(t => t.Name);
 			DataContextChanged += OnDataContextChanged;
 
-			//MarkdownText.FontFamily = new FontFamily(new Uri("pack://application:,,,/resources/"), "./#DejaVu Sans Mono");
-
 			//MarkdownText.TextArea.MouseWheel += TextAreaMouseWheel;
 			//MarkdownText.TextArea.Caret.PositionChanged += CaretOnPositionChanged;
 
@@ -145,7 +143,7 @@ namespace Noterium.Views
 		{
 			InvokeOnCurrentDispatcher(() =>
 			{
-				if (CurrentModel != null && CurrentModel?.Note != null)
+				if (CurrentModel != null && CurrentModel.Note != null)
 				{
 					CurrentModel.Note.DecryptedText = MarkdownText.Text;
 					CurrentModel.SaveNote();
