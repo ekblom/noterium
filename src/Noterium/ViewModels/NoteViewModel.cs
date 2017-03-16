@@ -98,10 +98,15 @@ namespace Noterium.ViewModels
 
 			RenameNoteCommand = new RelayCommand(RenameNote);
 			CopyNoteCommand = new RelayCommand(CopyNote);
-			DeleteNoteCommand = new RelayCommand(DeleteNote);
 			OpenFileCommand = new RelayCommand(OpenFile);
 			RenameFileCommand = new RelayCommand(RenameFile);
 			DeleteFileCommand = new RelayCommand(DeleteFile);
+			DeleteNoteCommand = new RelayCommand(SendDeleteNoteMessage);
+		}
+
+		private void SendDeleteNoteMessage()
+		{
+			MessengerInstance.Send(new DeleteNote(this));
 		}
 
 		private void DeleteFile()
@@ -155,11 +160,6 @@ namespace Noterium.ViewModels
 				if (File.Exists(SelectedNoteFile.FullName))
 					Process.Start(SelectedNoteFile.FullName);
 			}
-		}
-
-		private void DeleteNote()
-		{
-			MessengerInstance.Send(new DeleteNote(this));
 		}
 
 		private void CopyNote()

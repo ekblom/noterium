@@ -1,12 +1,13 @@
 ﻿namespace Noterium.Code.Messages
 {
-	public enum LibraryType
+	public enum MenuItemType
 	{
 		Undefined,
 		Trashcan,
 		Favorites,
 		All,
 		Recent,
-		Notebook
+		Notebook,
+		Tag
 	}
 }

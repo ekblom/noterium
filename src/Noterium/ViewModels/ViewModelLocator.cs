@@ -43,6 +43,7 @@ namespace Noterium.ViewModels
 			SimpleIoc.Default.Register<NotebookMenuViewModel>();
 			SimpleIoc.Default.Register<NoteViewModel>();
 			SimpleIoc.Default.Register<NoteViewerViewModel>();
+			SimpleIoc.Default.Register<NotebookViewModel>();
 		}
 
 		/// <summary>
@@ -125,11 +126,6 @@ namespace Noterium.ViewModels
 			return model;
 		}
 
-		public void Unregister(string key)
-		{
-			SimpleIoc.Default.Unregister(key);
-		}
-
 		public List<NoteViewModel> GetNoteViewModels(List<Note> notes)
 		{
 			List<NoteViewModel> result = new List<NoteViewModel>();
@@ -141,6 +137,35 @@ namespace Noterium.ViewModels
 			}
 
 			return result;
+		}
+
+		public NotebookViewModel GetNotebookViewModel(Notebook notebook)
+		{
+			bool isRegistered = SimpleIoc.Default.IsRegistered<NotebookViewModel>(notebook.ID.ToString());
+
+			var model = SimpleIoc.Default.GetInstance<NotebookViewModel>(notebook.ID.ToString());
+			if (!isRegistered)
+				model.Init(notebook);
+
+			return model;
+		}
+
+		public List<NotebookViewModel> GetNotebookViewModels(List<Notebook> notebooks)
+		{
+			List<NotebookViewModel> result = new List<NotebookViewModel>();
+			for (int i = 0; i < notebooks.Count; i++)
+			{
+				Notebook n = notebooks[i];
+				var model = GetNotebookViewModel(n);
+				result.Add(model);
+			}
+
+			return result;
+		}
+
+		public void Unregister(string key)
+		{
+			SimpleIoc.Default.Unregister(key);
 		}
 
 		/// <summary>

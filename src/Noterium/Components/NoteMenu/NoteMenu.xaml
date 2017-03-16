@@ -12,8 +12,7 @@
              xmlns:p="clr-namespace:Noterium.Properties"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-			 d:DataContext="{d:DesignInstance noteMenu:NoteMenuViewModel}" Loaded="NoteMenu_OnLoaded"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="NoteMenu_OnLoaded"
 			 DataContext="{Binding NoteMenu, Source={StaticResource Locator}}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -166,8 +165,8 @@
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListBox.InputBindings>
-            <KeyBinding Key="Delete" Command="{Binding DeleteItemCommand}" />
-            <KeyBinding Key="F2" Command="{Binding RenameItemCommand}" />
+            <KeyBinding Key="Delete" Command="{Binding DeleteNoteCommand}" />
+            <KeyBinding Key="F2" Command="{Binding SelectedNote.RenameNoteCommand}" />
         </ListBox.InputBindings>
     </ListView>
 </UserControl>

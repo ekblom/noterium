@@ -19,8 +19,9 @@ using Noterium.Core;
 using Noterium.Code.Helpers;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight.CommandWpf;
 
-namespace Noterium.Components.NoteMenu
+namespace Noterium.ViewModels
 {
 	public class NoteMenuViewModel : NoteriumViewModelBase, IDragSource, IDropTarget
 	{
@@ -44,6 +45,8 @@ namespace Noterium.Components.NoteMenu
 			FilterNotesCommand = new SimpleCommand(FilterNotes);
 			ClearFilterCommand = new SimpleCommand(ClearFilter);
 			ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
+			CreateNewNoteCommand = new RelayCommand(CreateNewNote);
+			CreateNewSecureNoteCommand = new RelayCommand(CreateNewSecureNote);
 
 			PropertyChanged += OnPropertyChanged;
 
@@ -55,14 +58,17 @@ namespace Noterium.Components.NoteMenu
 			saveTimer.Elapsed += SaveNotIfDirty;
 			saveTimer.Start();
 
-			MessengerInstance.Register<ReloadNoteList>(this, DoReloadNoteList);
-			MessengerInstance.Register<DeleteNote>(this, DoDeleteNote);
+			MessengerInstance.Register<ReloadNoteMenuList>(this, DoReloadNoteList);
+			MessengerInstance.Register<DeleteNote>(this, DeleteNote);
 		}
 
-		private void DoDeleteNote(DeleteNote message)
+		private void DeleteNote(DeleteNote message)
 		{
 			// TODO: i18n
-			Note note = message.Note.Note;
+			if (SelectedNote == null || SelectedNote != message.Note)
+				return;
+
+			Note note = SelectedNote.Note;
 			if (note.InTrashCan)
 			{
 				return;
@@ -85,7 +91,7 @@ namespace Noterium.Components.NoteMenu
 					{
 						note.InTrashCan = true;
 
-						DataSource.Remove(message.Note);
+						DataSource.Remove(SelectedNote);
 						SelectedNote = DataSource.FirstOrDefault();
 						Hub.Instance.Settings.RefreshTags();
 					});
@@ -93,7 +99,7 @@ namespace Noterium.Components.NoteMenu
 			});
 		}
 
-		private void DoReloadNoteList(ReloadNoteList obj)
+		private void DoReloadNoteList(ReloadNoteMenuList obj)
 		{
 			List<Note> notes = new List<Note>();
 
@@ -106,30 +112,30 @@ namespace Noterium.Components.NoteMenu
 			{
 				notes = Hub.Instance.Storage.GetNotes(obj.Notebook).Where(n => !n.InTrashCan).ToList();
 			}
-			else if (obj.LibraryType != LibraryType.Undefined)
+			else if (obj.LibraryType != MenuItemType.Undefined)
 			{
-				if (obj.LibraryType == LibraryType.Trashcan)
+				if (obj.LibraryType == MenuItemType.Trashcan)
 				{
 					var tempNotes = Hub.Instance.Storage.GetAllNotes();
 					notes = tempNotes.Where(n => n.InTrashCan).ToList();
 				}
-				else if (obj.LibraryType == LibraryType.Favorites)
+				else if (obj.LibraryType == MenuItemType.Favorites)
 				{
 					var tempNotes = Hub.Instance.Storage.GetAllNotes();
 					notes = tempNotes.Where(n => n.Favourite).Where(n => !n.InTrashCan).ToList();
 				}
-				else if (obj.LibraryType == LibraryType.All)
+				else if (obj.LibraryType == MenuItemType.All)
 				{
 					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Name).ToList();
 				}
-				else if (obj.LibraryType == LibraryType.Recent)
+				else if (obj.LibraryType == MenuItemType.Recent)
 				{
 					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Changed).Take(15).ToList();
 				}
 			}
 
 			var models = ViewModelLocator.Instance.GetNoteViewModels(notes);
-
+			SelectedNote = null;
 			UpdateDataSource(models);
 
 			if (obj.SelectedNote != null)
@@ -208,8 +214,6 @@ namespace Noterium.Components.NoteMenu
 			get { return _selectedNote; }
 			set
 			{
-				Stopwatch clock = Stopwatch.StartNew();
-
 				if (_selectedNote != null)
 				{
 					_selectedNote.SaveNote();
@@ -219,14 +223,9 @@ namespace Noterium.Components.NoteMenu
 				if (_selectedNote != null)
 					_selectedNote.IsSelected = true;
 
-				Console.WriteLine($"Change selected note took {clock.ElapsedMilliseconds} ms.");
-
 				MessengerInstance.Send(new SelectedNoteChanged(_selectedNote));
 
 				RaisePropertyChanged();
-
-				clock.Stop();
-				Console.WriteLine($"Raise property changes took {clock.ElapsedMilliseconds} ms");
 			}
 		}
 
@@ -299,6 +298,68 @@ namespace Noterium.Components.NoteMenu
 
 			DataSource.Clear();
 			models.ForEach(DataSource.Add);
+		}
+
+		internal void CreateNewNote(string name, bool secure = false)
+		{
+			CreateNewNote(name, ViewModelLocator.Instance.NotebookMenu.SelectedNotebook.Notebook, secure, ViewModelLocator.Instance.NoteMenu.DataSource.Count);
+		}
+
+		internal Note CreateNewNote(string name, Notebook notebook, bool secure, int sortIndex, string text = null)
+		{
+			Note note = new Note
+			{
+				ID = Guid.NewGuid(),
+				Name = name,
+				Notebook = notebook.ID,
+				Created = DateTime.Now,
+				Encrypted = secure,
+				SortIndex = sortIndex,
+				Text = text ?? string.Empty
+			};
+
+			note.Save();
+
+			//var notebookViewModel = ViewModelLocator.Instance.GetNotebookViewModel(notebook);
+			DoReloadNoteList(new ReloadNoteMenuList(notebook, note));
+			//MessengerInstance.Send(new UpdateNoteList(notebookViewModel));
+
+			//if (focusNote)
+			//	MessengerInstance.Send(new SelectNote(note));
+
+			return note;
+		}
+
+
+		private void CreateNewSecureNote()
+		{
+			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled)
+			{
+				MainWindowInstance.ShowMessageAsync("Secure notes", "To create secure notes you need to activate this function in settings.");
+				return;
+			}
+
+			CreateNewNote(true);
+		}
+
+		private void CreateNewNote()
+		{
+			CreateNewNote(false);
+		}
+
+		private void CreateNewNote(bool secure)
+		{
+			// TODO: i18n
+			var settings = DialogHelpers.GetDefaultDialogSettings();
+
+			MainWindowInstance.ShowInputAsync("New note", "Name of the new note:", settings).ContinueWith(delegate (Task<string> task)
+			{
+				string name = task.Result;
+				if (!string.IsNullOrWhiteSpace(name))
+				{
+					InvokeOnCurrentDispatcher(() => { CreateNewNote(name, secure); });
+				}
+			});
 		}
 	}
 }

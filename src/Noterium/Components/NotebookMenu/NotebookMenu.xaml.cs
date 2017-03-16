@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Noterium.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,7 +83,7 @@ namespace Noterium.Components.NotebookMenu
 		private void NotebookMenu_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			_model = DataContext as NotebookMenuViewModel;
-		    NotebookMenuItem first = _model?.Notebooks.FirstOrDefault();
+		    NotebookViewModel first = _model?.Notebooks.FirstOrDefault();
 		    if (first != null)
 		    {
 		        _model.SelectedItemChangedCommand?.Execute(first);

@@ -1,6 +1,6 @@
 ﻿using Noterium.Core.DataCarriers;
 
-namespace Noterium.Components.NoteMenu
+namespace Noterium.Code.Interfaces
 {
 	public interface INoteMenuItem
 	{

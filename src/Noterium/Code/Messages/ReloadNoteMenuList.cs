@@ -2,33 +2,33 @@
 
 namespace Noterium.Code.Messages
 {
-	internal struct ReloadNoteList
+	internal struct ReloadNoteMenuList
 	{
 		public Tag Tag { get; private set; }
 
 		public Notebook Notebook { get; private set; }
 
-		public LibraryType LibraryType { get; private set; }
+		public MenuItemType LibraryType { get; private set; }
 
 		public Note SelectedNote { get; private set; }
 
-		public ReloadNoteList(Tag tag)
+		public ReloadNoteMenuList(Tag tag)
 		{
-			LibraryType = LibraryType.Undefined;
+			LibraryType = MenuItemType.Undefined;
 			Notebook = null;
 			SelectedNote = null;
 			Tag = tag;
 		}
 
-		public ReloadNoteList(Notebook notebook, Note selectedNote = null)
+		public ReloadNoteMenuList(Notebook notebook, Note selectedNote = null)
 		{
-			LibraryType = LibraryType.Undefined;
+			LibraryType = MenuItemType.Undefined;
 			Notebook = notebook;
 			SelectedNote = selectedNote;
 			Tag = null;
 		}
 
-		public ReloadNoteList(LibraryType type)
+		public ReloadNoteMenuList(MenuItemType type)
 		{
 			LibraryType = type;
 			Notebook = null;
@@ -38,7 +38,7 @@ namespace Noterium.Code.Messages
 
 		public bool IsEmpty()
 		{
-			return Tag == null && Notebook == null && SelectedNote == null && LibraryType == LibraryType.Undefined;
+			return Tag == null && Notebook == null && SelectedNote == null && LibraryType == MenuItemType.Undefined;
 		}
 	}
 }

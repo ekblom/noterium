@@ -300,8 +300,8 @@
 						</Button.ContentTemplate>
 						<Button.ContextMenu>
 							<ContextMenu >
-								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
+								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding NoteMenuContext.CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding NoteMenuContext.CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
                                            Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
 							</ContextMenu>
 						</Button.ContextMenu>

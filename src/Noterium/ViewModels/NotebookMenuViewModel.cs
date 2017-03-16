@@ -17,32 +17,32 @@ using System;
 using System.Linq;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.CommandWpf;
+using Noterium.Code.Interfaces;
 
-namespace Noterium.Components.NotebookMenu
+namespace Noterium.ViewModels
 {
 	public class NotebookMenuViewModel : NoteriumViewModelBase, IDropTarget
 	{
-		private NotebookMenuItem _selectedNotebook;
+		private NotebookViewModel _selectedNotebook;
 		private Tag _selectedTag;
 		private IMainMenuItem _selectedMenuItem;
 		private readonly object _mainMenuListLockObject = new object();
 		private readonly object _currentNotesbooksLockObject = new object();
 
 		#region -- Static menu items --
-		private readonly LibraryMenuItem _favoritesLibraryMenuItem = new LibraryMenuItem("Favorites", LibraryType.Favorites);
-		private readonly LibraryMenuItem _trashLibraryMenuItem = new LibraryMenuItem("Trash", LibraryType.Trashcan);
-		private readonly LibraryMenuItem _allLibraryMenuItem = new LibraryMenuItem("All notes", LibraryType.All);
-		private readonly LibraryMenuItem _recentLibraryMenuItem = new LibraryMenuItem("Recent", LibraryType.Recent);
+		private readonly AutoFilterViewModel _favoritesLibraryMenuItem = new AutoFilterViewModel("Favorites", MenuItemType.Favorites);
+		private readonly AutoFilterViewModel _trashLibraryMenuItem = new AutoFilterViewModel("Trash", MenuItemType.Trashcan);
+		private readonly AutoFilterViewModel _allLibraryMenuItem = new AutoFilterViewModel("All notes", MenuItemType.All);
+		private readonly AutoFilterViewModel _recentLibraryMenuItem = new AutoFilterViewModel("Recent", MenuItemType.Recent);
 		#endregion
 
 		public ICommand SelectedNoteContainerChangedCommand { get; set; }
 		public ICommand SelectedItemChangedCommand { get; set; }
-		public ICommand DeleteItemCommand { get; set; }
-		public ICommand RenameItemCommand { get; set; }
+		public ICommand RenameNotebookCommand { get; set; }
 		public ICommand AddNotebookCommand { get; set; }
 		public ICommand EmptyTrashCommand { get; set; }
 		public ICommand PasteNoteCommand { get; set; }
-		public ICommand DeleteNoteBookCommand { get; set; }
+		public ICommand DeleteNotebookCommand { get; set; }
 
 		public Settings Settings { get; set; }
 		public IMainMenuItem SelectedMenuItem
@@ -51,11 +51,9 @@ namespace Noterium.Components.NotebookMenu
 			set { _selectedMenuItem = value; RaisePropertyChanged(); }
 		}
 
-		public ObservableCollection<NotebookMenuItem> NotebookMenuItems { get; set; }
+		public ObservableCollection<NotebookViewModel> Notebooks { get; set; }
 
-		public ObservableCollection<NotebookMenuItem> Notebooks { get; set; }
-
-		public NotebookMenuItem SelectedNotebook
+		public NotebookViewModel SelectedNotebook
 		{
 			get { return _selectedNotebook; }
 			set { _selectedNotebook = value; RaisePropertyChanged(); }
@@ -69,13 +67,11 @@ namespace Noterium.Components.NotebookMenu
 
 		public NotebookMenuViewModel()
 		{
-
 			Settings = Hub.Instance.Settings;
 
-			DeleteNoteBookCommand = new RelayCommand(DeleteCurrentNoteBook);
+			DeleteNotebookCommand = new RelayCommand(DeleteCurrentNotebook);
 			SelectedItemChangedCommand = new SimpleCommand(SelectedNoteContainerChanged);
-			RenameItemCommand = new SimpleCommand(RenameItem);
-			DeleteItemCommand = new SimpleCommand(DeleteItem);
+			RenameNotebookCommand = new SimpleCommand(RenameItem);
 			AddNotebookCommand = new SimpleCommand(CreateNotebook);
 			EmptyTrashCommand = new SimpleCommand(EmptyTrash);
 			PasteNoteCommand = new SimpleCommand(PasteNote);
@@ -88,16 +84,8 @@ namespace Noterium.Components.NotebookMenu
 
 		private void InitMainMenu()
 		{
-			NotebookMenuItems = new ObservableCollection<NotebookMenuItem>();
-
-			List<NotebookMenuItem> items = new List<NotebookMenuItem>();
-
-			foreach (Notebook notebook in Hub.Instance.Storage.GetNotebooks())
-			{
-				var item = new NotebookMenuItem(notebook);
-				NotebookMenuItems.Add(item);
-				items.Add(item);
-			}
+			var notebooks = Hub.Instance.Storage.GetNotebooks();
+			var items = ViewModelLocator.Instance.GetNotebookViewModels(notebooks);
 
 			items.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
@@ -106,10 +94,9 @@ namespace Noterium.Components.NotebookMenu
 				SelectedNotebook = items[0];
 				SelectedNotebook.IsSelected = true;
 			}
-			Notebooks = new ObservableCollection<NotebookMenuItem>(items);
+			Notebooks = new ObservableCollection<NotebookViewModel>(items);
 
 			BindingOperations.EnableCollectionSynchronization(Notebooks, _mainMenuListLockObject);
-			BindingOperations.EnableCollectionSynchronization(NotebookMenuItems, _currentNotesbooksLockObject);
 		}
 
 		private void OnApplicationUnlocked(ApplicationUnlocked obj)
@@ -121,7 +108,7 @@ namespace Noterium.Components.NotebookMenu
 		public void DragOver(IDropInfo dropInfo)
 		{
 			NoteViewModel sourceItem = dropInfo.Data as NoteViewModel;
-			NotebookMenuItem targetItem = dropInfo.TargetItem as NotebookMenuItem;
+			NotebookViewModel targetItem = dropInfo.TargetItem as NotebookViewModel;
 
 			if (sourceItem == null)
 				return;
@@ -147,7 +134,7 @@ namespace Noterium.Components.NotebookMenu
 			if (sourceItem == null)
 				return;
 
-			NotebookMenuItem targetItem = dropInfo.TargetItem as NotebookMenuItem;
+			NotebookViewModel targetItem = dropInfo.TargetItem as NotebookViewModel;
 			ListViewItem targetElement = dropInfo.VisualTarget as ListViewItem;
 
 			bool removeFromSourceCollection = false;
@@ -216,7 +203,7 @@ namespace Noterium.Components.NotebookMenu
 				if (args.AddedItems.Count > 0)
 					addedItem = args.AddedItems[0];
 			}
-			else if (p is NotebookMenuItem)
+			else if (p is NotebookViewModel)
 				addedItem = p;
 
 			var tag = addedItem as Tag;
@@ -227,11 +214,11 @@ namespace Noterium.Components.NotebookMenu
 				SelectedMenuItem = null;
 				MessengerInstance.Send(new ConfigureControlsForParnetType(ParentType.Tag));
 			}
-			else if (addedItem is NotebookMenuItem)
+			else if (addedItem is NotebookViewModel)
 			{
 				MessengerInstance.Send(new ConfigureControlsForParnetType(ParentType.Notebook));
 				SelectedTag = null;
-				SelectedNotebook = (NotebookMenuItem)addedItem;
+				SelectedNotebook = (NotebookViewModel)addedItem;
 				SelectedMenuItem = SelectedNotebook;
 			}
 			else if (addedItem is ListViewItem)
@@ -265,22 +252,22 @@ namespace Noterium.Components.NotebookMenu
 
 		private void ReloadNoteList(NoteViewModel selected = null)
 		{
-			ReloadNoteList message = new ReloadNoteList(null);
+			ReloadNoteMenuList message = new ReloadNoteMenuList(null);
 
 			List<Note> notes = new List<Note>();
 
 			if (SelectedTag != null)
 			{
-				message = new ReloadNoteList(SelectedTag);
+				message = new ReloadNoteMenuList(SelectedTag);
 			}
 			else if (SelectedNotebook != null)
 			{
-				message = new ReloadNoteList(SelectedNotebook.Notebook, selected?.Note);
+				message = new ReloadNoteMenuList(SelectedNotebook.Notebook, selected?.Note);
 			}
-			else if (SelectedMenuItem is LibraryMenuItem)
+			else if (SelectedMenuItem is AutoFilterViewModel)
 			{
-				var menuItem = SelectedMenuItem as LibraryMenuItem;
-				message = new ReloadNoteList(menuItem.Type);
+				var menuItem = SelectedMenuItem as AutoFilterViewModel;
+				message = new ReloadNoteMenuList(menuItem.MenuItemType);
 			}
 
 			if (!message.IsEmpty())
@@ -291,7 +278,7 @@ namespace Noterium.Components.NotebookMenu
 
 		private void RenameItem(object arg)
 		{
-			if (SelectedMenuItem is TagMenuItem)
+			if (SelectedMenuItem is TagViewModel)
 				return;
 
 			string name = SelectedMenuItem.Name;
@@ -302,7 +289,7 @@ namespace Noterium.Components.NotebookMenu
 				string newName = task.Result;
 				if (!string.IsNullOrWhiteSpace(newName))
 				{
-					if (SelectedMenuItem is NotebookMenuItem)
+					if (SelectedMenuItem is NotebookViewModel)
 					{
 						SelectedNotebook.Notebook.Name = newName;
 						SelectedNotebook.Notebook.Save();
@@ -311,16 +298,7 @@ namespace Noterium.Components.NotebookMenu
 			});
 		}
 
-		private void DeleteItem(object arg)
-		{
-			if (SelectedMenuItem is TagMenuItem)
-				return;
-
-			if (SelectedMenuItem is NotebookMenuItem)
-				DeleteCurrentNoteBook();
-		}
-
-		private void DeleteCurrentNoteBook()
+		private void DeleteCurrentNotebook()
 		{
 			// TODO: i18n
 			if (SelectedNotebook != null)
@@ -351,9 +329,6 @@ namespace Noterium.Components.NotebookMenu
 								if (Notebooks.Contains(SelectedNotebook))
 									Notebooks.Remove(SelectedNotebook);
 
-								if (NotebookMenuItems.Contains(SelectedNotebook))
-									NotebookMenuItems.Remove(SelectedNotebook);
-
 								SelectedNotebook = Notebooks[index];
 							});
 						}
@@ -377,21 +352,21 @@ namespace Noterium.Components.NotebookMenu
 				Notebook nb = new Notebook
 				{
 					Name = newName,
-					Created = DateTime.Now,
-					SortIndex = 0
+					Created = DateTime.Now
 				};
 				nb.Save();
-				var item = new NotebookMenuItem(nb);
 
-				List<NotebookMenuItem> temp = new List<NotebookMenuItem>();
+				var newNotebook = ViewModelLocator.Instance.GetNotebookViewModel(nb);
+
+				List<NotebookViewModel> temp = new List<NotebookViewModel>();
 				temp.AddRange(Notebooks.ToArray());
-				temp.Add(item);
+				temp.Add(newNotebook);
 				temp.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
 				Notebooks.Clear();
 				temp.ForEach(Notebooks.Add);
 
-				SelectedNotebook = item;
+				SelectedNotebook = newNotebook;
 				SelectedNotebook.IsSelected = true;
 			});
 		}
@@ -432,8 +407,7 @@ namespace Noterium.Components.NotebookMenu
 				if (data != null)
 				{
 					int index = Hub.Instance.Storage.GetNoteCount(notebook);
-					Note note = CreateNewNote(data.Name, notebook.ID, false, index, false);
-					note.Text = data.Text;
+					Note note = ViewModelLocator.Instance.NoteMenu.CreateNewNote(data.Name, notebook, false, index, data.Text);
 					if (data.Files != null && data.Files.Any())
 					{
 						foreach (ClipboardFile file in data.Files)
@@ -441,70 +415,12 @@ namespace Noterium.Components.NotebookMenu
 							NoteFile nf = NoteFile.Create(file.Name, file.MimeType, file.Data, note);
 							note.Text = note.Text.Replace(file.FileName, nf.FileName);
 						}
+						note.Save();
 					}
-
-					note.Save();
-
-					MessengerInstance.Send(new SelectNote(note));
 				}
 			}
-
-		}
-
-		private void CreateNewNote(string name, bool secure = false)
-		{
-			CreateNewNote(name, SelectedNotebook.Notebook.ID, secure, ViewModelLocator.Instance.NoteMenu.DataSource.Count);
-		}
-
-		private Note CreateNewNote(string name, Guid notebookId, bool secure, int sortIndex, bool focusNote = true)
-		{
-			Note note = new Note
-			{
-				ID = Guid.NewGuid(),
-				Name = name,
-				Notebook = notebookId,
-				Created = DateTime.Now,
-				Encrypted = secure,
-				SortIndex = sortIndex
-			};
-
-			note.Save();
-
-			if (focusNote)
-				MessengerInstance.Send(new SelectNote(note));
-
-			return note;
 		}
 
 
-		private void CreateNewSecureNote()
-		{
-			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled)
-			{
-				MainWindowInstance.ShowMessageAsync("Secure notes", "To create secure notes you need to activate this function in settings.");
-				return;
-			}
-
-			CreateNewNote(true);
-		}
-
-		private void CreateNewNote()
-		{
-			CreateNewNote(false);
-		}
-
-		private void CreateNewNote(bool secure)
-		{
-			var settings = DialogHelpers.GetDefaultDialogSettings();
-
-			MainWindowInstance.ShowInputAsync("New note", "Name of the new note:", settings).ContinueWith(delegate (Task<string> task)
-			{
-				string name = task.Result;
-				if (!string.IsNullOrWhiteSpace(name))
-				{
-					CreateNewNote(name, secure);
-				}
-			});
-		}
 	}
 }

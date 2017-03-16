@@ -258,7 +258,7 @@ namespace Noterium.ViewModels
 			NoteViewModel model = obj as NoteViewModel;
 			if (model != null)
 			{
-				MessengerInstance.Send(new ReloadNoteList(model.Notebook, model.Note));
+				MessengerInstance.Send(new ReloadNoteMenuList(model.Notebook, model.Note));
 				CloseSearch();
 			}
 		}

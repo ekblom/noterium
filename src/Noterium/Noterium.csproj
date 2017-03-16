@@ -240,11 +240,12 @@
     <Compile Include="Code\Messages\ChangeLibrary.cs" />
     <Compile Include="Code\Messages\ConfigureControlsForParnetType.cs" />
     <Compile Include="Code\Messages\DeleteNote.cs" />
-    <Compile Include="Code\Messages\LibraryType.cs" />
+    <Compile Include="Code\Messages\MenuItemType.cs" />
     <Compile Include="Code\Messages\QuickMessage.cs" />
-    <Compile Include="Code\Messages\ReloadNoteList.cs" />
+    <Compile Include="Code\Messages\ReloadNoteMenuList.cs" />
     <Compile Include="Code\Messages\SelectedNoteChanged.cs" />
     <Compile Include="Code\Messages\SelectNote.cs" />
+    <Compile Include="Code\Messages\UpdateNoteList.cs" />
     <Compile Include="Controls\AdornedControl\AdornedControl.cs" />
     <Compile Include="Controls\AdornedControl\AdornerPlacement.cs" />
     <Compile Include="Controls\AdornedControl\FrameworkElementAdorner.cs" />
@@ -259,16 +260,16 @@
     <Compile Include="Components\AuthenticationForm.xaml.cs">
       <DependentUpon>AuthenticationForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\NotebookMenu\IMainMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\TagMenuItem.cs" />
+    <Compile Include="Code\Interfaces\IMainMenuItem.cs" />
+    <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="Components\NotebookMenu\NotebookMenu.xaml.cs">
       <DependentUpon>NotebookMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\NotebookMenu\LibraryMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\NotebookMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\NotebookMenuViewModel.cs" />
-    <Compile Include="Components\NoteMenu\INoteMenuItem.cs" />
-    <Compile Include="Components\NoteMenu\NoteMenuViewModel.cs" />
+    <Compile Include="ViewModels\AutoFilterViewModel.cs" />
+    <Compile Include="ViewModels\NotebookViewModel.cs" />
+    <Compile Include="ViewModels\NotebookMenuViewModel.cs" />
+    <Compile Include="Code\Interfaces\INoteMenuItem.cs" />
+    <Compile Include="ViewModels\NoteMenuViewModel.cs" />
     <Compile Include="Components\NoteMenu\NoteMenu.xaml.cs">
       <DependentUpon>NoteMenu.xaml</DependentUpon>
     </Compile>
@@ -281,7 +282,6 @@
     <Compile Include="ViewModels\NoteViewModel.cs" />
     <Compile Include="ViewModels\ToDoItemViewModel.cs" />
     <Compile Include="ViewModels\TopMainMenuItemViewModel.cs" />
-    <Compile Include="ViewModels\MainMenuItemViewModel.cs" />
     <Compile Include="ViewModels\NoteEditorViewModel.cs" />
     <Compile Include="ViewModels\NoteViewerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
