@@ -257,12 +257,8 @@
 								</DataTemplate>
 							</Button.ContentTemplate>
 						</Button>
-
 					</DockPanel>
-					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu"
-					AdornerLayer="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedLayer}"
-					AdornedElement="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedElement}"
-                                            SizeChanged="ColumnOnSizeChanged"/>
+					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" SizeChanged="ColumnOnSizeChanged" />
 				</Grid>
 
 				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
@@ -276,7 +272,6 @@
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="35" />
-						<!--<RowDefinition Height="30" />-->
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 

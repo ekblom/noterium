@@ -3,15 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:p="clr-namespace:Noterium.Properties"
+		xmlns:p="clr-namespace:Noterium.Properties"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:viewModels="clr-namespace:Noterium.ViewModels"
         xmlns:converters="clr-namespace:Noterium.Code.Converters"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner"
 		Style="{DynamicResource VSWindowStyleKey}"
         ShowIconOnTitleBar="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowInTaskbar="True"
-        d:DataContext="{d:DesignInstance viewModels:BackupManagerViewModel}"
 		Title="Backup manager" Height="600" Width="800"
 		DataContext="{Binding BackupManager, Source={StaticResource Locator}}">
 	<Window.Resources>
@@ -55,7 +53,7 @@
 			</TreeView.ItemContainerStyle>
 
 			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate ItemsSource="{Binding Children}">
+				<HierarchicalDataTemplate ItemsSource="{Binding Chi	ldren}">
 					<TextBlock Text="{Binding Name}" />
 				</HierarchicalDataTemplate>
 			</TreeView.ItemTemplate>

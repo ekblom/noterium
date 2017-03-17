@@ -28,7 +28,7 @@ namespace Noterium.ViewModels
         public BackupSet SelectedBackupSet
         {
             get { return _selectedBackupSet; }
-            set { _selectedBackupSet = value; RaiseOnPropetyChanged(); }
+            set { _selectedBackupSet = value; RaisePropertyChanged(); }
         }
 
         public ObservableCollection<ITreeNode> BackupSetNodes { get; }
@@ -40,25 +40,18 @@ namespace Noterium.ViewModels
             {
                 _selectedFileNode = value;
                 ShowNoteFields = _selectedFileNode != null;
-                RaiseOnPropetyChanged();
+				RaisePropertyChanged();
             }
         }
 
         public bool ShowNoteFields
         {
             get { return _showNoteFields; }
-            set { _showNoteFields = value; RaiseOnPropetyChanged(); }
+            set { _showNoteFields = value; RaisePropertyChanged(); }
         }
 
         public ICommand RestoreNoteCommand { get; set; }
         public BackupManager Window { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public BackupManagerViewModel()
         {

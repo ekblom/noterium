@@ -151,7 +151,9 @@ namespace Noterium.ViewModels
 		{
 			if (e.PropertyName == "SortMode")
 			{
+				var selected = SelectedNote;
 				UpdateDataSource(new List<NoteViewModel>(DataSource));
+				SelectedNote = selected;
 			}
 		}
 

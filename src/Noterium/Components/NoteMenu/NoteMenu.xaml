@@ -165,7 +165,7 @@
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListBox.InputBindings>
-            <KeyBinding Key="Delete" Command="{Binding DeleteNoteCommand}" />
+			<KeyBinding Key="Delete" Command="{Binding SelectedNote.DeleteNoteCommand}" />
             <KeyBinding Key="F2" Command="{Binding SelectedNote.RenameNoteCommand}" />
         </ListBox.InputBindings>
     </ListView>

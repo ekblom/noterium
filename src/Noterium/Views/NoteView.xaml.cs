@@ -67,6 +67,12 @@ namespace Noterium.Views
 
 			DataObject.AddCopyingHandler(FlowDocumentPageViewer, OnTextCopy);
 			Messenger.Default.Register<ChangeViewMode>(this, SelectViewMode);
+			Messenger.Default.Register<SelectedNoteChanged>(this, OnSelectedNoteChanged);
+		}
+
+		private void OnSelectedNoteChanged(SelectedNoteChanged obj)
+		{
+			SelectViewMode(NoteViewModes.Default);
 		}
 
 		private void OnTextCopy(object sender, DataObjectCopyingEventArgs e)
@@ -175,7 +181,7 @@ namespace Noterium.Views
 			}
 
 			Button source = null;
-			if (string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
+			if (Model.CurrentNote != null && string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
 			{
 				if (mode == NoteViewModes.Split)
 					source = SplitModeButton;
@@ -228,6 +234,9 @@ namespace Noterium.Views
 				else
 					return;
 			}
+
+			if (!System.IO.File.Exists(url))
+				return;
 
 			ProcessStartInfo sInfo = new ProcessStartInfo(url);
 			Process.Start(sInfo);

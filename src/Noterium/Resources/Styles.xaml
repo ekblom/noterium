@@ -6,7 +6,6 @@
                     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro">
 	<ResourceDictionary.MergedDictionaries>
-		
 		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/styles/controls.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.treeview.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.buttons.xaml" />
@@ -52,7 +51,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-		
+
 	</Style>
 
 	<Style TargetType="{x:Type controls:WindowButtonCommands}">
@@ -152,12 +151,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GridSplitter">
-                    <Border 
-                    x:Name="FocusVisual" 
-                    Background="{TemplateBinding Background}" 
-                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    <Border
+                    x:Name="FocusVisual"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"/>
-                   
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -273,7 +272,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border x:Name="Border" 
+					<Border x:Name="Border"
 								Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -301,7 +300,7 @@
 	</Style>
 
 	<Style x:Key="EditorTabButton" TargetType="{x:Type Button}">
-        
+
         <Setter Property="Background" Value="Transparent" />
 
 		<Setter Property="Template">
@@ -374,16 +373,16 @@
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<ScrollContentPresenter Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-						<ScrollBar 
+						<ScrollBar
 									Name="PART_VerticalScrollBar"
 									Width="6"
-									Opacity="0.75" 
+									Opacity="0.75"
 									Grid.Column="1"
 									Value="{TemplateBinding VerticalOffset}"
 									Maximum="{TemplateBinding ScrollableHeight}"
 									ViewportSize="{TemplateBinding ViewportHeight}"
 									Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
-						<ScrollBar 
+						<ScrollBar
 									Name="PART_HorizontalScrollBar"
 									Orientation="Horizontal"
 									Width="6"
