@@ -8,6 +8,7 @@ using System.Windows.Input;
 using CommonMark;
 using Noterium.Code.Helpers;
 using Noterium.Core.DataCarriers;
+using System.Diagnostics;
 
 namespace Noterium.Code.Markdown
 {
@@ -25,13 +26,14 @@ namespace Noterium.Code.Markdown
 			set { SetValue(XamlFormatterProperty, value); }
 		}
 
-	    public bool Pause { get; set; }
+		public bool Pause { get; set; }
+		public Note CurrentNote { get; set; }
 
-	    // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
+		// Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty XamlFormatterProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
 
 		/// <summary>
-		/// Converts a value. 
+		/// Converts a value.
 		/// </summary>
 		/// <returns>
 		/// A converted value. If the method returns null, the valid null value is used.
@@ -42,68 +44,68 @@ namespace Noterium.Code.Markdown
 		/// <param name="culture">The culture to use in the converter.</param>
 		public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
 		{
-		    if (Pause)
-		        return CurrentDocument;
+			if (Pause)
+				return CurrentDocument;
 
-			if (value == null || value.Length != 3)
+			if (value == null || value.Length != 2)
 				return null;
 
-			if (!(value[0] is string && value[1] is Note && value[2] is string))
+			if (!(value[0] is string))
 				return null;
 
 			_text = (string)value[0];
-			var searchText = (string)value[2];
-			var note = (Note)value[1];
-
-
+			var searchText = (string)value[1];
 
 			var engine = XamlFormatter ?? _markdown.Value;
-			engine.CurrentNote = note;
+			engine.CurrentNote = CurrentNote;
 
-            if (string.IsNullOrWhiteSpace(_text))
-                CurrentDocument = new FlowDocument();
+			if (string.IsNullOrWhiteSpace(_text))
+				CurrentDocument = new FlowDocument();
 			else
-            {
+			{
 				CurrentDocument = GetNewDocument();
-            }
+			}
 
-		    CurrentDocument.FocusVisualStyle = null;
-            CurrentDocument.PagePadding = new Thickness(20);
-            CurrentDocument.PreviewKeyDown += CurrentDocument_PreviewKeyDown;
+			CurrentDocument.FocusVisualStyle = null;
+			CurrentDocument.PagePadding = new Thickness(20);
+			CurrentDocument.PreviewKeyDown += CurrentDocument_PreviewKeyDown;
 
 			return CurrentDocument;
 		}
 
-	    public FlowDocument GetNewDocument()
-	    {
+		public FlowDocument GetNewDocument()
+		{
+			Stopwatch sw = new Stopwatch();
+			sw.Start();
 			string text = NoteMathHelper.ReplaceMathTokens(_text);
 			using (var reader = new StringReader(text))
 			{
 				var document = CommonMarkConverter.ProcessStage1(reader, _settings);
 				CommonMarkConverter.ProcessStage2(document, _settings);
-
 				var engine = XamlFormatter ?? _markdown.Value;
-				return engine.BlocksToXaml(document, _settings);
+				var doc = engine.BlocksToXaml(document, _settings);
+
+				return doc;
 			}
 		}
 
-        private void CurrentDocument_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.SystemKey == Key.LeftCtrl && e.Key == Key.F)
-            {
-                e.Handled = true;
-            }
-        }
+		private void CurrentDocument_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.SystemKey == Key.LeftCtrl && e.Key == Key.F)
+			{
+				e.Handled = true;
+			}
+		}
 
-        public FlowDocument CurrentDocument { get; set; }
+		public FlowDocument CurrentDocument { get; set; }
 
-	    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 
 		/// <summary>
-		/// Converts a value. 
+		/// Converts a value.
 		/// </summary>
 		/// <returns>
 		/// A converted value. If the method returns null, the valid null value is used.
@@ -118,7 +120,7 @@ namespace Noterium.Code.Markdown
 		}
 
 		private readonly Lazy<XamlFormatter> _markdown = new Lazy<XamlFormatter>(() => new XamlFormatter());
-	    private string _text;
+		private string _text;
 		private readonly CommonMarkSettings _settings;
 	}
 }

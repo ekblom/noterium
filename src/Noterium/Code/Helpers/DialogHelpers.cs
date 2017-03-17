@@ -10,6 +10,7 @@ namespace Noterium.Code.Helpers
             settings.AnimateShow = false;
             settings.AnimateHide = false;
             settings.DefaultButtonFocus = MessageDialogResult.Negative;
+			settings.ColorScheme = MetroDialogColorScheme.Theme;
             return settings;
         }
 

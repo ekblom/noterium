@@ -86,6 +86,17 @@
 	<SolidColorBrush x:Key="SubmenuItemBackgroundHighlighted" options:Freeze="True" Color="#333334" />
 	<SolidColorBrush x:Key="MenuDisabledForeground" options:Freeze="True" Color="#656565" />
 
+	<!--<SolidColorBrush x:Key="MenuBackgroundBrush" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="MenuItemBackgroundBrush" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="ContextMenuBackgroundBrush" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="ContextMenuBorderBrush" options:Freeze="True" Color="#CCCEDB" />
+	<SolidColorBrush x:Key="MenuItemSelectionFill" options:Freeze="True" Color="#C9DEF5" />
+	<SolidColorBrush x:Key="MenuItemSelectionStroke" options:Freeze="True" Color="#C9DEF5" />
+	<SolidColorBrush x:Key="TopMenuItemSelectionStroke" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="TopMenuItemPressedFill" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="TopMenuItemPressedStroke" options:Freeze="True" Color="#F6F6F6" />
+	<SolidColorBrush x:Key="DisabledMenuItemForeground" options:Freeze="True" Color="#A2A4A5" />-->
+
 	<!--  Scroll Bar  -->
 	<SolidColorBrush x:Key="ScrollBarPageButtonBackgroundHighlighted" options:Freeze="True" Color="#05FFFFFF" />
 

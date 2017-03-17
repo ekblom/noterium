@@ -369,7 +369,7 @@ namespace Noterium.Core.DropBox
         {
             if (_cache.Count == 0)
             {
-                var nb = new Notebook { ID = Guid.NewGuid(), Created = DateTime.Now, Name = "My notes", SortIndex = 0 };
+                var nb = new Notebook { ID = Guid.NewGuid(), Created = DateTime.Now, Name = "My notes" };
                 SaveNoteBook(nb);
                 var n = new Note
                 {
@@ -534,7 +534,7 @@ And you can make tables:
         {
             return _cache.Keys.FirstOrDefault(key => key.ID == guid);
         }
-        
+
         #region -- File system --
 
         private void EnsureFolder(string path)
@@ -593,7 +593,7 @@ And you can make tables:
             return folderPath + "\\noterium";
         }
 
-        
+
 
         #endregion
 

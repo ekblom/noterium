@@ -160,6 +160,7 @@
     <Compile Include="Constants\DefaultTagColors.cs" />
     <Compile Include="Constants\File.cs" />
     <Compile Include="Constants\Frequency.cs" />
+    <Compile Include="Constants\NoteViewModes.cs" />
     <Compile Include="DataCarriers\Library.cs" />
     <Compile Include="DataCarriers\NoteClipboardData.cs" />
     <Compile Include="DataCarriers\NoteFile.cs" />

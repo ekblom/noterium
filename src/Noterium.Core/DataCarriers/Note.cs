@@ -47,7 +47,12 @@ namespace Noterium.Core.DataCarriers
             Files.CollectionChanged += FilesCollectionChanged;
         }
 
-	    [DataMember]
+		public override string ToString()
+		{
+			return $"{Name} - Index: {SortIndex} - ID: {ID}";
+		}
+
+		[DataMember]
         public Guid ID { get; set; }
 
         [DataMember]

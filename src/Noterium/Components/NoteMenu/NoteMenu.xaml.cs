@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Noterium.ViewModels;
+using System.Windows;
 
 namespace Noterium.Components.NoteMenu
 {

@@ -13,6 +13,7 @@ using Noterium.Code.Extensions;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using Noterium.Core.Security;
+using Noterium.Windows;
 
 namespace Noterium.ViewModels
 {
@@ -34,8 +35,10 @@ namespace Noterium.ViewModels
 		public ICommand TurnOnEncryptionCommand { get; set; }
 		public ICommand TurnOffEncryptionCommand { get; set; }
 		public ICommand ApplyThemeCommand { get; set; }
+		public ICommand ShowAboutWindowCommand { get; set; }
+		public ICommand OpenBackupManagerCommand { get; set; }
 
-        private IEnumerable<string> _noteViewModes;
+		private IEnumerable<string> _noteViewModes;
         public IEnumerable<string> NoteViewModes
         {
             get { return _noteViewModes; }
@@ -106,15 +109,17 @@ namespace Noterium.ViewModels
 	        set { _tags = value; RaisePropertyChanged(); }
 	    }
 
-	    public SettingsViewModel(Settings settings)
+	    public SettingsViewModel()
 		{
-			Settings = settings;
+			Settings = Hub.Instance.Settings;
 
 	        List<string> temp = new List<string> {"View", "Split", "Edit"};
 	        NoteViewModes = temp;
 
+			ShowAboutWindowCommand = new SimpleCommand(ShowAboutWindow);
 			ChangeThemeCommand = new RelayCommand(ChangeTheme);
 			SaveSettingsCommand = new RelayCommand(SaveSettings);
+			OpenBackupManagerCommand = new RelayCommand(OpenBackupManager);
 			BackupNowCommand = new RelayCommand(Backup);
 			TurnOnEncryptionCommand = new SimpleCommand(TurnOnEncryption);
 			TurnOffEncryptionCommand = new SimpleCommand(TurnOffEncryption);
@@ -147,6 +152,23 @@ namespace Noterium.ViewModels
 
 			SelectedAccent = AccentColors.FirstOrDefault(a => a.Name == Settings.Accent);
 			//SelectedTheme = AppThemes.FirstOrDefault(a => a.Name == Settings.Theme);
+		}
+
+		private void ShowAboutWindow(object arg)
+		{
+			AboutWindow win = new AboutWindow { DataContext = new AboutWindowViewModel() };
+			win.ShowDialog();
+		}
+
+		private void OpenBackupManager()
+		{
+			BackupManager manager = new BackupManager();
+			manager.Loaded += (object win, RoutedEventArgs ee) => {
+				var ctx = manager.DataContext as BackupManagerViewModel;
+				ctx.Window = manager;
+			};
+
+			manager.ShowDialog();
 		}
 
 		private void ChangeTheme()
@@ -275,7 +297,7 @@ namespace Noterium.ViewModels
         }
         public class AppThemeMenuData : AccentColorMenuData
         {
- 
+
         }
     }
 }

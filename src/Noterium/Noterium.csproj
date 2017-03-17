@@ -236,6 +236,17 @@
     <Compile Include="Code\Markdown\SharedSettings.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
     <Compile Include="Code\Markdown\XamlFormatter.cs" />
+    <Compile Include="Code\Messages\ApplicationUnlocked.cs" />
+    <Compile Include="Code\Messages\ChangeLibrary.cs" />
+    <Compile Include="Code\Messages\ChangeViewMode.cs" />
+    <Compile Include="Code\Messages\ConfigureControlsForParnetType.cs" />
+    <Compile Include="Code\Messages\DeleteNote.cs" />
+    <Compile Include="Code\Messages\MenuItemType.cs" />
+    <Compile Include="Code\Messages\QuickMessage.cs" />
+    <Compile Include="Code\Messages\ReloadNoteMenuList.cs" />
+    <Compile Include="Code\Messages\SelectedNoteChanged.cs" />
+    <Compile Include="Code\Messages\SelectNote.cs" />
+    <Compile Include="Code\Messages\UpdateNoteList.cs" />
     <Compile Include="Controls\AdornedControl\AdornedControl.cs" />
     <Compile Include="Controls\AdornedControl\AdornerPlacement.cs" />
     <Compile Include="Controls\AdornedControl\FrameworkElementAdorner.cs" />
@@ -250,32 +261,34 @@
     <Compile Include="Components\AuthenticationForm.xaml.cs">
       <DependentUpon>AuthenticationForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\NotebookMenu\IMainMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\TagMenuItem.cs" />
+    <Compile Include="Code\Interfaces\IMainMenuItem.cs" />
+    <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="Components\NotebookMenu\NotebookMenu.xaml.cs">
       <DependentUpon>NotebookMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\NotebookMenu\LibraryMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\NotebookMenuItem.cs" />
-    <Compile Include="Components\NotebookMenu\NotebookMenuViewModel.cs" />
-    <Compile Include="Components\NoteMenu\INoteMenuItem.cs" />
-    <Compile Include="Components\NoteMenu\NoteMenuViewModel.cs" />
+    <Compile Include="ViewModels\AutoFilterViewModel.cs" />
+    <Compile Include="ViewModels\NotebookViewModel.cs" />
+    <Compile Include="ViewModels\NotebookMenuViewModel.cs" />
+    <Compile Include="Code\Interfaces\INoteMenuItem.cs" />
+    <Compile Include="ViewModels\NoteMenuViewModel.cs" />
     <Compile Include="Components\NoteMenu\NoteMenu.xaml.cs">
       <DependentUpon>NoteMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\BackupManagerViewModel.cs" />
+    <Compile Include="ViewModels\LibrarysViewModel.cs" />
     <Compile Include="ViewModels\LibraryViewModel.cs" />
     <Compile Include="ViewModels\NoteFileViewModel.cs" />
     <Compile Include="ViewModels\AboutWindowViewModel.cs" />
+    <Compile Include="ViewModels\NoteViewModel.cs" />
     <Compile Include="ViewModels\ToDoItemViewModel.cs" />
     <Compile Include="ViewModels\TopMainMenuItemViewModel.cs" />
-    <Compile Include="ViewModels\MainMenuItemViewModel.cs" />
     <Compile Include="ViewModels\NoteEditorViewModel.cs" />
-    <Compile Include="ViewModels\NoteViewModel.cs" />
+    <Compile Include="ViewModels\NoteViewerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NoteriumViewModelBase.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\Dialogs\LoadingWindow.xaml.cs">
       <DependentUpon>LoadingWindow.xaml</DependentUpon>
     </Compile>
@@ -284,6 +297,12 @@
     </Compile>
     <Compile Include="Views\Dialogs\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Flyouts\Librarys.xaml.cs">
+      <DependentUpon>Librarys.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Flyouts\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NoteEditor.xaml.cs">
       <DependentUpon>NoteEditor.xaml</DependentUpon>
@@ -353,6 +372,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AuthenticationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Flyouts\Librarys.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Flyouts\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

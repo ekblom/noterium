@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,13 +37,22 @@ namespace Noterium.Controls
 		public static readonly DependencyProperty AllTagsProperty = DependencyProperty.Register("AllTags", typeof (List<string>), typeof (TokenizedTagControl), new PropertyMetadata(new List<string>()));
 		public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register("Placeholder", typeof (string), typeof (TokenizedTagControl), new PropertyMetadata("Click here to enter tags..."));
 		public static readonly DependencyProperty IsSelectableProperty = DependencyProperty.Register("IsSelectable", typeof (bool), typeof (TokenizedTagControl), new PropertyMetadata(false));
-	
+
 		private List<string> _allTags = new List<string>();
 
 		public TokenizedTagControl()
 		{
 			if (ItemsSource == null)
-				ItemsSource = new List<TokenizedTagItem>();
+			{
+				var source = new List<TokenizedTagItem>();
+				if(ViewModelBase.IsInDesignModeStatic)
+				{
+					source.Add(new TokenizedTagItem("Tag 1"));
+					source.Add(new TokenizedTagItem("Tag 2"));
+					source.Add(new TokenizedTagItem("Tag 3"));
+				}
+				ItemsSource = source;
+			}
 
 			if (AllTags == null)
 				AllTags = new List<string>();

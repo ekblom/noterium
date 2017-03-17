@@ -431,7 +431,7 @@ namespace Noterium.Code.Markdown
 
 							//parent.WriteConstant(" class=\"language-");
 							//EscapeHtml(new StringPart(info, 0, x), parent);
-							//parent.Write('\"');							
+							//parent.Write('\"');
 						}
 
 						EscapeHtml(block.StringContent, codeblockParagraph);
@@ -443,7 +443,7 @@ namespace Noterium.Code.Markdown
 						// cannot output source position for HTML blocks
 						// block.StringContent.WriteTo(parent);
 
-						//TODO: Unable to convert html to 
+						//TODO: Unable to convert html to
 
 						break;
 
@@ -596,7 +596,7 @@ namespace Noterium.Code.Markdown
 		}
 
 		/// <summary>
-		/// Writes the inline list to the given parent as HTML code. 
+		/// Writes the inline list to the given parent as HTML code.
 		/// </summary>
 		private void InlinesToXaml(IAddChild parent, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
 		{

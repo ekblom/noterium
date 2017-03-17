@@ -49,9 +49,12 @@ namespace Noterium.Controls
 			set
 			{
 				SetValue(TextProperty, value);
-				var tag = Hub.Instance.Settings.Tags.FirstOrDefault(t => t.Name.Equals(value));
-				if (tag != null)
-					Color = tag.Color;
+				if(Hub.Instance.Settings != null)
+				{
+					var tag = Hub.Instance.Settings.Tags.FirstOrDefault(t => t.Name.Equals(value));
+					if (tag != null)
+						Color = tag.Color;
+				}
 				OnPropertyChanged();
 			}
 		}

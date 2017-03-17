@@ -10,7 +10,8 @@
 			xmlns:dd="urn:gong-wpf-dragdrop"
 			xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			xmlns:p="clr-namespace:Noterium.Properties"
-			mc:Ignorable="d"
+						   xmlns:converters="clr-namespace:Noterium.Code.Converters"
+						   mc:Ignorable="d"
 			d:DesignHeight="394" d:DesignWidth="508"
 			d:DataContext="{d:DesignInstance {x:Type viewModels:NoteViewModel}}">
 	<UserControl.InputBindings>
@@ -22,6 +23,11 @@
 				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.buttons.xaml" />
 			</ResourceDictionary.MergedDictionaries>
+
+			<converters:BooleanToVisibilityConverter
+				x:Key="BooleanToVisibilityConverter"
+				True="Visible"
+				False="Collapsed" />
 		</ResourceDictionary>
 	</UserControl.Resources>
 
@@ -34,7 +40,7 @@
 			<RowDefinition Height="100" />
 
 		</Grid.RowDefinitions>
-		<controls1:TokenizedTagControl Grid.Row="2" VerticalContentAlignment="Center" x:Name="TagControl" Placeholder="{x:Static p:Resources.NoteEditor_Tags_Watermark}" Height="26" ItemsSource="{Binding Tags}"/>
+		<controls1:TokenizedTagControl Grid.Row="2" VerticalContentAlignment="Center" x:Name="TagControl" Placeholder="{x:Static p:Resources.NoteEditor_Tags_Watermark}" Height="26" ItemsSource="{Binding Tags}" />
 
 		<ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
 			<Button Name="Header1Button" CommandParameter="H1" Click="ToolbarButtonClick">
@@ -79,6 +85,10 @@
 			<Button Name="HelpButton" CommandParameter="Help" Click="ShowHelpBubble">
 				<iconPacks:PackIconModern Kind="Question" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 			</Button>
+			<TextBlock Width="16" Height="16"
+				Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+				<iconPacks:PackIconMaterial Kind="Exclamation" Foreground="Red" />
+			</TextBlock>
 			<Popup x:Name="Popup" AllowsTransparency="True" PlacementTarget="{Binding ElementName=HelpButton}" StaysOpen="False" PopupAnimation="Fade" Width="400" Height="400">
 				<Border Background="White" BorderBrush="{DynamicResource BlackColorBrush}" BorderThickness="1">
 					<Border.Effect>
@@ -215,7 +225,7 @@
                       Height="Auto">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseDoubleClick">
-						<i:InvokeCommandAction Command="{Binding OpenFileCommand}" CommandParameter="{Binding ElementName=FilesListView, Path=SelectedItem}"/>
+						<i:InvokeCommandAction Command="{Binding OpenFileCommand}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
 				<ListView.ContextMenu>
@@ -223,16 +233,16 @@
 						<MenuItem Command="{Binding RenameFileCommand}" >
 							<MenuItem.Header>
 								<StackPanel Orientation="Horizontal">
-									<iconPacks:PackIconMaterial Name="RenameNoteFileButton" Kind="RenameBox" VerticalAlignment="Center" />
-									<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" />
+									<iconPacks:PackIconMaterial Name="RenameNoteFileButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+									<TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 								</StackPanel>
 							</MenuItem.Header>
 						</MenuItem>
 						<MenuItem Command="{Binding DeleteFileCommand}">
 							<MenuItem.Header>
 								<StackPanel Orientation="Horizontal">
-									<iconPacks:PackIconMaterial Name="DeleteNoteFileButton" Kind="Delete" VerticalAlignment="Center" />
-									<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" />
+									<iconPacks:PackIconMaterial Name="DeleteNoteFileButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+									<TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 								</StackPanel>
 							</MenuItem.Header>
 						</MenuItem>

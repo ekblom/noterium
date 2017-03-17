@@ -83,19 +83,19 @@ namespace Noterium.Core
                 OnTagListUpdated?.Invoke();
         }
 
-        internal void SaveNotebook(Notebook noteBook)
+        internal void SaveNotebook(Notebook notebook)
         {
-            DataStore.SaveNoteBook(noteBook);
+            DataStore.SaveNoteBook(notebook);
         }
 
-        public List<Note> GetNotes(Notebook mg)
+        public List<Note> GetNotes(Notebook notebook)
         {
-            return DataStore.GetNotes(mg);
+            return DataStore.GetNotes(notebook);
         }
 
-        public int GetNoteCount(Notebook mg)
+        public int GetNoteCount(Notebook notebook)
         {
-            return DataStore.GetNoteCount(mg);
+            return DataStore.GetNoteCount(notebook);
         }
 
         public int GetTotalNoteCount()

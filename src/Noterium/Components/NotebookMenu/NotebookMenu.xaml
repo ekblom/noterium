@@ -14,10 +14,10 @@
 			 xmlns:p="clr-namespace:Noterium.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="200"
-			 d:DataContext="{d:DesignInstance notebookMenu1:NotebookMenuViewModel}"
 			 DataContextChanged="NotebookMenu_OnDataContextChanged"
 			 Loaded="NotebookMenu_OnLoaded"
-             x:Name="UserControl">
+             x:Name="UserControl"
+			 DataContext="{Binding NotebookMenu, Source={StaticResource Locator}}">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -166,8 +166,8 @@
 				    Style="{DynamicResource VirtualisedMetroListBox}"
                     SelectedItem="{Binding SelectedNotebook, Mode=TwoWay}">
 					<ListView.InputBindings>
-						<KeyBinding Key="Delete" Command="{Binding DeleteItemCommand}" />
-						<KeyBinding Key="F2" Command="{Binding RenameItemCommand}" />
+						<KeyBinding Key="Delete" Command="{Binding DeleteNotebookCommand}" />
+						<KeyBinding Key="F2" Command="{Binding RenameNotebookCommand}" />
 					</ListView.InputBindings>
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="SelectionChanged">
@@ -182,7 +182,7 @@
 							<Border Margin="5,0,0,0">
 								<Border.ContextMenu>
 									<ContextMenu>
-										<MenuItem Command="{Binding Data.DeleteItemCommand, Source={StaticResource Proxy}}">
+										<MenuItem Command="{Binding Data.DeleteNotebookCommand, Source={StaticResource Proxy}}">
 											<MenuItem.Header>
 												<StackPanel Orientation="Horizontal">
 													<iconPacks:PackIconMaterial Name="DeleteNoteButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
@@ -190,7 +190,7 @@
 												</StackPanel>
 											</MenuItem.Header>
 										</MenuItem>
-										<MenuItem Command="{Binding Data.RenameItemCommand, Source={StaticResource Proxy}}">
+										<MenuItem Command="{Binding Data.RenameNotebookCommand, Source={StaticResource Proxy}}">
 											<MenuItem.Header>
 												<StackPanel Orientation="Horizontal">
 													<iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />

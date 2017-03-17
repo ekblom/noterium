@@ -16,6 +16,8 @@ using Noterium.Core.Helpers;
 using Noterium.ViewModels;
 using Noterium.Views.Dialogs;
 using Mono.Options;
+using GalaSoft.MvvmLight.Messaging;
+using Noterium.Code.Messages;
 
 namespace Noterium
 {
@@ -30,7 +32,6 @@ namespace Noterium
 		private DispatcherTimer _activityTimer;
 		private Point _inactiveMousePosition = new Point(0, 0);
 		private Library _currentLibrary;
-		private Dictionary<string, string> _args;
 
 		public App()
 		{
@@ -171,7 +172,8 @@ namespace Noterium
 		private void LoadLibrary(Library library)
 		{
 			_currentLibrary = library;
-
+			ViewModelLocator.Cleanup();
+			
 			Hub.Instance.Init(library);
 			InitLog4Net();
 			SetAppTheme();
@@ -235,12 +237,11 @@ namespace Noterium
 		{
 			_mainWindow = new MainWindow();
 
-			MainViewModel model = new MainViewModel(_currentLibrary);
-			model.ChangeLibraryCommand = new SimpleCommand(LoadLibrary);
+			Messenger.Default.Register<ChangeLibrary>(this, DoChangeLibrary);
 
 			_mainWindow.Title = Noterium.Properties.Resources.Title + " - " + _currentLibrary.Name;
-			_mainWindow.DataContext = model;
-			_mainWindow.Model = model;
+			//_mainWindow.DataContext = model;
+			_mainWindow.Model = ViewModelLocator.Instance.Main;
 			_mainWindow.Width = _currentLibrary.WindowSize.Width;
 			_mainWindow.Height = _currentLibrary.WindowSize.Height;
 			_mainWindow.WindowState = _currentLibrary.WindowState;
@@ -259,10 +260,10 @@ namespace Noterium
 			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
 
-		private void LoadLibrary(object obj)
+		private void DoChangeLibrary(ChangeLibrary obj)
 		{
-			LibraryViewModel library = (LibraryViewModel)obj;
-			if (_currentLibrary != null && library.Library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
+			Library library = obj.Library;
+			if (_currentLibrary != null && library.Name.Equals(_currentLibrary.Name, StringComparison.OrdinalIgnoreCase))
 				return;
 
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -270,7 +271,7 @@ namespace Noterium
 			_mainWindow.Close();
 			_mainWindowLoaded = false;
 
-			LoadLibrary(library.Library);
+			LoadLibrary(library);
 		}
 
 		private void SettingsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

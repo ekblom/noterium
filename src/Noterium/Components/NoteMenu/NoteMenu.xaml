@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Noterium.Components.NoteMenu.NoteMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
@@ -11,9 +11,9 @@
              xmlns:controls="clr-namespace:Noterium.Code.Controls"
              xmlns:p="clr-namespace:Noterium.Properties"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-			 d:DataContext="{d:DesignInstance noteMenu:NoteMenuViewModel}" Loaded="NoteMenu_OnLoaded">
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="NoteMenu_OnLoaded"
+			 DataContext="{Binding NoteMenu, Source={StaticResource Locator}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,21 +21,21 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:BooleanToVisibilityConverter 
-				x:Key="BooleanToVisibilityConverter" 
-				True="Visible" 
+            <converters:BooleanToVisibilityConverter
+				x:Key="BooleanToVisibilityConverter"
+				True="Visible"
 				False="Collapsed" />
-            <converters:BooleanToVisibilityConverter 
-				x:Key="ReversedBooleanToVisibilityConverter" 
-				True="Collapsed" 
+            <converters:BooleanToVisibilityConverter
+				x:Key="ReversedBooleanToVisibilityConverter"
+				True="Collapsed"
 				False="Visible" />
 
             <controls:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ListView Name="NotesList" 
-				SelectedItem="{Binding SelectedNote, Mode=TwoWay}" 
+    <ListView Name="NotesList"
+				SelectedItem="{Binding SelectedNote, Mode=TwoWay}"
 				ItemsSource="{Binding DataSource, Mode=OneWay}"
 				Background="{DynamicResource TransparentWhiteBrush}"
 				dragDrop:DragDrop.IsDragSource="True"
@@ -43,13 +43,13 @@
 				dragDrop:DragDrop.UseDefaultDragAdorner="True"
 				dragDrop:DragDrop.DragHandler="{Binding}"
 				BorderBrush="Transparent" BorderThickness="0"
-                  
+
 				VirtualizingStackPanel.IsVirtualizing="True"
 				VirtualizingStackPanel.VirtualizationMode="Standard"
-				ScrollViewer.IsDeferredScrollingEnabled="False"      
+				ScrollViewer.IsDeferredScrollingEnabled="False"
 				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 				Style="{DynamicResource VirtualisedMetroListBox}"
-                  
+
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch">
 
@@ -70,7 +70,7 @@
                 <StackPanel Margin="5" Name="StackPanel">
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Command="{Binding Data.DeleteItemCommand, Source={StaticResource Proxy}}"
+							<MenuItem Command="{Binding DeleteNoteCommand}"
                                               Visibility="{Binding Note.Protected, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -79,7 +79,7 @@
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
-                            <MenuItem Command="{Binding Data.RenameItemCommand, Source={StaticResource Proxy}}">
+							<MenuItem Command="{Binding RenameNoteCommand}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
@@ -89,7 +89,7 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem IsCheckable="True" IsChecked="{Binding Note.Encrypted, Mode=TwoWay}" StaysOpenOnClick="True"
-                                          Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                                          Visibility="{Binding Main.IsSecureNotesEnabled, Source={StaticResource Locator}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Kind="Lock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
@@ -114,7 +114,7 @@
                                 </MenuItem.Header>
                             </MenuItem>
 							<Separator />
-							<MenuItem Command="{Binding Data.CopyNoteCommand, Source={StaticResource Proxy}}" CommandParameter="{Binding Note}">
+							<MenuItem Command="{Binding CopyNoteCommand}" CommandParameter="{Binding Note}">
 								<MenuItem.Header>
 									<StackPanel Orientation="Horizontal">
 										<iconPacks:PackIconMaterial Kind="ContentCopy" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
@@ -165,13 +165,8 @@
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListBox.InputBindings>
-            <KeyBinding Key="Delete" Command="{Binding DeleteItemCommand}" />
-            <KeyBinding Key="F2" Command="{Binding RenameItemCommand}" />
+			<KeyBinding Key="Delete" Command="{Binding SelectedNote.DeleteNoteCommand}" />
+            <KeyBinding Key="F2" Command="{Binding SelectedNote.RenameNoteCommand}" />
         </ListBox.InputBindings>
-        <i:Interaction.Triggers>
-            <!--<i:EventTrigger EventName="SelectionChanged">
-                        <commands1:CustomCommandInvoker Command="{Binding SelectedItemChangedCommand}"/>
-                    </i:EventTrigger>-->
-        </i:Interaction.Triggers>
     </ListView>
 </UserControl>

@@ -5,13 +5,12 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Noterium.Core.Annotations;
-using Noterium.Core.Interfaces;
 
 namespace Noterium.Core.DataCarriers
 {
     [DataContract]
     [DebuggerDisplay("{Name} - {ID} - {BaseHashCode}")]
-    public class Notebook : IComparable<Notebook>, IComparable, IEquatable<Notebook>, IEqualityComparer<Notebook>, ISortable, INotifyPropertyChanged
+    public class Notebook : IComparable<Notebook>, IComparable, IEquatable<Notebook>, IEqualityComparer<Notebook>, INotifyPropertyChanged
     {
         private readonly object _deleteLockObject = new object();
         private readonly object _saveLockObject = new object();
@@ -83,10 +82,6 @@ namespace Noterium.Core.DataCarriers
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [DataMember]
-        [DefaultValue(0)]
-        public int SortIndex { get; set; }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

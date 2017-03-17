@@ -19,6 +19,9 @@ using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using Noterium.Properties;
 using Noterium.ViewModels;
+using GalaSoft.MvvmLight.Messaging;
+using Noterium.Code.Messages;
+using Noterium.Core.Constants;
 
 namespace Noterium.Views
 {
@@ -52,9 +55,7 @@ namespace Noterium.Views
 			set { _searchText = value; OnPropertyChanged(); }
 		}
 
-		public Note ContextNote => CurrentModel.Note;
-
-		public NoteViewModel CurrentModel => ((NoteViewModel)DataContext);
+		public NoteViewerViewModel Model => ((NoteViewerViewModel)DataContext);
 
 		public NoteView()
 		{
@@ -65,6 +66,13 @@ namespace Noterium.Views
 			DataContextChanged += NoteViewDataContextChanged;
 
 			DataObject.AddCopyingHandler(FlowDocumentPageViewer, OnTextCopy);
+			Messenger.Default.Register<ChangeViewMode>(this, SelectViewMode);
+			Messenger.Default.Register<SelectedNoteChanged>(this, OnSelectedNoteChanged);
+		}
+
+		private void OnSelectedNoteChanged(SelectedNoteChanged obj)
+		{
+			SelectViewMode(NoteViewModes.Default);
 		}
 
 		private void OnTextCopy(object sender, DataObjectCopyingEventArgs e)
@@ -125,13 +133,12 @@ namespace Noterium.Views
 
 		private void NoteViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (CurrentModel == null)
+			if (Model == null)
 				return;
 
-			SelectViewMode();
+			SelectViewMode(NoteViewModes.Default);
 
-			CurrentModel.EditNoteCommand = new RelayCommand(SwitchToEditPanel);
-			CurrentModel.SaveNoteCommand = new RelayCommand(SaveNote);
+			Model.SaveNoteCommand = new RelayCommand(SaveNote);
 		}
 
 		void NoteViewPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -152,27 +159,47 @@ namespace Noterium.Views
 
 		private void SaveNote()
 		{
-			CurrentModel?.SaveNote();
-			SelectViewMode();
+			Model.CurrentNote?.SaveNote();
+			SelectViewMode(NoteViewModes.Default);
 		}
 
-		private void SelectViewMode()
+		private void SelectViewMode(ChangeViewMode message)
 		{
-			if (string.IsNullOrEmpty(CurrentModel.Note.DecryptedText))
+			SelectViewMode(message.Mode);
+		}
+
+		private void SelectViewMode(NoteViewModes mode)
+		{
+			if (mode == NoteViewModes.Default)
 			{
-				if (Hub.Instance.Settings.DefaultNoteView == "Split")
-					ViewModeButtonClicked(SplitModeButton, null);
-				else
-					ViewModeButtonClicked(EditModeButton, null);
-				return;
+				if (Hub.Instance.Settings.DefaultNoteView == "View")
+					mode = NoteViewModes.View;
+				else if (Hub.Instance.Settings.DefaultNoteView == "Split")
+					mode = NoteViewModes.Split;
+				else if (Hub.Instance.Settings.DefaultNoteView == "Edit")
+					mode = NoteViewModes.Edit;
 			}
 
-			if (Hub.Instance.Settings.DefaultNoteView == "View")
-				ViewModeButtonClicked(ViewModeButton, null);
-			else if (Hub.Instance.Settings.DefaultNoteView == "Split")
-				ViewModeButtonClicked(SplitModeButton, null);
-			else if (Hub.Instance.Settings.DefaultNoteView == "Edit")
-				ViewModeButtonClicked(EditModeButton, null);
+			Button source = null;
+			if (Model.CurrentNote != null && string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
+			{
+				if (mode == NoteViewModes.Split)
+					source = SplitModeButton;
+				else
+					source = EditModeButton;
+			}
+			else
+			{
+				if (mode == NoteViewModes.View)
+					source = ViewModeButton;
+				else if (mode == NoteViewModes.Split)
+					source = SplitModeButton;
+				else if (mode == NoteViewModes.Edit)
+					source = EditModeButton;
+			}
+
+			if (source != null)
+				ViewModeButtonClicked(source, null);
 		}
 
 		private void GetXamlButton_OnClick(object sender, RoutedEventArgs e)
@@ -200,13 +227,16 @@ namespace Noterium.Views
 			Uri uri;
 			if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri))
 			{
-                // If the link is not an url, it is probably a path to a note-file, so find it
-				var file = ContextNote.Files.FirstOrDefault(nf => nf.FileName.Equals(url));
+				// If the link is not an url, it is probably a path to a note-file, so find it
+				var file = Model.CurrentNote.Note.Files.FirstOrDefault(nf => nf.FileName.Equals(url));
 				if (file != null)
 					url = file.FullName;
 				else
 					return;
 			}
+
+			if (!System.IO.File.Exists(url))
+				return;
 
 			ProcessStartInfo sInfo = new ProcessStartInfo(url);
 			Process.Start(sInfo);
@@ -215,14 +245,14 @@ namespace Noterium.Views
 		private void ShowNoteFile_OnClick(object sender, RoutedEventArgs e)
 		{
 			string path = Hub.Instance.Storage.DataStore.DataFolder;
-			string args = path + "\\" + ContextNote.Notebook + "\\" + ContextNote.ID + "." + Core.Constants.File.NoteFileExtension;
+			string args = path + "\\" + Model.CurrentNote.Notebook + "\\" + Model.CurrentNote.Note.ID + "." + Core.Constants.File.NoteFileExtension;
 			Process.Start(args);
 		}
 
 		private void ShowNoteFolder_OnClick(object sender, RoutedEventArgs e)
 		{
 			string path = Hub.Instance.Storage.DataStore.DataFolder;
-			string args = "/select,\"" + path + "\\" + ContextNote.Notebook + "\"";
+			string args = "/select,\"" + path + "\\" + Model.CurrentNote.Notebook + "\"";
 			Process.Start("explorer.exe", args);
 		}
 
@@ -230,6 +260,7 @@ namespace Noterium.Views
 		{
 			_xamlFormatter = Resources["XamlFormatter"] as XamlFormatter;
 			_markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
+			Model.MarkdownConverter = _markdownToFlowDocumentConverter;
 			if (_xamlFormatter != null)
 				_xamlFormatter.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 		}
@@ -237,14 +268,17 @@ namespace Noterium.Views
 		private void DocumentCheckBoxChecked(object arg)
 		{
 			_markdownToFlowDocumentConverter.Pause = true;
-			CurrentModel.DocumentCheckBoxCheckedCommand?.Execute(arg);
+			Model.DocumentCheckBoxCheckedCommand?.Execute(arg);
 			_markdownToFlowDocumentConverter.Pause = false;
 		}
 
 		private void ViewModeButtonClicked(object sender, RoutedEventArgs e)
 		{
+			if (SplitColumn == null)
+				return;
+
 			if (e != null)
-				CurrentModel?.SaveNote();
+				Model.CurrentNote?.SaveNote();
 
 			Button btn = (Button)sender;
 			SplitColumn.Visible = false;
@@ -284,7 +318,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.F)
 			{
 				e.Handled = true;
-				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
+				Model.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 
@@ -293,7 +327,7 @@ namespace Noterium.Views
 			if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.SystemKey == Key.LeftCtrl && e.Key == Key.F)
 			{
 				e.Handled = true;
-				CurrentModel.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
+				Model.MainWindowInstance.Model.ToggleSearchFlyoutCommand.Execute(e);
 			}
 		}
 

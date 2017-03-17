@@ -4,7 +4,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 		xmlns:noteMenu="clr-namespace:Noterium.Components.NoteMenu"
 		xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
 		xmlns:notebookMenu1="clr-namespace:Noterium.Components.NotebookMenu"
@@ -13,8 +13,8 @@
 		xmlns:controls1="clr-namespace:Noterium.Controls"
 		xmlns:views="clr-namespace:Noterium.Views"
 		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-		xmlns:dataCarriers="clr-namespace:Noterium.Core.DataCarriers;assembly=Noterium.Core"
 		xmlns:p="clr-namespace:Noterium.Properties"
+		xmlns:flyouts="clr-namespace:Noterium.Views.Flyouts"
 		Height="768" Width="1024"
 		mc:Ignorable="d"
 		RenderOptions.ClearTypeHint="Enabled"
@@ -23,7 +23,7 @@
 		ShowIconOnTitleBar="True"
 		Style="{DynamicResource VSWindowStyleKey}"
         SnapsToDevicePixels="True"
-		d:DataContext="{d:DesignInstance viewModels1:MainViewModel}"
+		DataContext="{Binding Main, Source={StaticResource Locator}}"
         Loaded="MainWindow_OnLoaded"
         SizeChanged="MainWindow_OnSizeChanged"
         StateChanged="MainWindow_OnStateChanged"
@@ -38,7 +38,7 @@
 		<KeyBinding Key="N" Modifiers="Control" Command="New"/>
 		<KeyBinding Key="F" Modifiers="Control" Command="{Binding ToggleSearchFlyoutCommand}"/>
 		<KeyBinding Key="E" Modifiers="Control" Command="{Binding EditNoteCommand}"/>
-		<KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveNoteCommand}"/>
+		<KeyBinding Key="S" Modifiers="Control" Command="{Binding NoteMenuContext.SelectedNote.SaveNoteCommand}"/>
 		<KeyBinding Key="OemPeriod" Modifiers="Control" Command="{Binding ToggleNotebookMenu}"/>
 		<KeyBinding Key="OemMinus" Modifiers="Control" Command="{Binding ToggleNoteMenu}"/>
 		<KeyBinding Key="H" Modifiers="Control" Command="{Binding ToggleHelpViewCommand}"/>
@@ -47,9 +47,6 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Colors.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Styles.xaml" />-->
-
 				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
@@ -72,7 +69,7 @@
 				False="Visible" />
 			<converters:XamlTextToFlowDocumentConverter
 				x:Key="XamlTextToFlowDocumentConverter" />
-			<converters:MultiValueBindingConverter x:Key="MultiValueBindingConverter" />
+
 
 			<Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
 				<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -145,257 +142,24 @@
 			<controls:Flyout Name="SettingsFlyout"
 							 AnimateOnPositionChange="true"
                              Header="{x:Static p:Resources.Settings_FlyoutTitle}" Theme="Adapt"
-                             Position="Right" 
+                             Position="Right"
                              IsOpen="{Binding SettingsFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
-				<ScrollViewer VerticalScrollBarVisibility="Auto">
-					<StackPanel Width="250" Margin="15">
-						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Security}" />
-							<PasswordBox Name="PasswordBox" Height="25" HorizontalAlignment="Left"
-                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
-                             controls:TextBoxHelper.UseFloatingWatermark="False"
-                             controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
-                             Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
-								<controls:PasswordBoxHelper.CapsLockWarningToolTip>
-									<TextBlock>
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
-									</TextBlock>
-								</controls:PasswordBoxHelper.CapsLockWarningToolTip>
-							</PasswordBox>
-							<PasswordBox Name="PasswordBoxVerify" Height="25" HorizontalAlignment="Left"
-                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_RepeatEncryptionPassword}"
-                             controls:TextBoxHelper.UseFloatingWatermark="False"
-                             controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
-                             Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
-								<controls:PasswordBoxHelper.CapsLockWarningToolTip>
-									<TextBlock>
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
-									</TextBlock>
-								</controls:PasswordBoxHelper.CapsLockWarningToolTip>
-							</PasswordBox>
-
-							<Button Content="{x:Static p:Resources.Settings_EnableSecureNotes}" Command="{Binding SettingsViewModel.TurnOnEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
-							Visibility="{Binding SettingsViewModel.SecureNotesEnabled, Mode=OneWay, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Visible}">
-								<Button.CommandParameter>
-									<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
-										<Binding ElementName="PasswordBox" />
-										<Binding ElementName="PasswordBoxVerify" />
-									</MultiBinding>
-								</Button.CommandParameter>
-							</Button>
-							<Button Content="{x:Static p:Resources.Settings_DisableSecureNotes}" Command="{Binding SettingsViewModel.TurnOffEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
-							Visibility="{Binding SettingsViewModel.SecureNotesEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
-								<Button.CommandParameter>
-									<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
-										<Binding ElementName="PasswordBox" />
-										<Binding ElementName="PasswordBoxVerify" />
-									</MultiBinding>
-								</Button.CommandParameter>
-							</Button>
-
-							<TextBlock>
-								<Run Text="{x:Static p:Resources.Settings_LockMainWindowAfterMinutes}" />
-							</TextBlock>
-							<controls:NumericUpDown Value="{Binding SettingsViewModel.Settings.AutoLockMainWindowAfter, Mode=TwoWay}"
-										Maximum="30"
-										Minimum="0"
-                                        Interval="5" Width="250"
-                                        IsEnabled="{Binding SettingsViewModel.SecureNotesEnabled, Mode=OneWay}">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="ValueChanged">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</controls:NumericUpDown>
-						</StackPanel>
-
-						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Visual}" />
-							<!--<TextBlock>
-								<Run>Theme:</Run>
-							</TextBlock>
-							<ComboBox SelectedItem="{Binding SettingsViewModel.Settings.Theme}"
-                                  ItemsSource="{Binding SettingsViewModel.AppThemes, Mode=TwoWay}"
-                                   Margin="0,0,0,25" Width="100">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="SelectionChanged">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.ChangeThemeCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</ComboBox>-->
-
-							<TextBlock Text="{x:Static p:Resources.Settings_Theme}" />
-
-							<ComboBox SelectedItem="{Binding SettingsViewModel.SelectedAccent, Mode=TwoWay}"
-                                  ItemsSource="{Binding SettingsViewModel.AccentColors, Mode=TwoWay}"
-                                   Margin="0,0,0,25" Width="100">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="SelectionChanged">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.ChangeThemeCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</ComboBox>
-
-						</StackPanel>
-
-						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Behaviour}" />
-							<TextBlock Text="{x:Static p:Resources.Settings_DefaultNoteView}"/>
-							<ComboBox SelectedItem="{Binding SettingsViewModel.Settings.DefaultNoteView}"
-                                  ItemsSource="{Binding SettingsViewModel.NoteViewModes, Mode=TwoWay}"
-                                   Margin="0,0,0,25">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="SelectionChanged">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</ComboBox>
-							<CheckBox IsChecked="{Binding SettingsViewModel.Settings.EnableAdvancedControls, Mode=TwoWay}" Margin="0,0,0,25">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="Checked">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-									<i:EventTrigger EventName="Unchecked">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-								<TextBlock Text="{x:Static p:Resources.Settings_EnableExperimentalFeatures}"/>
-							</CheckBox>
-						</StackPanel>
-						<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-							<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Backups}" />
-							<CheckBox IsChecked="{Binding SettingsViewModel.Settings.AutoBackup, Mode=TwoWay}" Margin="0,0,0,15">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="Checked">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-									<i:EventTrigger EventName="Unchecked">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-								<TextBlock Text="{x:Static p:Resources.Settings_AutomaticallyBackup}"/>
-							</CheckBox>
-
-							<TextBlock Text="{x:Static p:Resources.Settings_BackupsToKeep}"/>
-							<controls:NumericUpDown Value="{Binding SettingsViewModel.Settings.NumberOfBackupsToKeep, Mode=TwoWay}" Margin="0,0,0,15"
-										Maximum="30"
-										Minimum="0"
-                                        Interval="1">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="ValueChanged">
-										<i:InvokeCommandAction Command="{Binding Path=Model.SettingsViewModel.SaveSettingsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</controls:NumericUpDown>
-							<Button Content="{x:Static p:Resources.Settings_BackupNow}" Width="100" Command="{Binding SettingsViewModel.BackupNowCommand}" HorizontalAlignment="Left" Margin="0,0,0,15" />
-							<TextBlock Margin="0,0,0,15">
-						    <Run Text="{x:Static p:Resources.Settings_LastBackup}"/>
-						    <Run Name="LastBackupDate" Text="{Binding SettingsViewModel.LastBackupDate}"></Run>
-							</TextBlock>
-							<Button Content="{x:Static p:Resources.Settings_OpenBackupManager}" Click="OpenBackupManager" HorizontalAlignment="Left" />
-						</StackPanel>
-
-						<StackPanel HorizontalAlignment="Left" Orientation="Vertical">
-							<Button Content="{x:Static p:Resources.Settings_AboutNoterium}" Command="{Binding ShowAboutWindowCommand}" />
-						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
+				<flyouts:Settings/>
 			</controls:Flyout>
 			<controls:Flyout Name="QuickInformationFlyout" Position="Bottom" Height="32" IsOpen="{Binding QuickInformationIsOpen}" CloseButtonVisibility="Collapsed" AreAnimationsEnabled="True" Theme="Accent">
 				<DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="32">
 					<TextBlock Name="QuickInformationMessage" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding QuickInformationMessage}" />
 				</DockPanel>
 			</controls:Flyout>
-			<controls:Flyout Name="LibrarysFlyout" 
+			<controls:Flyout Name="LibrarysFlyout"
 							 AnimateOnPositionChange="true"
-                             Header="{x:Static p:Resources.Librarys_FlyoutTitle}" 
+                             Header="{x:Static p:Resources.Librarys_FlyoutTitle}"
 							 Theme="Adapt"
-                             Position="Left" 
+                             Position="Left"
                              IsOpen="{Binding LibrarysFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
-				<StackPanel Width="250">
-					<TextBlock Margin="15" Text="{x:Static p:Resources.Librarys_DefaultLibrary}"/>
-					<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
-						<ItemsControl.ItemContainerStyle>
-							<Style>
-								<Setter Property="ItemsControl.BorderBrush" Value="Transparent"/>
-								<Style.Triggers>
-									<Trigger Property="Border.IsMouseOver" Value="True">
-										<Setter Property="Border.BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</ItemsControl.ItemContainerStyle>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Border Name="LibraryItemBorder">
-									<Grid Margin="15, 0, 15, 3">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="*"/>
-											<ColumnDefinition Width="25"/>
-											<ColumnDefinition Width="25"/>
-										</Grid.ColumnDefinitions>
-										<DockPanel Grid.Row="0" Grid.Column="0">
-											<RadioButton GroupName="DefaultLibrary" IsChecked="{Binding Library.Default}" VerticalAlignment="Center" HorizontalAlignment="Left"
-													 Content="{Binding Library.Name}">
-												<i:Interaction.Triggers>
-													<i:EventTrigger EventName="Checked">
-														<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.SetDefaultLibraryCommand}" CommandParameter="{Binding}"/>
-													</i:EventTrigger>
-												</i:Interaction.Triggers>
-											</RadioButton>
-										</DockPanel>
-
-										<Button Grid.Column="1" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" 
-												CommandParameter="{Binding}" 
-												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.ChangeLibraryCommand}"
-												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
-											<Button.ContentTemplate>
-												<DataTemplate DataType="dataCarriers:Library">
-													<iconPacks:PackIconEntypo Kind="Upload" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
-												</DataTemplate>
-											</Button.ContentTemplate>
-										</Button>
-										<Button Grid.Column="2" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" CommandParameter="{Binding}" 
-												Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Model.DeleteLibraryCommand}"
-												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
-											<Button.ContentTemplate>
-												<DataTemplate DataType="dataCarriers:Library">
-													<iconPacks:PackIconMaterial Kind="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
-												</DataTemplate>
-											</Button.ContentTemplate>
-										</Button>
-									</Grid>
-								</Border>
-
-								<DataTemplate.Triggers>
-									<Trigger Property="ItemsControl.IsMouseOver" Value="True">
-										<Setter Property="Background" TargetName="LibraryItemBorder" Value="{DynamicResource MenuItemHighlightedBackground}" />
-									</Trigger>
-								</DataTemplate.Triggers>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-
-					<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Command="{Binding AddLibraryCommand}">
-						<Button.ContentTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,5,15,5">
-									<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-									<TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
-								</StackPanel>
-							</DataTemplate>
-						</Button.ContentTemplate>
-					</Button>
-				</StackPanel>
-
+				<flyouts:Librarys />
 			</controls:Flyout>
 
 		</controls:FlyoutsControl>
@@ -493,12 +257,8 @@
 								</DataTemplate>
 							</Button.ContentTemplate>
 						</Button>
-
 					</DockPanel>
-					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" DataContext="{Binding MenuContext}"
-					AdornerLayer="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedLayer}"
-					AdornedElement="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=AdornedElement}"
-                                            SizeChanged="ColumnOnSizeChanged"/>
+					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" SizeChanged="ColumnOnSizeChanged" />
 				</Grid>
 
 				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
@@ -512,7 +272,6 @@
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="35" />
-						<!--<RowDefinition Height="30" />-->
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
@@ -522,7 +281,7 @@
 						</StackPanel>
 					</Button>
 					<DockPanel Grid.Column="1" Grid.Row="0" Height="25">
-						<TextBlock Text="{Binding SelectedMenuItem.Name}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+						<TextBlock Text="{Binding MenuContext.SelectedMenuItem.Name}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</DockPanel>
 
 					<Button Grid.Column="2" Grid.Row="0" Click="AddNoteButtonClick" Style="{DynamicResource NoStyleButton}"
@@ -536,22 +295,20 @@
 						</Button.ContentTemplate>
 						<Button.ContextMenu>
 							<ContextMenu >
-								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
+								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding NoteMenuContext.CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding NoteMenuContext.CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
                                            Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
 							</ContextMenu>
 						</Button.ContextMenu>
 					</Button>
 
-					<noteMenu:NoteMenu x:Name="NoteMenu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" DataContext="{Binding NoteMenuContext}" />
+					<noteMenu:NoteMenu x:Name="NoteMenu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" />
 
 				</Grid>
 				<GridSplitter Grid.Column="3" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
 
 				<views:NoteView Margin="0" Grid.Column="4" Grid.Row="0" x:Name="NoteView"
-					DataContext="{Binding NoteMenuContext.SelectedNote}"
-					Visibility="{Binding Converter={StaticResource BindingNullVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}"
-					EditNote="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.EditNoteCommand}"/>
+					Visibility="{Binding Converter={StaticResource BindingNullVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}"/>
 
 				<DockPanel Margin="0" Grid.Column="4" Grid.Row="0"
 					Visibility="{Binding NoteMenuContext.SelectedNote, Converter={StaticResource BindingNullVisibilityConverterReversed}, FallbackValue=Collapsed, Mode=OneWay}">

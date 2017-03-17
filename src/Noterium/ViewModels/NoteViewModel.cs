@@ -5,61 +5,51 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
-using GalaSoft.MvvmLight.CommandWpf;
 using GongSolutions.Wpf.DragDrop;
 using MahApps.Metro.Controls.Dialogs;
 using Noterium.Code.Commands;
 using Noterium.Code.Helpers;
-using Noterium.Code.Markdown;
 using Noterium.Controls;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
+using System.Diagnostics;
+using GalaSoft.MvvmLight.CommandWpf;
+using Noterium.Code.Messages;
 
 namespace Noterium.ViewModels
 {
+	[DebuggerDisplay("{Note.Name} - Index: {Note.SortIndex} - ID: {Note.ID}")]
 	public class NoteViewModel : NoteriumViewModelBase, IDragSource, IDropTarget
 	{
+		private Note _note;
+
 		public ICommand EditNoteCommand { get; set; }
 		public ICommand SaveNoteCommand { get; set; }
-		public ICommand DocumentCheckBoxCheckedCommand { get; set; }
-		public ICommand CheckBoxCheckUpdatedTextCommand { get; set; }
-
+		public ICommand CopyNoteCommand { get; set; }
+		public ICommand RenameNoteCommand { get; set; }
+		public ICommand DeleteNoteCommand { get; set; }
 		public ICommand OpenFileCommand { get; set; }
 		public ICommand RenameFileCommand { get; set; }
 		public ICommand DeleteFileCommand { get; set; }
 
-		private string _newToDoItemText;
 		private bool _visible = true;
-		private bool _secureNotesEnabled;
 		private Notebook _notebook;
 		private bool _isSelected;
 		private NoteFile _selectedNoteFile;
+		private bool _isDirty;
 
 		public ObservableCollection<TokenizedTagItem> Tags { get; internal set; }
 
-		public Note Note { get; }
-
-		public Settings Settings => Hub.Instance.Settings;
-
-		public string NewToDoItemText
+		public Note Note
 		{
-			get { return _newToDoItemText; }
-			set { _newToDoItemText = value; RaisePropertyChanged(); }
-		}
-
-		public bool IsSecureNotesEnabled
-		{
-			get { return _secureNotesEnabled; }
-			set { _secureNotesEnabled = value; RaisePropertyChanged(); }
+			get { return _note; }
+			set { _note = value; RaisePropertyChanged(); }
 		}
 
 		public string CreatedDateText
@@ -76,7 +66,7 @@ namespace Noterium.ViewModels
 					if (ts.TotalDays > 1 && ts.TotalDays < 31)
 					{
 						int totalDays = Convert.ToInt32(Math.Floor(ts.TotalDays));
-						string suffix = " "+  (totalDays == 1 ? Properties.Resources.Time_Day : Properties.Resources.Time_Days);
+						string suffix = " " + (totalDays == 1 ? Properties.Resources.Time_Day : Properties.Resources.Time_Days);
 						return totalDays + suffix;
 					}
 					if (Note.Created.Month != DateTime.Now.Month)
@@ -93,50 +83,58 @@ namespace Noterium.ViewModels
 			set { _visible = value; RaisePropertyChanged(); }
 		}
 
-		public bool IsDirty { get; set; }
+		public bool IsDirty
+		{
+			get { return _isDirty; }
+			set { _isDirty = value; RaisePropertyChanged(); }
+		}
 
-		public NoteViewModel(Note note)
+		public NoteFile SelectedNoteFile { get { return _selectedNoteFile; } set { _selectedNoteFile = value; RaisePropertyChanged(); } }
+
+		public void Init(Note note)
 		{
 			Note = note;
 			Notebook = Hub.Instance.Storage.GetNotebook(note.Notebook);
-
-			InitCommands();
 
 			Tags = new ObservableCollection<TokenizedTagItem>(Note.Tags.ToList().ConvertAll(t => new TokenizedTagItem(t)));
 			Tags.CollectionChanged += TagsCollectionChanged;
 
 			Note.PropertyChanged += NotePropertyChanged;
 
-			PropertyChanged += NoteViewModelPropertyChanged;
-
-			Hub.Instance.EncryptionManager.PropertyChanged += NoteViewModelPropertyChanged;
-			IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
-
-			OpenFileCommand = new SimpleCommand(OpenFile);
-			RenameFileCommand = new SimpleCommand(RenameFile);
-			DeleteFileCommand = new SimpleCommand(DeleteFile);
+			RenameNoteCommand = new RelayCommand(RenameNote);
+			CopyNoteCommand = new RelayCommand(CopyNote);
+			OpenFileCommand = new RelayCommand(OpenFile);
+			RenameFileCommand = new RelayCommand(RenameFile);
+			DeleteFileCommand = new RelayCommand(DeleteFile);
+			DeleteNoteCommand = new RelayCommand(SendDeleteNoteMessage);
+			SaveNoteCommand = new RelayCommand(StopEditing);
 		}
 
-		public override string ToString()
+		private void StopEditing()
 		{
-			return Note.ToString();
+			SaveNote();
+			MessengerInstance.Send(new ChangeViewMode());
 		}
 
-		private void DeleteFile(object obj)
+		private void SendDeleteNoteMessage()
 		{
-			NoteFile nf = SelectedNoteFile;
-			if (nf != null)
+			MessengerInstance.Send(new DeleteNote(this));
+		}
+
+		private void DeleteFile()
+		{
+			if (SelectedNoteFile != null)
 			{
-				MessageBox.Show("Delete " + nf.Name);
+				MessageBox.Show("Delete " + SelectedNoteFile.Name);
 			}
 		}
 
-		private void RenameFile(object obj)
+		private void RenameFile()
 		{
-			NoteFile nf = SelectedNoteFile;
-			if (nf != null)
+			// TODO: i18n
+			if (SelectedNoteFile != null)
 			{
-				string name = nf.Name;
+				string name = SelectedNoteFile.Name;
 				var settings = DialogHelpers.GetDefaultDialogSettings();
 				settings.DefaultText = name;
 				MainWindowInstance.ShowInputAsync("Rename", "Enter new name:", settings).ContinueWith(delegate (Task<string> task)
@@ -150,7 +148,7 @@ namespace Noterium.ViewModels
 						var existingNoteFile = Note.Files.FirstOrDefault(enf => enf.Name.Equals(newName));
 						if (existingNoteFile == null)
 						{
-							nf.Name = newName;
+							SelectedNoteFile.Name = newName;
 							Note.DecryptedText = Note.DecryptedText.Replace($"[!{name}]", $"[!{newName}]");
 							IsDirty = true;
 						}
@@ -159,7 +157,7 @@ namespace Noterium.ViewModels
 							InvokeOnCurrentDispatcher(() =>
 							{
 								MainWindowInstance.ShowMessageAsync("Error", "You already have a file in this note called " + newName);
-								RenameFile(obj);
+								RenameFile();
 							});
 						}
 					}
@@ -167,14 +165,78 @@ namespace Noterium.ViewModels
 			}
 		}
 
-		private void OpenFile(object arg)
+		private void OpenFile()
 		{
-			if (arg != null)
+			if (SelectedNoteFile != null)
 			{
-				NoteFile nf = (NoteFile)arg;
-				if (File.Exists(nf.FullName))
-					System.Diagnostics.Process.Start(nf.FullName);
+				if (File.Exists(SelectedNoteFile.FullName))
+					Process.Start(SelectedNoteFile.FullName);
 			}
+		}
+
+		private void CopyNote()
+		{
+			if (Note.Encrypted)
+			{
+				var settings = DialogHelpers.GetDefaultDialogSettings();
+				MainWindowInstance.ShowMessageAsync(Properties.Resources.Note_Copy_SecureTitle, Properties.Resources.Note_Copy_SecureText, MessageDialogStyle.AffirmativeAndNegative, settings).
+				ContinueWith(delegate (Task<MessageDialogResult> task)
+				{
+					if (task.Result == MessageDialogResult.Affirmative)
+						DoCopyNote(Note);
+				});
+			}
+			else
+				DoCopyNote(Note);
+		}
+
+		private static void DoCopyNote(Note note)
+		{
+			NoteClipboardData data = new NoteClipboardData
+			{
+				Name = note.Name,
+				Text = note.DecryptedText,
+				Tags = new List<string>(note.Tags)
+			};
+
+			if (note.Files.Any())
+			{
+				data.Files = new List<ClipboardFile>();
+				foreach (NoteFile noteFile in note.Files)
+				{
+					ClipboardFile file = new ClipboardFile
+					{
+						Name = noteFile.Name,
+						Data = File.ReadAllBytes(noteFile.FullName),
+						FileName = noteFile.FileName,
+						MimeType = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(noteFile.FileName))
+					};
+					data.Files.Add(file);
+				}
+			}
+
+			DataFormat format = DataFormats.GetDataFormat(typeof(NoteClipboardData).FullName);
+
+			IDataObject dataObj = new DataObject();
+			dataObj.SetData(format.Name, data, false);
+			Clipboard.SetDataObject(dataObj, false);
+		}
+
+		private void RenameNote()
+		{
+			// TODO: i18n
+			string name = Note.Name;
+			var settings = DialogHelpers.GetDefaultDialogSettings();
+			settings.DefaultText = name;
+			MainWindowInstance.ShowInputAsync("Rename", "Enter new name:", settings).ContinueWith(delegate (Task<string> task)
+			{
+				string newName = task.Result;
+				if (!string.IsNullOrWhiteSpace(newName))
+				{
+					Note.Name = newName;
+					//NoteMenuContext.SelectedNote.Note.Save();
+				}
+			});
 		}
 
 		public Notebook Notebook
@@ -187,47 +249,6 @@ namespace Noterium.ViewModels
 		{
 			get { return _isSelected; }
 			set { _isSelected = value; RaisePropertyChanged(); }
-		}
-
-
-		private void InitCommands()
-		{
-			DocumentCheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
-		}
-
-		private void DocumentCheckBoxChecked(object arg)
-		{
-			CheckBox cb = arg as CheckBox;
-			if (cb != null)
-			{
-				int number = (int)cb.Tag;
-
-				string regString = "^" + SharedSettings.MarkerToDo;
-				Regex reg = new Regex(regString, RegexOptions.Compiled | RegexOptions.Singleline);
-				string replaceRegex= @"\[(?:\s|x)\]";
-				int cbNumber = 0;
-				string[] lines = Note.DecryptedText.Split('\n');
-				for (int index = 0; index < lines.Length; index++)
-				{
-					string line = lines[index];
-					if (reg.IsMatch(line))
-					{
-						if (cbNumber == number)
-						{
-							bool isChecked = cb.IsChecked ?? false;
-
-							string isCheckedString = isChecked ? "[x]" : "[ ]";
-							//string text = line.Substring(line.LastIndexOf("]", StringComparison.Ordinal) + 2);
-							lines[index] = Regex.Replace(line, replaceRegex, isCheckedString);
-							break;
-						}
-						cbNumber++;
-					}
-				}
-
-				Note.DecryptedText = string.Join("\n", lines);
-				CheckBoxCheckUpdatedTextCommand?.Execute(Note.DecryptedText);
-			}
 		}
 
 		void TagsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -283,17 +304,6 @@ namespace Noterium.ViewModels
 			}
 		}
 
-		void NoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "Note")
-			{
-			}
-			else if (e.PropertyName == "SecureNotesEnabled")
-			{
-				IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
-			}
-		}
-
 		public void SaveNote(bool force = false)
 		{
 			if (!force)
@@ -317,18 +327,12 @@ namespace Noterium.ViewModels
 			Note.Tags.Clear();
 			foreach (TokenizedTagItem t in Tags)
 			{
-				if(!string.IsNullOrWhiteSpace(t.Name))
+				if (!string.IsNullOrWhiteSpace(t.Name))
 					Note.Tags.Add(t.Text);
 			}
 		}
 
 		public bool IsSaving { get; set; }
-
-		public NoteFile SelectedNoteFile
-		{
-			get { return _selectedNoteFile; }
-			set { _selectedNoteFile = value; RaisePropertyChanged(); }
-		}
 
 		public void StartDrag(IDragInfo dragInfo)
 		{
@@ -411,8 +415,6 @@ namespace Noterium.ViewModels
 				}
 			}
 		}
-
-
 
 		private void AddFilesToTextBox(TextBox box, IDropInfo dropInfo, List<NoteFile> files)
 		{
