@@ -21,6 +21,7 @@ using Noterium.Properties;
 using Noterium.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using Noterium.Code.Messages;
+using Noterium.Core.Constants;
 
 namespace Noterium.Views
 {
@@ -129,9 +130,8 @@ namespace Noterium.Views
 			if (Model == null)
 				return;
 
-			SelectViewMode();
+			SelectViewMode(NoteViewModes.Default);
 
-			Model.EditNoteCommand = new RelayCommand(SwitchToEditPanel);
 			Model.SaveNoteCommand = new RelayCommand(SaveNote);
 		}
 
@@ -154,31 +154,46 @@ namespace Noterium.Views
 		private void SaveNote()
 		{
 			Model.CurrentNote?.SaveNote();
-			SelectViewMode();
+			SelectViewMode(NoteViewModes.Default);
 		}
 
 		private void SelectViewMode(ChangeViewMode message)
 		{
-			SelectViewMode();
+			SelectViewMode(message.Mode);
 		}
 
-		private void SelectViewMode()
+		private void SelectViewMode(NoteViewModes mode)
 		{
-			if (string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
+			if (mode == NoteViewModes.Default)
 			{
-				if (Hub.Instance.Settings.DefaultNoteView == "Split")
-					ViewModeButtonClicked(SplitModeButton, null);
-				else
-					ViewModeButtonClicked(EditModeButton, null);
-				return;
+				if (Hub.Instance.Settings.DefaultNoteView == "View")
+					mode = NoteViewModes.View;
+				else if (Hub.Instance.Settings.DefaultNoteView == "Split")
+					mode = NoteViewModes.Split;
+				else if (Hub.Instance.Settings.DefaultNoteView == "Edit")
+					mode = NoteViewModes.Edit;
 			}
 
-			if (Hub.Instance.Settings.DefaultNoteView == "View")
-				ViewModeButtonClicked(ViewModeButton, null);
-			else if (Hub.Instance.Settings.DefaultNoteView == "Split")
-				ViewModeButtonClicked(SplitModeButton, null);
-			else if (Hub.Instance.Settings.DefaultNoteView == "Edit")
-				ViewModeButtonClicked(EditModeButton, null);
+			Button source = null;
+			if (string.IsNullOrEmpty(Model.CurrentNote.Note.DecryptedText))
+			{
+				if (mode == NoteViewModes.Split)
+					source = SplitModeButton;
+				else
+					source = EditModeButton;
+			}
+			else
+			{
+				if (mode == NoteViewModes.View)
+					source = ViewModeButton;
+				else if (mode == NoteViewModes.Split)
+					source = SplitModeButton;
+				else if (mode == NoteViewModes.Edit)
+					source = EditModeButton;
+			}
+
+			if (source != null)
+				ViewModeButtonClicked(source, null);
 		}
 
 		private void GetXamlButton_OnClick(object sender, RoutedEventArgs e)

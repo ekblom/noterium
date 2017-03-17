@@ -37,7 +37,7 @@
 	<Window.InputBindings>
 		<KeyBinding Key="N" Modifiers="Control" Command="New"/>
 		<KeyBinding Key="F" Modifiers="Control" Command="{Binding ToggleSearchFlyoutCommand}"/>
-		<KeyBinding Key="E" Modifiers="Control" Command="{Binding NoteMenuContext.SelectedNote.EditNoteCommand}"/>
+		<KeyBinding Key="E" Modifiers="Control" Command="{Binding EditNoteCommand}"/>
 		<KeyBinding Key="S" Modifiers="Control" Command="{Binding NoteMenuContext.SelectedNote.SaveNoteCommand}"/>
 		<KeyBinding Key="OemPeriod" Modifiers="Control" Command="{Binding ToggleNotebookMenu}"/>
 		<KeyBinding Key="OemMinus" Modifiers="Control" Command="{Binding ToggleNoteMenu}"/>

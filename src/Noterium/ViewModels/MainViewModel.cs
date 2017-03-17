@@ -40,6 +40,7 @@ namespace Noterium.ViewModels
 		public ICommand CloseSearchCommand { get; set; }
 		public ICommand PerformLockActionsCommand { get; set; }
 		public ICommand ToggleSettingsFlyoutCommand { get; set; }
+		public ICommand EditNoteCommand { get; set; }
 
 
 		private readonly object _searchResultLockObject = new object();
@@ -94,6 +95,7 @@ namespace Noterium.ViewModels
 		public NotebookMenuViewModel MenuContext => ViewModelLocator.Instance.NotebookMenu;
 
 		public NoteMenuViewModel NoteMenuContext => ViewModelLocator.Instance.NoteMenu;
+		public NoteViewerViewModel NoteViewContext => ViewModelLocator.Instance.NoteView;
 
 		public bool IsSecureNotesEnabled
 		{
@@ -190,6 +192,7 @@ namespace Noterium.ViewModels
 			NoteViewModels = new Dictionary<Guid, NoteViewModel>();
 			TopMainMenuItems = new ObservableCollection<TopMainMenuItemViewModel>();
 			SearchResult = new ObservableCollection<NoteViewModel>();
+			EditNoteCommand = new RelayCommand(() => { MessengerInstance.Send(new ChangeViewMode(Core.Constants.NoteViewModes.Edit)); });
 
 			BindingOperations.EnableCollectionSynchronization(SearchResult, _searchResultLockObject);
 

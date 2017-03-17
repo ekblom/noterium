@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Noterium.Core.Constants;
 
 namespace Noterium.Code.Messages
 {
-	class ChangeViewMode
+	internal struct ChangeViewMode
 	{
+		public NoteViewModes Mode  { get; private set; }
+		public ChangeViewMode(NoteViewModes mode)
+		{
+			Mode = mode;
+		}
 	}
 }

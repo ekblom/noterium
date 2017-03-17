@@ -71,7 +71,8 @@ namespace Noterium.ViewModels
 
 		private void UpdateSelectedNote(SelectedNoteChanged obj)
 		{
-			MarkdownConverter.CurrentNote = obj.SelectedNote.Note;
+			if(MarkdownConverter != null)
+				MarkdownConverter.CurrentNote = obj.SelectedNote.Note;
 			CurrentNote = obj.SelectedNote;
 		}
 
