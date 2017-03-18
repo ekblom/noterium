@@ -319,7 +319,7 @@ namespace Noterium.ViewModels
 				SortIndex = sortIndex,
 				Text = text ?? string.Empty
 			};
-
+			note.SetIsInitialized();
 			note.Save();
 
 			//var notebookViewModel = ViewModelLocator.Instance.GetNotebookViewModel(notebook);

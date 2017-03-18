@@ -35,6 +35,7 @@ namespace Noterium.Core.DataCarriers
         private int _sortIndex;
         private ObservableCollection<string> _tags;
         private string _text;
+		private bool _initialized = false;
 
         public delegate void NoteRefreshedFromDiskEventHandler();
 
@@ -46,6 +47,11 @@ namespace Noterium.Core.DataCarriers
             Files = new ObservableCollection<NoteFile>();
             Files.CollectionChanged += FilesCollectionChanged;
         }
+
+		public void SetIsInitialized()
+		{
+			_initialized = true;
+		}
 
 		public override string ToString()
 		{
@@ -250,8 +256,12 @@ namespace Noterium.Core.DataCarriers
 	            bool raiseChanged = _encrypted != value;
                 _encrypted = value;
 
-				if(raiseChanged)
+				if (raiseChanged)
+				{
+					if(_initialized)
+						Hub.Instance.EncryptionManager.SwitchTextEncryptionMode(this);
 					RaiseOnPropetyChanged();
+				}
             }
         }
 
@@ -318,7 +328,8 @@ namespace Noterium.Core.DataCarriers
 
         private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			if(_initialized)
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         internal void RaiseRefreshedFromDisk()

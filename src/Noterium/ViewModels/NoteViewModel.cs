@@ -292,16 +292,8 @@ namespace Noterium.ViewModels
 			if (e.PropertyName != "Changed")
 				IsDirty = true;
 
-			if (e.PropertyName == "Encrypted")
-			{
-				// Force save note so we encrypt correct things
-				Hub.Instance.EncryptionManager.SwitchTextEncryptionMode(Note);
-				SaveNote(true);
-			}
-			else if (e.PropertyName == "Notebook")
-			{
+			if (e.PropertyName == "Notebook")
 				Notebook = Hub.Instance.Storage.GetNotebook(Note.Notebook);
-			}
 		}
 
 		public void SaveNote(bool force = false)

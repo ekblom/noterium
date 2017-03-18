@@ -183,7 +183,7 @@ namespace Noterium.Core.DropBox
 
         #endregion
 
-        public void SaveSettings(DataCarriers.Settings settings)
+        public void SaveSettings(Settings settings)
         {
             var filePath = _rootFolder.FullName + "\\settings.json";
             Save(settings, filePath);
@@ -196,7 +196,7 @@ namespace Noterium.Core.DropBox
 			EnableWatcher();
 		}
 
-		public DataCarriers.Settings GetSettings()
+		public Settings GetSettings()
         {
             var filePath = _rootFolder.FullName + "\\settings.json";
             var fi = new FileInfo(filePath);
@@ -301,9 +301,9 @@ namespace Noterium.Core.DropBox
                 _cache.Add(noteBook, new List<Note>());
         }
 
-        public List<Note> GetNotes(Notebook mg)
+        public List<Note> GetNotes(Notebook notebook)
         {
-            return _cache[mg];
+            return _cache[notebook];
         }
 
         public List<Notebook> GetNoteBooks()
@@ -311,9 +311,9 @@ namespace Noterium.Core.DropBox
             return _cache.Keys.ToList();
         }
 
-        public int GetNoteCount(Notebook mg)
+        public int GetNoteCount(Notebook notebook)
         {
-            return _cache[mg].Count;
+            return _cache[notebook].Count;
         }
 
         public int GetTotalNoteCount()
@@ -439,7 +439,8 @@ And you can make tables:
                     Created = DateTime.Now,
                     Tags = new ObservableCollection<string>(new List<string> { "welcome", "noterium" })
                 };
-                n.Save();
+				n.SetIsInitialized();
+				n.Save();
 
                 //InitCache();
             }
@@ -552,12 +553,12 @@ And you can make tables:
             }
         }
 
-        private DirectoryInfo GetGroupDirectory(Notebook mg)
+        private DirectoryInfo GetGroupDirectory(Notebook notebook)
         {
             DirectoryInfo di = null;
-            if (mg != null)
+            if (notebook != null)
             {
-                di = new DirectoryInfo(_dataFolder.FullName + "\\" + mg.ID);
+                di = new DirectoryInfo(_dataFolder.FullName + "\\" + notebook.ID);
             }
             return di;
         }
@@ -609,8 +610,9 @@ And you can make tables:
             {
                 callback("Loading notes from notebook " + (index + 1) + " of " + notebooks.Count);
 
-                var @group = notebooks[index];
-                var notes = GetNotesFromDisc(@group);
+                var group = notebooks[index];
+                var notes = GetNotesFromDisc(group);
+				notes.ForEach(n => n.SetIsInitialized());
                 _cache.Add(@group, notes);
             }
 
@@ -619,21 +621,24 @@ And you can make tables:
 
         private void ReloadNotebook(Guid notebookId)
         {
-            var mg = _cache.Keys.FirstOrDefault(memorygroup => memorygroup.ID == notebookId);
-            if (mg == null)
+            var notebook = _cache.Keys.FirstOrDefault(memorygroup => memorygroup.ID == notebookId);
+            if (notebook == null)
                 return;
 
-            var notes = GetNotesFromDisc(mg);
-            var cachedNotes = _cache[mg];
+            var notes = GetNotesFromDisc(notebook);
+            var cachedNotes = _cache[notebook];
 
             var notesToRemove = cachedNotes.Where(cachedMemory => !notes.Contains(cachedMemory)).ToList();
             notesToRemove.ForEach(n => cachedNotes.Remove(n));
 
-            foreach (var m in notes)
+            foreach (var note in notes)
             {
-                var existing = cachedNotes.FirstOrDefault(mm => mm.ID == m.ID);
-                if (existing == null)
-                    _cache[mg].Add(m);
+                var existing = cachedNotes.FirstOrDefault(mm => mm.ID == note.ID);
+				if (existing == null)
+				{
+					note.SetIsInitialized();
+					_cache[notebook].Add(note);
+				}
             }
         }
 

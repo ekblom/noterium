@@ -110,13 +110,13 @@ namespace Noterium.Core.Security
 		 *		IsAuthenticated = true
 		 *		AlwaysRequirePassword = false
 		 *		Password stored for read and write
-		 *  - No 
+		 *  - No
 		 *		IsAuthenticated = true
 		 *		AlwaysRequirePassword = true
 		 *		Password needed to open
 		 *		Password stored for writing (Until secure note unreloaded?)
-		 *		
-		 * 
+		 *
+		 *
 		 * Open note
 		 * IsSecure
 		 * Decrypt -> AlwaysRequirePassword?
@@ -124,7 +124,7 @@ namespace Noterium.Core.Security
 		 *		OnPasswordNeeded
 		 *	No
 		 *		Has password
-		 *		
+		 *
 		 * Decrypt Text
 		 */
 
@@ -133,18 +133,16 @@ namespace Noterium.Core.Security
             if (!SecureNotesEnabled || !ValidatePassword(pass))
                 return;
 
-            File.Delete(_dataStore.MasterPasswordFile);
             foreach (var n in Hub.Instance.Storage.GetAllNotes())
             {
                 if (n.Encrypted)
                 {
-                    var text = n.DecryptedText;
                     n.Encrypted = false;
-                    n.Text = text;
                     n.Save();
                 }
             }
-            SecureNotesEnabled = false;
+            File.Delete(_dataStore.MasterPasswordFile);
+			SecureNotesEnabled = false;
             _password = null;
         }
 
