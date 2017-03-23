@@ -30,24 +30,24 @@
 		</TextBlock>
 		<ListBox Grid.Row="1" Name="StorageTypeListBox" Grid.IsSharedSizeScope="True" SelectionChanged="StorageTypeListBox_OnSelectionChanged">
 			<ListBoxItem Tag="DropBox">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                        <ColumnDefinition Width="*" SharedSizeGroup="Label" />
-                    </Grid.ColumnDefinitions>
-                    <iconPacks:PackIconFontAwesome Kind="Dropbox" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Dropbox</TextBlock>
-                </Grid>
-            </ListBoxItem>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+						<ColumnDefinition Width="*" SharedSizeGroup="Label" />
+					</Grid.ColumnDefinitions>
+					<iconPacks:PackIconFontAwesome Kind="Dropbox" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Dropbox</TextBlock>
+				</Grid>
+			</ListBoxItem>
 			<ListBoxItem Tag="Filesystem">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                        <ColumnDefinition Width="*" SharedSizeGroup="Label" />
-                    </Grid.ColumnDefinitions>
-                    <iconPacks:PackIconFontAwesome Kind="HddOutline" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Filesystem</TextBlock>
-                </Grid>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+						<ColumnDefinition Width="*" SharedSizeGroup="Label" />
+					</Grid.ColumnDefinitions>
+					<iconPacks:PackIconFontAwesome Kind="HddOutline" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Filesystem</TextBlock>
+				</Grid>
 			</ListBoxItem>
 		</ListBox>
 		<Button Name="NextButton" Grid.Row="2" Height="25" Width="100" HorizontalAlignment="Right" Click="NextButtonClick" IsEnabled="False">next</Button>
