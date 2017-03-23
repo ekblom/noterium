@@ -90,7 +90,6 @@
         <File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
         <File Source="$(var.Noterium.TargetDir)MimeTypeMap.dll" />
         <File Source="$(var.Noterium.TargetDir)Newtonsoft.Json.dll" />
-        <File Source="$(var.Noterium.TargetDir)ScheduleWidget.dll" />
         <File Source="$(var.Noterium.TargetDir)Shortcut.dll" />
         <File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Input.Toolkit.dll" />
         <File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Layout.Toolkit.dll" />
