@@ -109,7 +109,7 @@ namespace Noterium.Core
 
 				if (_watcher != null) _watcher.EnableRaisingEvents = false;
 				File.WriteAllText(_settingsFilePath, json);
-                if (_watcher != null) _watcher.EnableRaisingEvents = true;
+				if (_watcher != null) _watcher.EnableRaisingEvents = true;
 			}
 		}
 
