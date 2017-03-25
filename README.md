@@ -1,4 +1,4 @@
-##Noterium
+## Noterium
 
 An app for taking total control over your notes.
 
@@ -10,7 +10,7 @@ An app for taking total control over your notes.
 
 ![downloads](https://img.shields.io/github/license/ekblom/noterium.svg?style=flat-square)
 
-##Features
+## Features
 
 ### Application
 
@@ -22,9 +22,10 @@ An app for taking total control over your notes.
 ### Notes
 
 - Write notes in [CommonMark](http://commonmark.org/)
+- Support for GitHub flavoured markdown, i.e. tables and task lists
 - Inline images stored as attachment
 - Attachment files linkable in the notes
-- Do todo-lists (not working at the moment)
+- Do task lists 
 
 ### Secure notes
 - Secure your notes with encryption (using https://gist.github.com/4336842)
