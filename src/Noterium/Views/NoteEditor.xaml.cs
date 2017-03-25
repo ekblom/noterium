@@ -174,8 +174,7 @@ namespace Noterium.Views
 
 				UpdateEntities();
 
-				// TODO: Update text when changed by checkbox.
-				//CurrentModel.CheckBoxCheckUpdatedTextCommand = new SimpleCommand(UpdateTextByCheckBox);
+				ViewModelLocator.Instance.NoteView.CheckBoxCheckUpdatedTextCommand = new SimpleCommand(UpdateTextByCheckBox);
 			}
 			finally
 			{

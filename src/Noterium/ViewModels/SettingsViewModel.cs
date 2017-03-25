@@ -109,7 +109,9 @@ namespace Noterium.ViewModels
 	        set { _tags = value; RaisePropertyChanged(); }
 	    }
 
-	    public SettingsViewModel()
+		public bool Loaded { get; internal set; }
+
+		public SettingsViewModel()
 		{
 			Settings = Hub.Instance.Settings;
 

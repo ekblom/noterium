@@ -173,7 +173,7 @@ namespace Noterium
 		{
 			_currentLibrary = library;
 			ViewModelLocator.Cleanup();
-			
+
 			Hub.Instance.Init(library);
 			InitLog4Net();
 			SetAppTheme();
@@ -212,6 +212,17 @@ namespace Noterium
 			{
 				Current.Dispatcher.Invoke(() => { loading.SetMessage(s); });
 			});
+
+			// TODO: i18n
+			loading.SetMessage("Loading models");
+
+			ViewModelLocator.Instance.NotebookMenu.Loaded = true;
+			ViewModelLocator.Instance.NoteMenu.Loaded = true;
+			ViewModelLocator.Instance.NoteView.Loaded = true;
+			ViewModelLocator.Instance.Main.Loaded = true;
+			ViewModelLocator.Instance.Librarys.Loaded = true;
+			ViewModelLocator.Instance.Settings.Loaded = true;
+			ViewModelLocator.Instance.BackupManager.Loaded = true;
 
 			loading.SetMessage("Loading main window");
 

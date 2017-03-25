@@ -51,7 +51,7 @@ namespace Noterium.ViewModels
 			set { _selectedMenuItem = value; RaisePropertyChanged(); }
 		}
 
-		public ObservableCollection<NotebookViewModel> Notebooks { get; set; }
+		public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
 
 		public NotebookViewModel SelectedNotebook
 		{
@@ -65,6 +65,8 @@ namespace Noterium.ViewModels
 			set { _selectedTag = value; RaisePropertyChanged(); }
 		}
 
+		public bool Loaded { get; internal set; }
+
 		public NotebookMenuViewModel()
 		{
 			Settings = Hub.Instance.Settings;
@@ -77,13 +79,23 @@ namespace Noterium.ViewModels
 			PasteNoteCommand = new SimpleCommand(PasteNote);
 			SelectedNoteContainerChangedCommand = new SimpleCommand(SelectedNoteContainerChanged);
 
-			MessengerInstance.Register<ApplicationUnlocked>(this, OnApplicationUnlocked);
+			BindingOperations.EnableCollectionSynchronization(Notebooks, _mainMenuListLockObject);
 
-			InitMainMenu();
+			MessengerInstance.Register<ApplicationUnlocked>(this, OnApplicationUnlocked);
+			MessengerInstance.Register<ApplicationPartLoaded>(this, OnPartLoaded);
+		}
+
+		private void OnPartLoaded(ApplicationPartLoaded obj)
+		{
+			if(obj.Part == ApplicationPartLoaded.ApplicationParts.NoteView)
+			{
+				InitMainMenu();
+			}
 		}
 
 		private void InitMainMenu()
 		{
+
 			var notebooks = Hub.Instance.Storage.GetNotebooks();
 			var items = ViewModelLocator.Instance.GetNotebookViewModels(notebooks);
 
@@ -91,12 +103,15 @@ namespace Noterium.ViewModels
 
 			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled && items.Any())
 			{
-				SelectedNotebook = items[0];
-				SelectedNotebook.IsSelected = true;
+				InvokeOnCurrentDispatcher(() =>
+				{
+					SelectedNotebook = items[0];
+					SelectedNotebook.IsSelected = true;
+				});
 			}
-			Notebooks = new ObservableCollection<NotebookViewModel>(items);
 
-			BindingOperations.EnableCollectionSynchronization(Notebooks, _mainMenuListLockObject);
+			Notebooks.Clear();
+			items.ForEach(Notebooks.Add);
 		}
 
 		private void OnApplicationUnlocked(ApplicationUnlocked obj)

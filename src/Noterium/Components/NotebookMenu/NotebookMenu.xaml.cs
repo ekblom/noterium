@@ -83,6 +83,9 @@ namespace Noterium.Components.NotebookMenu
 		private void NotebookMenu_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			_model = DataContext as NotebookMenuViewModel;
+			if (_model == null || _model.Notebooks == null)
+				return;
+
 		    NotebookViewModel first = _model?.Notebooks.FirstOrDefault();
 		    if (first != null)
 		    {

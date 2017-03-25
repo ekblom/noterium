@@ -231,6 +231,8 @@ namespace Noterium.ViewModels
 			}
 		}
 
+		public bool Loaded { get; internal set; }
+
 
 		#region dragdrop
 

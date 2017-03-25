@@ -602,6 +602,7 @@ And you can make tables:
 
         public void InitCache(Action<string> callback)
         {
+			// TODO: i18n
             _cache = new Dictionary<Notebook, List<Note>>();
             callback("Loading notebooks");
             var notebooks = GetNotebookFromDisc();

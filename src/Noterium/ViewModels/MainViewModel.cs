@@ -172,6 +172,8 @@ namespace Noterium.ViewModels
 			set { _helpDocumentText = value; RaisePropertyChanged(); }
 		}
 
+		public bool Loaded { get; internal set; }
+
 		#endregion
 
 		/// <summary>
