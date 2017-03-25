@@ -263,6 +263,8 @@ namespace Noterium.Views
 			Model.MarkdownConverter = _markdownToFlowDocumentConverter;
 			if (_xamlFormatter != null)
 				_xamlFormatter.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
+
+			Messenger.Default.Send(new ApplicationPartLoaded(ApplicationPartLoaded.ApplicationParts.NoteView));
 		}
 
 		private void DocumentCheckBoxChecked(object arg)

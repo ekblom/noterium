@@ -237,6 +237,7 @@
     <Compile Include="Code\Markdown\SharedSettings.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
     <Compile Include="Code\Markdown\XamlFormatter.cs" />
+    <Compile Include="Code\Messages\ApplicationPartLoaded.cs" />
     <Compile Include="Code\Messages\ApplicationUnlocked.cs" />
     <Compile Include="Code\Messages\ChangeLibrary.cs" />
     <Compile Include="Code\Messages\ChangeViewMode.cs" />

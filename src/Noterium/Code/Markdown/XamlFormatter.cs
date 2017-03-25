@@ -21,12 +21,20 @@ namespace Noterium.Code.Markdown
 {
 	public class XamlFormatter : DependencyObject
 	{
-		//private int _checkBoxNumber = 0;
+		private int _checkBoxNumber = 0;
 
 		#region -- Propertys --
 
 		public ICommand HyperlinkCommand { get; set; }
-		public ICommand CheckBoxCheckedCommand { get; set; }
+
+		public static readonly DependencyProperty CheckBoxCheckedCommandProperty = DependencyProperty.Register("CheckBoxCheckedCommand", typeof(ICommand), typeof(XamlFormatter));
+
+		public ICommand CheckBoxCheckedCommand
+		{
+			get { return (ICommand)GetValue(CheckBoxCheckedCommandProperty); }
+			set { SetValue(CheckBoxCheckedCommandProperty, value); }
+		}
+
 
 		public Style DocumentStyle
 		{
@@ -289,6 +297,7 @@ namespace Noterium.Code.Markdown
 
 		private void BlocksToXamlInner(FlowDocument parent, Block block, CommonMarkSettings settings)
 		{
+			_checkBoxNumber = 0;
 			var stack = new Stack<BlockStackEntry>();
 			var inlineStack = new Stack<InlineStackEntry>();
 			bool stackTight = false;
@@ -342,31 +351,75 @@ namespace Noterium.Code.Markdown
 						break;
 
 					case BlockTag.ListItem:
-						ListItem listItem = new ListItem();
-						if (ListItemStyle != null)
-							listItem.Style = ListItemStyle;
-
-						if (trackPositions)
-							PrintPosition(listItem, block);
-
-						blockParent.AddChild(listItem);
-						lastParent = blockParent;
-						blockParent = listItem;
 
 						stackTight = tight;
-						visitChildren = true;
+
+						if (block.ListData != null && block.ListData.ListType == ListType.TaskList)
+						{
+							BlockUIContainer ctnr = (BlockUIContainer)blockParent;
+							StackPanel sp = (StackPanel)ctnr.Child;
+
+							visitChildren = false;
+							TextBlock spcb = new TextBlock();
+							spcb.Style = TodoTextStyle;
+							Inline checkBoxInline = block.FirstChild?.InlineContent;
+							if (checkBoxInline != null)
+								InlinesToXaml(spcb, checkBoxInline, settings, inlineStack);
+
+							CheckBox bt = new CheckBox
+							{
+								IsChecked = block.TaskListItemIsChecked,
+								Content = spcb,
+								Tag = _checkBoxNumber
+							};
+							bt.CommandParameter = bt;
+							bt.Command = CheckBoxCheckedCommand;
+							bt.Style = TodoCheckBoxStyle;
+
+							sp.Children.Add(bt);
+
+							//TODO: Add child stack panel and add block.FirstChild.NextSibling
+
+							_checkBoxNumber++;
+						}
+						else
+						{
+							ListItem listItem = new ListItem();
+							if (ListItemStyle != null)
+								listItem.Style = ListItemStyle;
+
+							if (trackPositions)
+								PrintPosition(listItem, block);
+
+							blockParent.AddChild(listItem);
+
+							lastParent = blockParent;
+							blockParent = listItem;
+							visitChildren = true;
+						}
+
 						break;
 
 					case BlockTag.List:
-						List list = new List();
-						if (ListStyle != null)
-							list.Style = ListStyle;
+						var data = block.ListData;
+						IAddChild list;
+						if (data.ListType == ListType.TaskList)
+						{
+							StackPanel sp = new StackPanel();
+							list = new BlockUIContainer(sp);
+						}
+						else
+						{
+							List theList = new List();
+							list = theList;
+							theList.MarkerStyle = data.ListType == ListType.Bullet ? TextMarkerStyle.Disc : TextMarkerStyle.Decimal;
+
+							if (ListStyle != null)
+								theList.Style = ListStyle;
+						}
 
 						if (trackPositions)
-							PrintPosition(list, block);
-
-						var data = block.ListData;
-						list.MarkerStyle = data.ListType == ListType.Bullet ? TextMarkerStyle.Disc : TextMarkerStyle.Decimal;
+							PrintPosition((FrameworkContentElement)list, block);
 
 						// TODO: Check if first child starts with [ ] then it is a todo-list item
 						// TODO: Set list.StartIndex if > 1

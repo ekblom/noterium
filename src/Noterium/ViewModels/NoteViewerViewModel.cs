@@ -17,6 +17,7 @@ using Noterium.Core;
 using Noterium.Core.DataCarriers;
 using Noterium.Code.Messages;
 using System;
+using System.Threading;
 
 namespace Noterium.ViewModels
 {
@@ -54,6 +55,8 @@ namespace Noterium.ViewModels
 			get { return _markdownConverter; }
 			set { _markdownConverter = value; }
 		}
+
+		public bool Loaded { get; internal set; }
 
 		public NoteViewerViewModel()
 		{

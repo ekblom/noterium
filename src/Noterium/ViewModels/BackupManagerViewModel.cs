@@ -52,8 +52,9 @@ namespace Noterium.ViewModels
 
         public ICommand RestoreNoteCommand { get; set; }
         public BackupManager Window { get; set; }
+		public bool Loaded { get; internal set; }
 
-        public BackupManagerViewModel()
+		public BackupManagerViewModel()
         {
             LoadBackupSets();
             BackupSetNodes = new ObservableCollection<ITreeNode>();

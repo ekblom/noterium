@@ -30,6 +30,7 @@ namespace Noterium.ViewModels
 		}
 
 		public ObservableCollection<LibraryViewModel> Librarys { get; }
+		public bool Loaded { get; internal set; }
 
 		public LibrarysViewModel()
 		{
