@@ -286,6 +286,9 @@ namespace Noterium.ViewModels
 
 		void NotePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			if (sender is Note && ((Note)sender).IsUpdatingFromDisc)
+				return;
+
 			if (e.PropertyName == "Text")
 				return;
 

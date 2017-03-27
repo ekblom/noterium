@@ -58,6 +58,8 @@ namespace Noterium.Core.DataCarriers
 			return $"{Name} - Index: {SortIndex} - ID: {ID}";
 		}
 
+		public bool IsUpdatingFromDisc{ get; internal set; }
+
 		[DataMember]
         public Guid ID { get; set; }
 
@@ -349,6 +351,9 @@ namespace Noterium.Core.DataCarriers
 
         public void Save()
         {
+			if (IsUpdatingFromDisc)
+				return;
+
             lock (_saveLockObject)
             {
                 if (DecryptedText.Length > 0)

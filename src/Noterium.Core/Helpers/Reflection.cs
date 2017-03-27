@@ -37,11 +37,15 @@ namespace Noterium.Core.Helpers
                 {
                     continue;
                 }
-                if (targetProperty.GetSetMethod(true) != null && targetProperty.GetSetMethod(true).IsPrivate)
+
+				var setMethod = targetProperty.GetSetMethod(true);
+				if (setMethod != null && setMethod.IsPrivate)
                 {
                     continue;
                 }
-                if ((targetProperty.GetSetMethod().Attributes & MethodAttributes.Static) != 0)
+
+				setMethod = targetProperty.GetSetMethod();
+				if (setMethod == null || (setMethod.Attributes & MethodAttributes.Static) != 0)
                 {
                     continue;
                 }
