@@ -250,8 +250,7 @@ namespace Noterium
 
 			Messenger.Default.Register<ChangeLibrary>(this, DoChangeLibrary);
 
-			_mainWindow.Title = Noterium.Properties.Resources.Title + " - " + _currentLibrary.Name;
-			//_mainWindow.DataContext = model;
+			_mainWindow.Title = _currentLibrary.Name + " - " + Noterium.Properties.Resources.Title;
 			_mainWindow.Model = ViewModelLocator.Instance.Main;
 			_mainWindow.Width = _currentLibrary.WindowSize.Width;
 			_mainWindow.Height = _currentLibrary.WindowSize.Height;
