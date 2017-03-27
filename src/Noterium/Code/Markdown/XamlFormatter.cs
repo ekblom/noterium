@@ -726,7 +726,6 @@ namespace Noterium.Code.Markdown
 						else
 						{
 							Hyperlink hyperlink = new Hyperlink();
-							hyperlink.Command = HyperlinkCommand;
 
 							if (LinkStyle != null)
 								hyperlink.Style = LinkStyle;
@@ -739,7 +738,15 @@ namespace Noterium.Code.Markdown
 
 							hyperlink.CommandParameter = url;
 							if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+							{
 								hyperlink.NavigateUri = new Uri(url);
+								hyperlink.RequestNavigate += (sender, e) =>
+								{
+									System.Diagnostics.Process.Start(e.Uri.ToString());
+								};
+							}
+							else
+								hyperlink.Command = HyperlinkCommand;
 
 							if (inline.LiteralContent.Length > 0)
 								hyperlink.ToolTip = inline.LiteralContent;
@@ -846,6 +853,11 @@ namespace Noterium.Code.Markdown
 					withinLink = entry.IsWithinLink;
 				}
 			}
+		}
+
+		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		private void HandleImage(Inline inline, IAddChild parent)
