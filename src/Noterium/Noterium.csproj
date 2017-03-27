@@ -221,7 +221,6 @@
     <Compile Include="Code\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Code\BoundObservableCollection.cs" />
     <Compile Include="Code\Commands\CustomCommandInvoker.cs" />
-    <Compile Include="Code\Commands\ToDoItemCommand.cs" />
     <Compile Include="Code\Commands\NoteFileCommand.cs" />
     <Compile Include="Code\Converters\BindingNullConverter.cs" />
     <Compile Include="Code\Converters\MultiValueBindingConverter.cs" />
@@ -283,7 +282,6 @@
     <Compile Include="ViewModels\NoteFileViewModel.cs" />
     <Compile Include="ViewModels\AboutWindowViewModel.cs" />
     <Compile Include="ViewModels\NoteViewModel.cs" />
-    <Compile Include="ViewModels\ToDoItemViewModel.cs" />
     <Compile Include="ViewModels\TopMainMenuItemViewModel.cs" />
     <Compile Include="ViewModels\NoteEditorViewModel.cs" />
     <Compile Include="ViewModels\NoteViewerViewModel.cs" />
