@@ -423,6 +423,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.sv.resx" />
     <None Include="noterium.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />

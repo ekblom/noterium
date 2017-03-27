@@ -159,17 +159,14 @@
     <Compile Include="Constants\Colours.cs" />
     <Compile Include="Constants\DefaultTagColors.cs" />
     <Compile Include="Constants\File.cs" />
-    <Compile Include="Constants\Frequency.cs" />
     <Compile Include="Constants\NoteViewModes.cs" />
     <Compile Include="DataCarriers\Library.cs" />
     <Compile Include="DataCarriers\NoteClipboardData.cs" />
     <Compile Include="DataCarriers\NoteFile.cs" />
     <Compile Include="DataCarriers\Note.cs" />
     <Compile Include="DataCarriers\NoteBook.cs" />
-    <Compile Include="DataCarriers\SimpleReminder.cs" />
     <Compile Include="DataCarriers\Tag.cs" />
     <Compile Include="DataCarriers\TextHistory.cs" />
-    <Compile Include="DataCarriers\Recurrence.cs" />
     <Compile Include="DataCarriers\Settings.cs" />
     <Compile Include="DropBox\DataStore.cs" />
     <Compile Include="Exceptions\SaveException.cs" />
@@ -210,6 +207,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.sv.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -31,9 +31,5 @@ namespace Noterium.Core
         Notebook GetNoteBook(Guid guid);
 
         void CleanBackupData(int backupsToKeep);
-
-        List<SimpleReminder> GetReminders();
-        void SaveReminder(SimpleReminder reminder);
-        void DeleteReminder(SimpleReminder reminder);
     }
 }
