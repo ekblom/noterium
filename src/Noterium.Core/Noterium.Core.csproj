@@ -213,9 +213,10 @@
     <None Include="app.config" />
     <None Include="noterium.pfx" />
     <None Include="packages.config" />
-    <None Include="Resources\google_client_secrets.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
