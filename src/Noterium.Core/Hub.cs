@@ -3,6 +3,7 @@ using Noterium.Core.DataCarriers;
 using Noterium.Core.Search;
 using Noterium.Core.Security;
 using Noterium.Core.Services;
+using Noterium.Core.Localization;
 
 namespace Noterium.Core
 {
@@ -48,7 +49,7 @@ namespace Noterium.Core
             TextClipper = new TextClipper();
             EncryptionManager = new EncryptionManager(_storage.DataStore);
             TagManager = new TagManager();
-        }
+		}
 
 	    public Library CurrentLibrary { get; set; }
     }
