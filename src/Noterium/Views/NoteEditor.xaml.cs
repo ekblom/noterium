@@ -485,7 +485,7 @@ namespace Noterium.Views
 
 		private void MarkdownText_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter)
+			if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
 			{
 				int lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
 				if (lineIndex < 0)
