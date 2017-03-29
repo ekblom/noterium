@@ -482,5 +482,66 @@ namespace Noterium.Views
 		{
 			Popup.IsOpen = true;
 		}
+
+		private void MarkdownText_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				int lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
+				if (lineIndex < 0)
+					return;
+
+				string line = MarkdownText.GetLineText(lineIndex);
+				string lineTextTrim = line.Trim();
+
+				if (lineTextTrim.Equals("- [ ]") || lineTextTrim.Equals("-"))
+				{
+					RemoveLine(lineIndex);
+					return;
+				}
+
+				string lineTextTrimStart = line.TrimStart();
+				int leadingWhitespaces = line.Length - lineTextTrimStart.Length;
+				string whiteSpaces = string.Empty;
+				if (leadingWhitespaces > 0)
+					whiteSpaces = new string(' ', leadingWhitespaces);
+
+				string stringToInsert = null;
+				if (lineTextTrimStart.StartsWith("- ["))
+				{
+
+					stringToInsert = "- [ ] ";
+				}
+				else if(lineTextTrimStart.StartsWith("- "))
+				{
+					stringToInsert = "- ";
+				}
+
+				if(stringToInsert != null)
+				{
+					InsertAt("\n" + whiteSpaces + stringToInsert, MarkdownText.CaretIndex);
+					e.Handled = true;
+				}
+			}
+		}
+
+		private void RemoveLine(int lineIndex)
+		{
+			List<string> lines = new List<string>(MarkdownText.Text.Split('\n'));
+			lines.RemoveAt(lineIndex);
+
+			int carretPosition = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
+
+			MarkdownText.Text = string.Join("\n", lines.ToArray());
+			MarkdownText.CaretIndex = carretPosition;
+		}
+
+		private void InsertAt(string thisString, int at)
+		{
+			int newCaretIndex = MarkdownText.CaretIndex + thisString.Length;
+			MarkdownText.Text = MarkdownText.Text.Insert(MarkdownText.CaretIndex, thisString);
+			if (MarkdownText.Text.Length >= newCaretIndex)
+				MarkdownText.CaretIndex = newCaretIndex;
+		}
 	}
 }
