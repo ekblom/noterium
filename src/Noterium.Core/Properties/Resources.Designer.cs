@@ -61,16 +61,6 @@ namespace Noterium.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] google_client_secrets {
-            get {
-                object obj = ResourceManager.GetObject("google_client_secrets", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap image {
