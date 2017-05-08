@@ -12,6 +12,18 @@
 	<Color x:Key="IdealForegroundColor">#404040</Color>
 	<Color x:Key="WhiteColor">#FFFFFF</Color>
 
+	<Color x:Key="NoteCodeBackground">#f6f8fa</Color>
+	<SolidColorBrush x:Key="NoteCodeBackgroundBrush" options:Freeze="True" Color="{StaticResource NoteCodeBackground}" />
+
+	<Color x:Key="NoteCodeForeground">#000000</Color>
+	<SolidColorBrush x:Key="NoteCodeForegroundBrush" options:Freeze="True" Color="{StaticResource NoteCodeForeground}" />
+
+	<Color x:Key="NoteInlineCodeBackground">#f3f3f3</Color>
+	<SolidColorBrush x:Key="NoteInlineCodeBackgroundBrush" options:Freeze="True" Color="{StaticResource NoteInlineCodeBackground}" />
+
+	<Color x:Key="NoteInlineCodeForeground">#000000</Color>
+	<SolidColorBrush x:Key="NoteInlineCodeForegroundBrush" options:Freeze="True" Color="{StaticResource NoteInlineCodeForeground}" />
+
 	<!--  re-set brushes too  -->
 	<SolidColorBrush x:Key="HighlightBrush" options:Freeze="True" Color="{StaticResource HighlightColor}" />
 	<SolidColorBrush x:Key="AccentColorBrush" options:Freeze="True" Color="{StaticResource AccentColor}" />

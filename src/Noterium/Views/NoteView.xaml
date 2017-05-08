@@ -119,14 +119,14 @@
 			</Style>
 			<Style x:Key="Code" TargetType="{x:Type Span}">
 				<Setter Property="FontFamily" Value="Consolas" />
-				<Setter Property="Background" Value="#002B36" />
-				<Setter Property="Foreground" Value="#839496" />
+				<Setter Property="Background" Value="{DynamicResource NoteInlineCodeBackgroundBrush}" />
+				<Setter Property="Foreground" Value="{DynamicResource NoteInlineCodeForegroundBrush}" />
 			</Style>
 
 			<Style x:Key="CodeBlock" TargetType="{x:Type Paragraph}">
 				<Setter Property="FontFamily" Value="Consolas" />
-				<Setter Property="Background" Value="#002B36" />
-				<Setter Property="Foreground" Value="#839496" />
+				<Setter Property="Background" Value="{DynamicResource NoteCodeBackgroundBrush}" />
+				<Setter Property="Foreground" Value="{DynamicResource NoteCodeForegroundBrush}" />
 				<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushNormal}" />
 				<Setter Property="BorderThickness" Value="1" />
 				<Setter Property="Padding" Value="5" />
