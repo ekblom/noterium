@@ -288,6 +288,16 @@ namespace Noterium
 		{
 			if (e.PropertyName == "AutoLockMainWindowAfter")
 			{
+				if (Hub.Instance.Settings.AutoLockMainWindowAfter == 0)
+				{
+					_activityTimer.Stop();
+					_activityTimer.IsEnabled = false;
+					return;
+				}
+
+				if(!_activityTimer.IsEnabled)
+					_activityTimer.IsEnabled = true;
+
 				_activityTimer.Stop();
 				_activityTimer.Interval = TimeSpan.FromMinutes(Hub.Instance.Settings.AutoLockMainWindowAfter);
 				_activityTimer.Start();
@@ -366,11 +376,11 @@ namespace Noterium
 			if (!_mainWindowLoaded)
 				return;
 
-			if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
-			{
-				if (Hub.Instance.Settings.AutoLockMainWindowAfter == 0)
-					Lock();
-			}
+			//if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
+			//{
+			//	if (Hub.Instance.Settings.AutoLockMainWindowAfter == 0)
+			//		Lock();
+			//}
 		}
 
 		private void Lock(object param)
