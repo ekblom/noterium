@@ -79,7 +79,7 @@
 
 	<controls:MetroWindow.Flyouts>
 		<controls:FlyoutsControl x:Name="FlyoutsControl">
-			<controls:Flyout Name="SearchFlyout" Theme="Adapt"
+			<controls:Flyout Name="SearchFlyout"
                              AnimateOnPositionChange="True"
                              Position="Top"
                              Width="300"
@@ -141,13 +141,13 @@
 			</controls:Flyout>
 			<controls:Flyout Name="SettingsFlyout"
 							 AnimateOnPositionChange="true"
-                             Header="{x:Static p:Resources.Settings_FlyoutTitle}" Theme="Adapt"
+                             Header="{x:Static p:Resources.Settings_FlyoutTitle}"
                              Position="Right"
                              IsOpen="{Binding SettingsFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
 				<flyouts:Settings/>
 			</controls:Flyout>
-			<controls:Flyout Name="QuickInformationFlyout" Position="Bottom" Height="32" IsOpen="{Binding QuickInformationIsOpen}" CloseButtonVisibility="Collapsed" AreAnimationsEnabled="True" Theme="Accent">
+			<controls:Flyout Name="QuickInformationFlyout" Position="Bottom" Height="32" IsOpen="{Binding QuickInformationIsOpen}" CloseButtonVisibility="Collapsed" AreAnimationsEnabled="True">
 				<DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="32">
 					<TextBlock Name="QuickInformationMessage" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding QuickInformationMessage}" />
 				</DockPanel>
@@ -155,7 +155,6 @@
 			<controls:Flyout Name="LibrarysFlyout"
 							 AnimateOnPositionChange="true"
                              Header="{x:Static p:Resources.Librarys_FlyoutTitle}"
-							 Theme="Adapt"
                              Position="Left"
                              IsOpen="{Binding LibrarysFlyoutIsVisible}"
                              IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
