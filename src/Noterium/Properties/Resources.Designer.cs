@@ -115,6 +115,24 @@ namespace Noterium.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Librarys.
+        /// </summary>
+        public static string JumpList_LibrarysCategoryName {
+            get {
+                return ResourceManager.GetString("JumpList_LibrarysCategoryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loads the library named .
+        /// </summary>
+        public static string JumpList_LoadLibraryTitle {
+            get {
+                return ResourceManager.GetString("JumpList_LoadLibraryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add library.
         /// </summary>
         public static string Librarys_AddLibrary {

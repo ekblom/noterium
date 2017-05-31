@@ -18,6 +18,8 @@ using Noterium.Views.Dialogs;
 using Mono.Options;
 using GalaSoft.MvvmLight.Messaging;
 using Noterium.Code.Messages;
+using System.Windows.Shell;
+using System.Reflection;
 
 namespace Noterium
 {
@@ -267,7 +269,33 @@ namespace Noterium
 				_mainWindow.Lock(true);
 			}
 			_mainWindowLoaded = true;
+			SetJumpList();
+
 			Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+		}
+
+		private void SetJumpList()
+		{
+			JumpList jumpList = new JumpList();
+
+			jumpList.ShowFrequentCategory = true;
+
+			foreach(Library l in Hub.Instance.AppSettings.Librarys)
+			{
+				JumpTask task = new JumpTask
+				{
+					Title = l.Name,
+					Arguments = "-l " + l.Name,
+					Description = Noterium.Properties.Resources.JumpList_LoadLibraryTitle + l.Name,
+					CustomCategory = Noterium.Properties.Resources.JumpList_LibrarysCategoryName,
+					IconResourcePath = Assembly.GetEntryAssembly().CodeBase,
+					ApplicationPath = Assembly.GetEntryAssembly().CodeBase
+				};
+
+				jumpList.JumpItems.Add(task);
+			}
+
+			JumpList.SetJumpList(Current, jumpList);
 		}
 
 		private void DoChangeLibrary(ChangeLibrary obj)

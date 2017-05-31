@@ -352,4 +352,11 @@
   <data name="Librarys_DefaultLibrary" xml:space="preserve">
     <value>Select defalut library:</value>
   </data>
+  <data name="JumpList_LibrarysCategoryName" xml:space="preserve">
+    <value>Librarys</value>
+  </data>
+  <data name="JumpList_LoadLibraryTitle" xml:space="preserve">
+    <value>Loads the library named </value>
+    <comment>Ends with a space</comment>
+  </data>
 </root>
