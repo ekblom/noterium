@@ -1,10 +1,9 @@
 ## Noterium
 
+### Note from the maintainer
+For the time being, I am unable to do much work on this project due to time constraints. I havent abandoned the project, and im using the application, just ignoring the bugs for now. :)
+
 An app for taking total control over your notes.
-
-[![AppVeyor](https://img.shields.io/appveyor/ci/ekblom/noterium.svg?style=flat-square)](https://ci.appveyor.com/project/ekblom/noterium)
-
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/noterium)
 
 [![issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
