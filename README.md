@@ -56,13 +56,11 @@ Please take a moment to review the [guidelines for contributing](.github/CONTRIB
 
 You need [Visual Studio 2015 Community Edition](<https://www.visualstudio.com/>) to build the solution.
 
-##Thanks to
+## Thanks to
 
 The team behind MahApps.Metro (https://github.com/MahApps/MahApps.Metro)
 
 And to @punker76 for https://github.com/punker76/gong-wpf-dragdrop
-
-And https://github.com/ekblom/Markdown.XAML that i have been extending to fit my needs.
 
 ## Licence
 
