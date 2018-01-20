@@ -17,7 +17,7 @@ namespace Noterium.Components.NoteMenu
 
 		private void NoteMenu_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			
+
 		}
 	}
 }
