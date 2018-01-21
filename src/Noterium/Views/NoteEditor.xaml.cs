@@ -23,6 +23,7 @@ using Noterium.Properties;
 using Noterium.ViewModels;
 using Noterium.Windows;
 using GalaSoft.MvvmLight;
+using System.Diagnostics;
 
 namespace Noterium.Views
 {
@@ -194,21 +195,27 @@ namespace Noterium.Views
 
         private void UpdateEntities()
         {
-            if (!Hub.Instance.Settings.EnableAdvancedControls)
-                return;
+            //TODO: Rewrite this to use markdown parser instead.
+            //if (!Hub.Instance.Settings.EnableAdvancedControls)
+            //    return;
 
-            InvokeOnCurrentDispatcher(() =>
-            {
-                if (_documentEntities == null)
-                    _documentEntities = new List<DocumentEntitiy>();
+            //InvokeOnCurrentDispatcher(() =>
+            //{
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
 
-                _documentEntities.Clear();
+            //    if (_documentEntities == null)
+            //        _documentEntities = new List<DocumentEntitiy>();
 
-                MatchEntities(RegularExpressions.AnchorInline, EntityType.Anchor);
-                MatchEntities(RegularExpressions.SimpleAnchorInline, EntityType.SimpleAnchor);
-                MatchEntities(RegularExpressions.Table, EntityType.Table);
-                MatchEntities(RegularExpressions.TableNoAlignRow, EntityType.Table);
-            });
+            //    _documentEntities.Clear();
+
+            //    MatchEntities(RegularExpressions.AnchorInline, EntityType.Anchor);
+            //    MatchEntities(RegularExpressions.SimpleAnchorInline, EntityType.SimpleAnchor);
+            //    MatchEntities(RegularExpressions.Table, EntityType.Table);
+            //    MatchEntities(RegularExpressions.TableNoAlignRow, EntityType.Table);
+
+            //    Debug.WriteLine($"UpdateEntities took {sw.ElapsedMilliseconds}ms");
+            //});
         }
 
         private void MatchEntities(Regex reg, EntityType type)
@@ -486,7 +493,6 @@ namespace Noterium.Views
 
         private void MarkdownText_KeyUp(object sender, KeyEventArgs e)
         {
-            // TODO: Verify so that this code performs well..wich it certenly dont...fezpalm
             if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
             {
                 int lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
@@ -544,11 +550,6 @@ namespace Noterium.Views
             MarkdownText.Text = MarkdownText.Text.Insert(MarkdownText.CaretIndex, thisString);
             if (MarkdownText.Text.Length >= newCaretIndex)
                 MarkdownText.CaretIndex = newCaretIndex;
-        }
-
-        private void MarkdownText_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
     }
 }
