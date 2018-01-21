@@ -1,22 +1,22 @@
 ﻿<UserControl x:Class="Noterium.Components.NotebookMenu.NotebookMenu"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:notebookMenu1="clr-namespace:Noterium.Components.NotebookMenu"
-             xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-             xmlns:converters="clr-namespace:Noterium.Code.Converters"
-             xmlns:commands1="clr-namespace:Noterium.Code.Commands"
-             xmlns:controls1="clr-namespace:Noterium.Code.Controls"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+			 xmlns:notebookMenu1="clr-namespace:Noterium.Components.NotebookMenu"
+			 xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+			 xmlns:converters="clr-namespace:Noterium.Code.Converters"
+			 xmlns:commands1="clr-namespace:Noterium.Code.Commands"
+			 xmlns:controls1="clr-namespace:Noterium.Code.Controls"
+			 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 			 xmlns:p="clr-namespace:Noterium.Properties"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="200"
+			 mc:Ignorable="d"
+			 d:DesignHeight="300" d:DesignWidth="200"
 			 DataContextChanged="NotebookMenu_OnDataContextChanged"
 			 Loaded="NotebookMenu_OnLoaded"
-             x:Name="UserControl"
+			 x:Name="UserControl"
 			 DataContext="{Binding NotebookMenu, Source={StaticResource Locator}}">
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -35,9 +35,9 @@
 							<ColumnDefinition Width="25" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
-                        <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Star" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+						<iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Star" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Favourites}"
-                                   Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+								   Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
 			</DataTemplate>
@@ -48,9 +48,9 @@
 							<ColumnDefinition Width="25" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
-                        <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+						<iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Recent}"
-                                   Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+								   Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
 			</DataTemplate>
@@ -62,11 +62,11 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="25" />
 						</Grid.ColumnDefinitions>
-                        <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+						<iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_Trash}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 						<Button Grid.Column="2" Style="{StaticResource ChromelessButtonStyle}" Command="{Binding ElementName=UserControl, Path=DataContext.EmptyTrashCommand}"
-                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clean" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+								Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+							<iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="Clean" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
 						</Button>
 					</Grid>
 				</Border>
@@ -78,8 +78,8 @@
 							<ColumnDefinition Width="25" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
-                        <iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="CabinetFilesVariant" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                        <TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_AllNotes}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+						<iconPacks:PackIconModern Grid.Column="0" Width="20" Height="20" Kind="CabinetFilesVariant" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+						<TextBlock Grid.Column="1" TextAlignment="Left" HorizontalAlignment="left" VerticalAlignment="Center" Text="{x:Static p:Resources.Main_AllNotes}" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
 					</Grid>
 				</Border>
 			</DataTemplate>
@@ -110,12 +110,12 @@
 				</Border>
 				<DockPanel Grid.Row="1">
 					<ListView Name="FnissTree" Margin="0"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            BorderThickness="0"
-                            SelectionMode="Single"
-                            ScrollViewer.IsDeferredScrollingEnabled="True" Background="{DynamicResource TransparentWhiteBrush}"
-                          Style="{DynamicResource VirtualisedMetroListBox}">
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Stretch"
+							BorderThickness="0"
+							SelectionMode="Single"
+							ScrollViewer.IsDeferredScrollingEnabled="True" Background="{DynamicResource TransparentWhiteBrush}"
+						  Style="{DynamicResource VirtualisedMetroListBox}">
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="SelectionChanged">
 								<commands1:CustomCommandInvoker Command="{Binding SelectedItemChangedCommand}" />
@@ -124,7 +124,7 @@
 						<ListView.Items>
 							<ListViewItem Name="Favorites" ContentTemplate="{StaticResource FavoritesDataTemplate}"
 										dragDrop:DragDrop.IsDropTarget="True"
-                                        dragDrop:DragDrop.DropHandler="{Binding}"/>
+										dragDrop:DragDrop.DropHandler="{Binding}"/>
 							<ListViewItem Name="Recent" ContentTemplate="{StaticResource RecentDataTemplate}" />
 							<ListViewItem Name="Trash" ContentTemplate="{StaticResource TrashDataTemplate}"
 										dragDrop:DragDrop.IsDropTarget="True"
@@ -152,19 +152,19 @@
 					</Grid>
 				</Border>
 				<ListView Grid.Row="3" Name="Tree" Margin="0"
-                          Background="{DynamicResource TransparentWhiteBrush}"
-                    ItemsSource="{Binding Notebooks}"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    BorderThickness="0"
-                    VirtualizingStackPanel.IsVirtualizing="True"
-                    VirtualizingStackPanel.VirtualizationMode="Standard"
-                    ScrollViewer.IsDeferredScrollingEnabled="False"
-                    SelectionMode="Single"
-                    dragDrop:DragDrop.IsDropTarget="True"
-                    dragDrop:DragDrop.DropHandler="{Binding}"
-				    Style="{DynamicResource VirtualisedMetroListBox}"
-                    SelectedItem="{Binding SelectedNotebook, Mode=TwoWay}">
+						  Background="{DynamicResource TransparentWhiteBrush}"
+					ItemsSource="{Binding Notebooks}"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					BorderThickness="0"
+					VirtualizingStackPanel.IsVirtualizing="True"
+					VirtualizingStackPanel.VirtualizationMode="Standard"
+					ScrollViewer.IsDeferredScrollingEnabled="False"
+					SelectionMode="Single"
+					dragDrop:DragDrop.IsDropTarget="True"
+					dragDrop:DragDrop.DropHandler="{Binding}"
+					Style="{DynamicResource VirtualisedMetroListBox}"
+					SelectedItem="{Binding SelectedNotebook, Mode=TwoWay}">
 					<ListView.InputBindings>
 						<KeyBinding Key="Delete" Command="{Binding DeleteNotebookCommand}" />
 						<KeyBinding Key="F2" Command="{Binding RenameNotebookCommand}" />
@@ -226,17 +226,17 @@
 		<TabItem Header="{x:Static p:Resources.Main_Tags}" controls:ControlsHelper.HeaderFontSize="16" Style="{StaticResource NoteriumCustomTabItem}" Background="Transparent" BorderThickness="0 0 0 2">
 			<DockPanel>
 				<ListView Name="TagsTree" DockPanel.Dock="Top"
-                    Background="{DynamicResource TransparentWhiteBrush}"
-                    HorizontalContentAlignment="Stretch"
-                    ItemsSource="{Binding Settings.Tags}"
-                    HorizontalAlignment="Stretch"
-                    BorderThickness="0"
-                    VirtualizingStackPanel.IsVirtualizing="True"
-                    VirtualizingStackPanel.VirtualizationMode="Standard"
-                    ScrollViewer.IsDeferredScrollingEnabled="True"
-                    SelectionMode="Single"
+					Background="{DynamicResource TransparentWhiteBrush}"
+					HorizontalContentAlignment="Stretch"
+					ItemsSource="{Binding Settings.Tags}"
+					HorizontalAlignment="Stretch"
+					BorderThickness="0"
+					VirtualizingStackPanel.IsVirtualizing="True"
+					VirtualizingStackPanel.VirtualizationMode="Standard"
+					ScrollViewer.IsDeferredScrollingEnabled="True"
+					SelectionMode="Single"
 					Style="{DynamicResource VirtualisedMetroListBox}"
-                    SelectedItem="{Binding SelectedTag, Mode=TwoWay}">
+					SelectedItem="{Binding SelectedTag, Mode=TwoWay}">
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="SelectionChanged">
 							<commands1:CustomCommandInvoker Command="{Binding SelectedItemChangedCommand}" />

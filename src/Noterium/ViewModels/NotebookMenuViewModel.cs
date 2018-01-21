@@ -378,8 +378,11 @@ namespace Noterium.ViewModels
 				temp.Add(newNotebook);
 				temp.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
-				Notebooks.Clear();
-				temp.ForEach(Notebooks.Add);
+				InvokeOnCurrentDispatcher(() =>
+				{
+					Notebooks.Clear();
+					temp.ForEach(Notebooks.Add);
+				});
 
 				SelectedNotebook = newNotebook;
 				SelectedNotebook.IsSelected = true;
