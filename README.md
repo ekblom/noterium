@@ -1,10 +1,8 @@
+### Note from the maintainer
+For the time being, I am unable to do much work on this project due to time constraints. I havent abandoned the project, and im using the application, just ignoring the bugs for now. :)
+
 ## Noterium
-
 An app for taking total control over your notes.
-
-[![AppVeyor](https://img.shields.io/appveyor/ci/ekblom/noterium.svg?style=flat-square)](https://ci.appveyor.com/project/ekblom/noterium)
-
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/noterium)
 
 [![issues](https://img.shields.io/github/issues/ekblom/noterium.svg?style=flat-square)](https://github.com/ekblom/noterium/issues)
 
@@ -58,13 +56,11 @@ Please take a moment to review the [guidelines for contributing](.github/CONTRIB
 
 You need [Visual Studio 2015 Community Edition](<https://www.visualstudio.com/>) to build the solution.
 
-##Thanks to
+## Thanks to
 
 The team behind MahApps.Metro (https://github.com/MahApps/MahApps.Metro)
 
 And to @punker76 for https://github.com/punker76/gong-wpf-dragdrop
-
-And https://github.com/ekblom/Markdown.XAML that i have been extending to fit my needs.
 
 ## Licence
 
