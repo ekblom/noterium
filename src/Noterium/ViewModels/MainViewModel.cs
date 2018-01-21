@@ -72,6 +72,17 @@ namespace Noterium.ViewModels
 
 		#region -- Propertys --
 
+		public bool AddNoteContextMenuButtonVisible
+		{
+			get { return _addNoteButtonVisible; }
+			set
+			{
+				bool oldValue = _addNoteButtonVisible;
+				_addNoteButtonVisible = value;
+				if (oldValue != value)
+					RaisePropertyChanged();
+			}
+		}
 		public bool AddNoteButtonVisible
 		{
 			get { return _addNoteButtonVisible; }
@@ -223,11 +234,22 @@ namespace Noterium.ViewModels
 		{
 			if (obj.Type == ConfigureControlsForParnetType.ParentType.Tag || obj.Type == ConfigureControlsForParnetType.ParentType.Library)
 			{
+				AddNoteContextMenuButtonVisible = false;
 				AddNoteButtonVisible = false;
+
 			}
 			else if(obj.Type == ConfigureControlsForParnetType.ParentType.Notebook)
 			{
-				AddNoteButtonVisible = true;
+				if (Hub.Instance.EncryptionManager.SecureNotesEnabled)
+				{
+					AddNoteButtonVisible = false;
+					AddNoteContextMenuButtonVisible = true;
+				}
+				else
+				{
+					AddNoteContextMenuButtonVisible = false;
+					AddNoteButtonVisible = true;
+				}
 			}
 		}
 

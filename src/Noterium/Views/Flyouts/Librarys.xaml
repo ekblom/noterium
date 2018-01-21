@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="Noterium.Views.Flyouts.Librarys"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:p="clr-namespace:Noterium.Properties"
 			 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:converters="clr-namespace:Noterium.Code.Converters"
 			 mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+			 d:DesignHeight="300" d:DesignWidth="300"
 			 DataContext="{Binding Librarys, Source={StaticResource Locator}}">
 	<UserControl.Resources>
 		<ResourceDictionary>

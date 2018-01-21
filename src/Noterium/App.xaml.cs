@@ -305,7 +305,7 @@ namespace Noterium
 				return;
 
 			Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
+			_mainWindow.Model.NoteMenuContext.SelectedNote = null;
 			_mainWindow.Close();
 			_mainWindowLoaded = false;
 

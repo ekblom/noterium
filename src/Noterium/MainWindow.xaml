@@ -1,323 +1,334 @@
 ﻿<controls:MetroWindow x:Class="Noterium.MainWindow"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-		xmlns:noteMenu="clr-namespace:Noterium.Components.NoteMenu"
-		xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
-		xmlns:notebookMenu1="clr-namespace:Noterium.Components.NotebookMenu"
-		xmlns:userControls="clr-namespace:Noterium.Components"
-		xmlns:converters="clr-namespace:Noterium.Code.Converters"
-		xmlns:controls1="clr-namespace:Noterium.Controls"
-		xmlns:views="clr-namespace:Noterium.Views"
-		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-		xmlns:p="clr-namespace:Noterium.Properties"
-		xmlns:flyouts="clr-namespace:Noterium.Views.Flyouts"
-		Height="768" Width="1024"
-		mc:Ignorable="d"
-		RenderOptions.ClearTypeHint="Enabled"
-		TextOptions.TextFormattingMode="Display"
-		WindowStartupLocation="CenterScreen"
-		ShowIconOnTitleBar="True"
-		Style="{DynamicResource VSWindowStyleKey}"
-		SnapsToDevicePixels="True"
-		DataContext="{Binding Main, Source={StaticResource Locator}}"
-		Loaded="MainWindow_OnLoaded"
-		SizeChanged="MainWindow_OnSizeChanged"
-		StateChanged="MainWindow_OnStateChanged"
-		PreviewKeyDown="MainWindow_OnPreviewKeyDown"
-		Closing="MainWindow_OnClosing">
-	<i:Interaction.Triggers>
-		<i:EventTrigger EventName="Loaded">
-			<i:InvokeCommandAction Command="{Binding MainWindowLoadedCommand}" />
-		</i:EventTrigger>
-	</i:Interaction.Triggers>
-	<Window.InputBindings>
-		<KeyBinding Key="N" Modifiers="Control" Command="New"/>
-		<KeyBinding Key="F" Modifiers="Control" Command="{Binding ToggleSearchFlyoutCommand}"/>
-		<KeyBinding Key="E" Modifiers="Control" Command="{Binding EditNoteCommand}"/>
-		<KeyBinding Key="S" Modifiers="Control" Command="{Binding NoteMenuContext.SelectedNote.SaveNoteCommand}"/>
-		<KeyBinding Key="OemPeriod" Modifiers="Control" Command="{Binding ToggleNotebookMenu}"/>
-		<KeyBinding Key="OemMinus" Modifiers="Control" Command="{Binding ToggleNoteMenu}"/>
-		<KeyBinding Key="H" Modifiers="Control" Command="{Binding ToggleHelpViewCommand}"/>
-	</Window.InputBindings>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:noteMenu="clr-namespace:Noterium.Components.NoteMenu"
+        xmlns:viewModels1="clr-namespace:Noterium.ViewModels"
+        xmlns:notebookMenu1="clr-namespace:Noterium.Components.NotebookMenu"
+        xmlns:userControls="clr-namespace:Noterium.Components"
+        xmlns:converters="clr-namespace:Noterium.Code.Converters"
+        xmlns:controls1="clr-namespace:Noterium.Controls"
+        xmlns:views="clr-namespace:Noterium.Views"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:p="clr-namespace:Noterium.Properties"
+        xmlns:flyouts="clr-namespace:Noterium.Views.Flyouts"
+        Height="768" Width="1024"
+        mc:Ignorable="d"
+        RenderOptions.ClearTypeHint="Enabled"
+        TextOptions.TextFormattingMode="Display"
+        WindowStartupLocation="CenterScreen"
+        ShowIconOnTitleBar="True"
+        Style="{DynamicResource VSWindowStyleKey}"
+        SnapsToDevicePixels="True"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+        Loaded="MainWindow_OnLoaded"
+        SizeChanged="MainWindow_OnSizeChanged"
+        StateChanged="MainWindow_OnStateChanged"
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown"
+        Closing="MainWindow_OnClosing">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding MainWindowLoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control" Command="New"/>
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding ToggleSearchFlyoutCommand}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding EditNoteCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding NoteMenuContext.SelectedNote.SaveNoteCommand}"/>
+        <KeyBinding Key="OemPeriod" Modifiers="Control" Command="{Binding ToggleNotebookMenu}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Control" Command="{Binding ToggleNoteMenu}"/>
+        <KeyBinding Key="H" Modifiers="Control" Command="{Binding ToggleHelpViewCommand}"/>
+    </Window.InputBindings>
 
-	<Window.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
-			</ResourceDictionary.MergedDictionaries>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-			<converters:BooleanToVisibilityConverter
-				x:Key="BooleanToVisibilityConverter"
-				True="Visible"
-				False="Collapsed" />
-			<converters:BindingNullToVisibilityConverter
-				x:Key="BindingNullVisibilityConverter"
-				True="Collapsed"
-				False="Visible" />
-			<converters:BindingNullToVisibilityConverter
-				x:Key="BindingNullVisibilityConverterReversed"
-				True="Visible"
-				False="Collapsed" />
-			<converters:BooleanToVisibilityConverter
-				x:Key="ReversedBooleanToVisibilityConverter"
-				True="Collapsed"
-				False="Visible" />
-			<converters:XamlTextToFlowDocumentConverter
-				x:Key="XamlTextToFlowDocumentConverter" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="BooleanToVisibilityConverter"
+                True="Visible"
+                False="Collapsed" />
+            <converters:BindingNullToVisibilityConverter
+                x:Key="BindingNullVisibilityConverter"
+                True="Collapsed"
+                False="Visible" />
+            <converters:BindingNullToVisibilityConverter
+                x:Key="BindingNullVisibilityConverterReversed"
+                True="Visible"
+                False="Collapsed" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="ReversedBooleanToVisibilityConverter"
+                True="Collapsed"
+                False="Visible" />
+            <converters:XamlTextToFlowDocumentConverter
+                x:Key="XamlTextToFlowDocumentConverter" />
 
 
-			<Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
-				<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-			</Style>
-		</ResourceDictionary>
-	</Window.Resources>
+            <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
 
-	<controls:MetroWindow.Flyouts>
-		<controls:FlyoutsControl x:Name="FlyoutsControl">
-			<controls:Flyout Name="SearchFlyout"
-							 AnimateOnPositionChange="True"
-							 Position="Top"
-							 Width="300"
-							 AllowFocusElement="True"
-							 FocusedElement="{Binding ElementName=SearchFlyoutTextBox}"
-							 IsOpenChanged="SearchFlyout_OnIsOpenChanged"
-							 CloseButtonVisibility="Collapsed"
-							 TitleVisibility="Collapsed"
-							 IsOpen="{Binding SearchFlyoutIsVisible}"
-							 IsPinned="False"
-							 Margin="0" Padding="0">
-				<controls:Flyout.HeaderTemplate>
-					<DataTemplate>
-						<TextBlock Visibility="Collapsed" />
-					</DataTemplate>
-				</controls:Flyout.HeaderTemplate>
-				<Border BorderThickness="1,0,1,1" BorderBrush="{StaticResource AccentColorBrush}">
-					<StackPanel Margin="10" Name="SearchStackPanel">
-						<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Search_FindANote}" />
-						<TextBox Name="SearchFlyoutTextBox"
-								 controls:TextBoxHelper.Watermark="{x:Static p:Resources.Search_SearchBoxWatermark}"
-								 PreviewKeyDown="SearchFlyoutTextBox_OnKeyDown" Text="{Binding SearchTerm, Mode=TwoWay}"
-								 TextChanged="SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged">
-						</TextBox>
-						<controls:MetroProgressBar x:Name="IsSearchingProgressBar"
-									   Margin="0, 10, 0, 10"
-									   Foreground="{DynamicResource AccentColorBrush}"
-									   IsIndeterminate="True"
-									   Maximum="100"
-									   Minimum="0"
-									   Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
-						<!--<TextBlock Width="{Binding ElementName=SearchStackPanel, Path=Width}"
-								   TextWrapping="Wrap"
-								   Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
-							The search is taking longer than expected, probably decrypting a few notes. This will only happend once per time the application is launched.
-						</TextBlock>-->
-						<ScrollViewer Style="{DynamicResource TransparentScrollBars}" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-							<ListView ItemsSource="{Binding SearchResult}" Name="SearchResultList"
-									  KeyDown="SearchResultList_OnKeyDown"
-									  PreviewKeyDown="SearchResultList_OnPreviewKeyDown"
-									  MouseDoubleClick="SearchResultList_OnMouseDoubleClick"
-									  FocusVisualStyle="{x:Null}"
-									  ItemContainerStyle="{DynamicResource ListViewItemStyle}" BorderThickness="0">
-								<ListView.ItemTemplate>
-									<DataTemplate>
-										<Border Padding="3">
-											<StackPanel Orientation="Horizontal">
-												<TextBlock VerticalAlignment="Center" Text="{Binding Notebook.Name}" />
-												<TextBlock VerticalAlignment="Center" Text="/" Margin="3,0,3,0" />
-												<TextBlock VerticalAlignment="Center" Text="{Binding Note.Name}" />
-											</StackPanel>
-										</Border>
-									</DataTemplate>
-								</ListView.ItemTemplate>
-							</ListView>
-						</ScrollViewer>
-					</StackPanel>
-				</Border>
-			</controls:Flyout>
-			<controls:Flyout Name="SettingsFlyout"
-							 AnimateOnPositionChange="true"
-							 Header="{x:Static p:Resources.Settings_FlyoutTitle}"
-							 Position="Right"
-							 IsOpen="{Binding SettingsFlyoutIsVisible}"
-							 IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
-				<flyouts:Settings/>
-			</controls:Flyout>
-			<controls:Flyout Name="QuickInformationFlyout" Position="Bottom" Height="32" IsOpen="{Binding QuickInformationIsOpen}" CloseButtonVisibility="Collapsed" AreAnimationsEnabled="True">
-				<DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="32">
-					<TextBlock Name="QuickInformationMessage" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding QuickInformationMessage}" />
-				</DockPanel>
-			</controls:Flyout>
-			<controls:Flyout Name="LibrarysFlyout"
-							 AnimateOnPositionChange="true"
-							 Header="{x:Static p:Resources.Librarys_FlyoutTitle}"
-							 Position="Left"
-							 IsOpen="{Binding LibrarysFlyoutIsVisible}"
-							 IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
-				<flyouts:Librarys />
-			</controls:Flyout>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl x:Name="FlyoutsControl">
+            <controls:Flyout Name="SearchFlyout"
+                             AnimateOnPositionChange="True"
+                             Position="Top"
+                             Width="300"
+                             AllowFocusElement="True"
+                             FocusedElement="{Binding ElementName=SearchFlyoutTextBox}"
+                             IsOpenChanged="SearchFlyout_OnIsOpenChanged"
+                             CloseButtonVisibility="Collapsed"
+                             TitleVisibility="Collapsed"
+                             IsOpen="{Binding SearchFlyoutIsVisible}"
+                             IsPinned="False"
+                             Margin="0" Padding="0">
+                <controls:Flyout.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Visibility="Collapsed" />
+                    </DataTemplate>
+                </controls:Flyout.HeaderTemplate>
+                <Border BorderThickness="1,0,1,1" BorderBrush="{StaticResource AccentColorBrush}">
+                    <StackPanel Margin="10" Name="SearchStackPanel">
+                        <TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Search_FindANote}" />
+                        <TextBox Name="SearchFlyoutTextBox"
+                                 controls:TextBoxHelper.Watermark="{x:Static p:Resources.Search_SearchBoxWatermark}"
+                                 PreviewKeyDown="SearchFlyoutTextBox_OnKeyDown" Text="{Binding SearchTerm, Mode=TwoWay}"
+                                 TextChanged="SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged">
+                        </TextBox>
+                        <controls:MetroProgressBar x:Name="IsSearchingProgressBar"
+                                       Margin="0, 10, 0, 10"
+                                       Foreground="{DynamicResource AccentColorBrush}"
+                                       IsIndeterminate="True"
+                                       Maximum="100"
+                                       Minimum="0"
+                                       Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                        <!--<TextBlock Width="{Binding ElementName=SearchStackPanel, Path=Width}"
+                                   TextWrapping="Wrap"
+                                   Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            The search is taking longer than expected, probably decrypting a few notes. This will only happend once per time the application is launched.
+                        </TextBlock>-->
+                        <ScrollViewer Style="{DynamicResource TransparentScrollBars}" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                            <ListView ItemsSource="{Binding SearchResult}" Name="SearchResultList"
+                                      KeyDown="SearchResultList_OnKeyDown"
+                                      PreviewKeyDown="SearchResultList_OnPreviewKeyDown"
+                                      MouseDoubleClick="SearchResultList_OnMouseDoubleClick"
+                                      FocusVisualStyle="{x:Null}"
+                                      ItemContainerStyle="{DynamicResource ListViewItemStyle}" BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="3">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Notebook.Name}" />
+                                                <TextBlock VerticalAlignment="Center" Text="/" Margin="3,0,3,0" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Note.Name}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </controls:Flyout>
+            <controls:Flyout Name="SettingsFlyout"
+                             AnimateOnPositionChange="true"
+                             Header="{x:Static p:Resources.Settings_FlyoutTitle}"
+                             Position="Right"
+                             IsOpen="{Binding SettingsFlyoutIsVisible}"
+                             IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
+                <flyouts:Settings/>
+            </controls:Flyout>
+            <controls:Flyout Name="QuickInformationFlyout" Position="Bottom" Height="32" IsOpen="{Binding QuickInformationIsOpen}" CloseButtonVisibility="Collapsed" AreAnimationsEnabled="True">
+                <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="32">
+                    <TextBlock Name="QuickInformationMessage" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding QuickInformationMessage}" />
+                </DockPanel>
+            </controls:Flyout>
+            <controls:Flyout Name="LibrarysFlyout"
+                             AnimateOnPositionChange="true"
+                             Header="{x:Static p:Resources.Librarys_FlyoutTitle}"
+                             Position="Left"
+                             IsOpen="{Binding LibrarysFlyoutIsVisible}"
+                             IsOpenChanged="SettingsFlyout_OnIsOpenChanged">
+                <flyouts:Librarys />
+            </controls:Flyout>
 
-		</controls:FlyoutsControl>
-	</controls:MetroWindow.Flyouts>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
 
-	<!--<controls:MetroWindow.LeftWindowCommands>
-		<controls:WindowCommands>
-			<Viewbox Width="20" Height="16" Stretch="Uniform">
-				<ContentControl Content="{StaticResource NoteriumIconCanvas}" />
-			</Viewbox>
-		</controls:WindowCommands>
-	</controls:MetroWindow.LeftWindowCommands>-->
+    <!--<controls:MetroWindow.LeftWindowCommands>
+        <controls:WindowCommands>
+            <Viewbox Width="20" Height="16" Stretch="Uniform">
+                <ContentControl Content="{StaticResource NoteriumIconCanvas}" />
+            </Viewbox>
+        </controls:WindowCommands>
+    </controls:MetroWindow.LeftWindowCommands>-->
 
-	<controls:MetroWindow.RightWindowCommands>
-		<controls:WindowCommands>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
 
-			<Button Height="Auto" Command="{Binding ToggleHelpViewCommand}" Name="HelpButton">
-				<StackPanel Orientation="Horizontal">
-					<iconPacks:PackIconModern Kind="Question" VerticalAlignment="Center" />
-				</StackPanel>
-			</Button>
-			<Button Height="Auto" Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"
-					Command="{Binding LockCommand}" Name="LockButton">
-				<StackPanel Orientation="Horizontal">
-					<iconPacks:PackIconModern Kind="Lock" VerticalAlignment="Center" />
-				</StackPanel>
-			</Button>
-			<Button Height="Auto" Command="{Binding ToggleSettingsFlyoutCommand}" Name="SettingsButton">
-				<StackPanel Orientation="Horizontal">
-					<iconPacks:PackIconMaterial Kind="Settings" VerticalAlignment="Center" />
-				</StackPanel>
-			</Button>
-		</controls:WindowCommands>
-	</controls:MetroWindow.RightWindowCommands>
+            <Button Height="Auto" Command="{Binding ToggleHelpViewCommand}" Name="HelpButton">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconModern Kind="Question" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button Height="Auto" Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"
+                    Command="{Binding LockCommand}" Name="LockButton">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconModern Kind="Lock" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button Height="Auto" Command="{Binding ToggleSettingsFlyoutCommand}" Name="SettingsButton">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="Settings" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
 
-	<controls:MetroContentControl>
-		<Grid>
-			<DockPanel ZIndex="1000" Name="OverlayPanel" Background="Transparent" Visibility="Collapsed"
-					Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType={x:Type controls:MetroContentControl}}}" >
-				<Border Height="170" Width="440" Background="{DynamicResource LightBackground}" BorderBrush="{DynamicResource BorderBrushNormal}" BorderThickness="1" Name="AuthenticationForm">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="IsVisibleChanged">
-							<i:InvokeCommandAction Command="{Binding PerformLockActionsCommand}" />
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-					<userControls:AuthenticationForm x:Name="AuthenticationForm1"
-												 OnAuthenticated="AuthenticationForm1_OnAuthenticated"
-												 OnlyVerifyPassword="True" />
-				</Border>
-			</DockPanel>
-			<DockPanel ZIndex="1000" Name="HelpOverlayPanel"
-					Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType={x:Type controls:MetroContentControl}}}"
-					   Visibility="{Binding IsHelpVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"
-					   IsVisibleChanged="HelpOverlayPanel_OnIsVisibleChanged">
-				<i:Interaction.Triggers>
-					<i:EventTrigger EventName="MouseDown">
-						<i:InvokeCommandAction Command="{Binding ToggleHelpViewCommand}" />
-					</i:EventTrigger>
-				</i:Interaction.Triggers>
-				<DockPanel.Background>
-					<SolidColorBrush Color="Black" Opacity=".85"/>
-				</DockPanel.Background>
+    <controls:MetroContentControl>
+        <Grid>
+            <DockPanel ZIndex="1000" Name="OverlayPanel" Background="Transparent" Visibility="Collapsed"
+                    Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType={x:Type controls:MetroContentControl}}}" >
+                <Border Height="170" Width="440" Background="{DynamicResource LightBackground}" BorderBrush="{DynamicResource BorderBrushNormal}" BorderThickness="1" Name="AuthenticationForm">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="IsVisibleChanged">
+                            <i:InvokeCommandAction Command="{Binding PerformLockActionsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <userControls:AuthenticationForm x:Name="AuthenticationForm1"
+                                                 OnAuthenticated="AuthenticationForm1_OnAuthenticated"
+                                                 OnlyVerifyPassword="True" />
+                </Border>
+            </DockPanel>
+            <DockPanel ZIndex="1000" Name="HelpOverlayPanel"
+                    Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType={x:Type controls:MetroContentControl}}}"
+                       Visibility="{Binding IsHelpVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"
+                       IsVisibleChanged="HelpOverlayPanel_OnIsVisibleChanged">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding ToggleHelpViewCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DockPanel.Background>
+                    <SolidColorBrush Color="Black" Opacity=".85"/>
+                </DockPanel.Background>
 
-				<StackPanel Width="340" Height="340">
-					<FlowDocumentReader Document="{Binding HelpDocumentText, Mode=OneWay, Converter={StaticResource XamlTextToFlowDocumentConverter}}" />
-				</StackPanel>
-			</DockPanel>
+                <StackPanel Width="340" Height="340">
+                    <FlowDocumentReader Document="{Binding HelpDocumentText, Mode=OneWay, Converter={StaticResource XamlTextToFlowDocumentConverter}}" />
+                </StackPanel>
+            </DockPanel>
 
-			<Grid Name="MainGrid">
-				<Grid.ColumnDefinitions>
-					<controls1:ColumnDefinitionExtended Width="205" x:Name="NotebookColumn" Visible="{Binding NotebookColumnVisibility}" />
-					<controls1:ColumnDefinitionExtended Width="2" x:Name="NotebookResizeColumn" Visible="{Binding NotebookColumnVisibility}" />
-					<controls1:ColumnDefinitionExtended Width="250" x:Name="NoteColumn" Visible="{Binding ShowNoteColumn}" />
-					<controls1:ColumnDefinitionExtended Width="2" x:Name="NoteResizeColumn" Visible="{Binding ShowNoteColumn}" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
+            <Grid Name="MainGrid">
+                <Grid.ColumnDefinitions>
+                    <controls1:ColumnDefinitionExtended Width="205" x:Name="NotebookColumn" Visible="{Binding NotebookColumnVisibility}" />
+                    <controls1:ColumnDefinitionExtended Width="2" x:Name="NotebookResizeColumn" Visible="{Binding NotebookColumnVisibility}" />
+                    <controls1:ColumnDefinitionExtended Width="250" x:Name="NoteColumn" Visible="{Binding ShowNoteColumn}" />
+                    <controls1:ColumnDefinitionExtended Width="2" x:Name="NoteResizeColumn" Visible="{Binding ShowNoteColumn}" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-				<Grid Grid.Row="0" Grid.Column="0">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="35"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-					<DockPanel Grid.Row="0">
-						<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Name="LibrarysButton" Click="LibrarysButton_OnClick">
-							<Button.ContentTemplate>
-								<DataTemplate>
-									<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
-										<iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
-										<TextBlock Text="{x:Static p:Resources.Main_Librarys}" />
-									</StackPanel>
-								</DataTemplate>
-							</Button.ContentTemplate>
-						</Button>
-					</DockPanel>
-					<notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" SizeChanged="ColumnOnSizeChanged" />
-				</Grid>
+                    <DockPanel Grid.Row="0">
+                        <Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Name="LibrarysButton" Click="LibrarysButton_OnClick">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3">
+                                        <iconPacks:PackIconMaterial Kind="Database" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 3 0" />
+                                        <TextBlock Text="{x:Static p:Resources.Main_Librarys}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                    </DockPanel>
+                    <notebookMenu1:NotebookMenu Grid.Row="1" x:Name="NotebookMenu" SizeChanged="ColumnOnSizeChanged" />
+                </Grid>
 
-				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
+                <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
 
-				<Grid Grid.Column="2" Grid.Row="0" Margin="0" SizeChanged="ColumnOnSizeChanged">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="30" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="30" />
-					</Grid.ColumnDefinitions>
+                <Grid Grid.Column="2" Grid.Row="0" Margin="0" SizeChanged="ColumnOnSizeChanged">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="30" />
+                    </Grid.ColumnDefinitions>
 
-					<Grid.RowDefinitions>
-						<RowDefinition Height="35" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<Button Grid.Column="0" Grid.Row="0" Style="{DynamicResource NoStyleButton}" Click="ToggleSortMode" Name="SortModeButton">
-						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-							<iconPacks:PackIconModern Kind="SortNumeric" Width="15" Height="15" Name="SortButtonIcon" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-						</StackPanel>
-					</Button>
-					<DockPanel Grid.Column="1" Grid.Row="0" Height="25">
-						<TextBlock Text="{Binding MenuContext.SelectedMenuItem.Name}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
-					</DockPanel>
+                    <Button Grid.Column="0" Grid.Row="0" Style="{DynamicResource NoStyleButton}" Click="ToggleSortMode" Name="SortModeButton">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <iconPacks:PackIconModern Kind="SortNumeric" Width="15" Height="15" Name="SortButtonIcon" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                        </StackPanel>
+                    </Button>
+                    <DockPanel Grid.Column="1" Grid.Row="0" Height="25">
+                        <TextBlock Text="{Binding MenuContext.SelectedMenuItem.Name}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}"></TextBlock>
+                    </DockPanel>
 
-					<Button Grid.Column="2" Grid.Row="0" Click="AddNoteButtonClick" Style="{DynamicResource NoStyleButton}"
-							Visibility="{Binding AddNoteButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}">
-						<Button.ContentTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-									<iconPacks:PackIconMaterial Kind="Plus" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-								</StackPanel>
-							</DataTemplate>
-						</Button.ContentTemplate>
-						<Button.ContextMenu>
-							<ContextMenu >
-								<MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding NoteMenuContext.CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-								<MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding NoteMenuContext.CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
-										   Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
-							</ContextMenu>
-						</Button.ContextMenu>
-					</Button>
+                    <Button Grid.Column="2" Grid.Row="0" Click="AddNoteButtonClick" Style="{DynamicResource NoStyleButton}"
+                            Visibility="{Binding AddNoteContextMenuButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="Plus" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                        <Button.ContextMenu>
+                            <ContextMenu >
+                                <MenuItem Header="{x:Static p:Resources.Main_AddNote}" Command="{Binding NoteMenuContext.CreateNewNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                <MenuItem Header="{x:Static p:Resources.Main_AddSecureNote}" Command="{Binding NoteMenuContext.CreateNewSecureNoteCommand}" Foreground="{DynamicResource IdealForegroundColorBrush}"
+                                           Visibility="{Binding IsSecureNotesEnabled, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
 
-					<noteMenu:NoteMenu x:Name="NoteMenu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" />
+                    <Button Grid.Column="2" Grid.Row="0" Command="{Binding NoteMenuContext.CreateNewNoteCommand}" Style="{DynamicResource NoStyleButton}"
+                            Visibility="{Binding AddNoteButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="Plus" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
 
-				</Grid>
-				<GridSplitter Grid.Column="3" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
+                    <noteMenu:NoteMenu x:Name="NoteMenu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" />
 
-				<views:NoteView Margin="0" Grid.Column="4" Grid.Row="0" x:Name="NoteView"
-					Visibility="{Binding Converter={StaticResource BindingNullVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}"/>
+                </Grid>
+                <GridSplitter Grid.Column="3" Width="1" HorizontalAlignment="Stretch" Style="{StaticResource CustomGridSplitterStyle}" />
 
-				<DockPanel Margin="0" Grid.Column="4" Grid.Row="0"
-					Visibility="{Binding NoteMenuContext.SelectedNote, Converter={StaticResource BindingNullVisibilityConverterReversed}, FallbackValue=Collapsed, Mode=OneWay}">
-					<StackPanel>
-						<TextBlock FontSize="22" FontWeight="SemiBold" Margin="15" Text="{x:Static p:Resources.Main_NoNotesMessage}"/>
-					</StackPanel>
+                <views:NoteView Margin="0" Grid.Column="4" Grid.Row="0" x:Name="NoteView"
+                    Visibility="{Binding Converter={StaticResource BindingNullVisibilityConverter}, FallbackValue=Visible, Mode=OneWay}"/>
 
-				</DockPanel>
-			</Grid>
-		</Grid>
+                <DockPanel Margin="0" Grid.Column="4" Grid.Row="0"
+                    Visibility="{Binding NoteMenuContext.SelectedNote, Converter={StaticResource BindingNullVisibilityConverterReversed}, FallbackValue=Collapsed, Mode=OneWay}">
+                    <StackPanel>
+                        <TextBlock FontSize="22" FontWeight="SemiBold" Margin="15" Text="{x:Static p:Resources.Main_NoNotesMessage}"/>
+                    </StackPanel>
 
-	</controls:MetroContentControl>
+                </DockPanel>
+            </Grid>
+        </Grid>
+
+    </controls:MetroContentControl>
 </controls:MetroWindow>
