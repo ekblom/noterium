@@ -10,54 +10,54 @@
 		<Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" Description="Installer for Noterium $(var.ProductVersion)" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of Noterium is already installed."
-                  AllowDowngrades="no"
-                  AllowSameVersionUpgrades="no"
-                  IgnoreRemoveFailure="no"
-                  Schedule="afterInstallInitialize"/>
+				  AllowDowngrades="no"
+				  AllowSameVersionUpgrades="no"
+				  IgnoreRemoveFailure="no"
+				  Schedule="afterInstallInitialize"/>
 		<MediaTemplate EmbedCab="yes" />
 
-    <UI>
-      <UIRef Id="WixUI_InstallDir" />
-      <!--<Publish Dialog="ExitDialog"
-            Control="Finish"
-            Event="DoAction"
-            Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>-->
-    </UI>
+	<UI>
+	  <UIRef Id="WixUI_InstallDir" />
+	  <!--<Publish Dialog="ExitDialog"
+			Control="Finish"
+			Event="DoAction"
+			Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>-->
+	</UI>
 
-    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-    <!--<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Noterium" />-->
-    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+	<Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+	<!--<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Noterium" />-->
+	<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
-    <Icon Id="NoteriumIcon.exe" SourceFile="icon.ico" />
-    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+	<Icon Id="NoteriumIcon.exe" SourceFile="icon.ico" />
+	<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
-    <!--<Property Id="WixShellExecTarget" Value="[#Noterium.exe]" />
-    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />-->
+	<!--<Property Id="WixShellExecTarget" Value="[#Noterium.exe]" />
+	<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />-->
 
-    <Feature Id="ProductFeature" Title="Setup" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ProgramMenuDir"/>
-    </Feature>
+	<Feature Id="ProductFeature" Title="Setup" Level="1">
+	  <ComponentGroupRef Id="ProductComponents" />
+	  <ComponentRef Id="ProgramMenuDir"/>
+	</Feature>
 	</Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="DesktopFolder" Name="Desktop" />
+	  <Directory Id="DesktopFolder" Name="Desktop" />
 
-      <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ApplicationProgramsFolder" Name="Noterium">
-          <Component Id="ProgramMenuDir" Guid="{426625A1-FA71-4569-BD57-EB751ACF9198}">
-            <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
-            <RegistryValue Root="HKCU" Key="Software\Viktor Ekblom\Noterium" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-          </Component>
-        </Directory>
-      </Directory>
+	  <Directory Id="ProgramMenuFolder" Name="Programs">
+		<Directory Id="ApplicationProgramsFolder" Name="Noterium">
+		  <Component Id="ProgramMenuDir" Guid="{426625A1-FA71-4569-BD57-EB751ACF9198}">
+			<RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
+			<RegistryValue Root="HKCU" Key="Software\Viktor Ekblom\Noterium" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+		  </Component>
+		</Directory>
+	  </Directory>
 
 			<Directory Id="ProgramFilesFolder">
-        <Directory Id="ViktorEkblomFolder" Name="Viktor Ekblom">
-          <Directory Id="INSTALLFOLDER" Name="Noterium" />
-        </Directory>
+		<Directory Id="ViktorEkblomFolder" Name="Viktor Ekblom">
+		  <Directory Id="INSTALLFOLDER" Name="Noterium" />
+		</Directory>
 			</Directory>
 		</Directory>
 	</Fragment>
@@ -65,41 +65,41 @@
   <Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			 <Component Id="ApplicationComponent" Guid="{BB96F788-644F-42C6-9D8B-5CDFF30BD45E}">
-         <File Source="$(var.Noterium.TargetPath)" Id="NoteriumEXE" Name="Noterium.exe" KeyPath="yes">
-           <Shortcut Id="startMenuShotcut" Directory="ApplicationProgramsFolder"
-                    Name="Noterium" WorkingDirectory="INSTALLFOLDER" Advertise="yes"
-                    Icon="NoteriumIcon.exe" IconIndex="0">
-           </Shortcut>
-         </File>
-          <File Source="$(var.Noterium.Core.TargetPath)" />
+		 <File Source="$(var.Noterium.TargetPath)" Id="NoteriumEXE" Name="Noterium.exe" KeyPath="yes">
+		   <Shortcut Id="startMenuShotcut" Directory="ApplicationProgramsFolder"
+					Name="Noterium" WorkingDirectory="INSTALLFOLDER" Advertise="yes"
+					Icon="NoteriumIcon.exe" IconIndex="0">
+		   </Shortcut>
+		 </File>
+		  <File Source="$(var.Noterium.Core.TargetPath)" />
 			 </Component>
-      <Component Id="NuGetComponents" Guid="{7A454415-A3FF-4236-8F66-58CAC38BD7F5}">
-        <File Source="$(var.Noterium.TargetDir)Noterium.exe.config" />
-        <File Source="$(var.Noterium.TargetDir)BouncyCastle.Crypto.dll" />
-        <File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.dll" />
-        <File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.Extras.dll" />
-        <File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.Platform.dll" />
-        <File Source="$(var.Noterium.TargetDir)GongSolutions.Wpf.DragDrop.dll" />
-        <File Source="$(var.Noterium.TargetDir)ICSharpCode.AvalonEdit.dll" />
-        <File Source="$(var.Noterium.TargetDir)log4net.dll" />
-        <File Source="$(var.Noterium.TargetDir)MahApps.Metro.dll" />
-        <File Source="$(var.Noterium.TargetDir)MahApps.Metro.SimpleChildWindow.dll" />
-        <File Source="$(var.Noterium.TargetDir)MahApps.Metro.IconPacks.dll" />
-        <File Source="$(var.Noterium.TargetDir)Microsoft.Practices.ServiceLocation.dll" />
-        <File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.dll" />
-        <File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
-        <File Source="$(var.Noterium.TargetDir)MimeTypeMap.dll" />
-        <File Source="$(var.Noterium.TargetDir)Newtonsoft.Json.dll" />
-        <File Source="$(var.Noterium.TargetDir)Shortcut.dll" />
-        <File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Input.Toolkit.dll" />
-        <File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Layout.Toolkit.dll" />
-        <File Source="$(var.Noterium.TargetDir)System.Windows.Interactivity.dll" />
-        <File Source="$(var.Noterium.TargetDir)WPFToolkit.dll" />
-        <File Source="$(var.Noterium.TargetDir)CommonMark.dll" />
-        <File Source="$(var.Noterium.TargetDir)Mono.Options.dll" />
-        <File Source="$(var.Noterium.TargetDir)MathParser.org-mXparser.Net462" />
-        <File Source="$(var.Noterium.TargetDir)LICENSE-3RD-PARTY.txt" />
-      </Component>
+	  <Component Id="NuGetComponents" Guid="{7A454415-A3FF-4236-8F66-58CAC38BD7F5}">
+		<File Source="$(var.Noterium.TargetDir)Noterium.exe.config" />
+		<File Source="$(var.Noterium.TargetDir)BouncyCastle.Crypto.dll" />
+		<File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.dll" />
+		<File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.Extras.dll" />
+		<File Source="$(var.Noterium.TargetDir)GalaSoft.MvvmLight.Platform.dll" />
+		<File Source="$(var.Noterium.TargetDir)GongSolutions.Wpf.DragDrop.dll" />
+		<File Source="$(var.Noterium.TargetDir)ICSharpCode.AvalonEdit.dll" />
+		<File Source="$(var.Noterium.TargetDir)log4net.dll" />
+		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.dll" />
+		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.SimpleChildWindow.dll" />
+		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.IconPacks.dll" />
+		<File Source="$(var.Noterium.TargetDir)Microsoft.Practices.ServiceLocation.dll" />
+		<File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.dll" />
+		<File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
+		<File Source="$(var.Noterium.TargetDir)MimeTypeMap.dll" />
+		<File Source="$(var.Noterium.TargetDir)Newtonsoft.Json.dll" />
+		<File Source="$(var.Noterium.TargetDir)Shortcut.dll" />
+		<File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Input.Toolkit.dll" />
+		<File Source="$(var.Noterium.TargetDir)System.Windows.Controls.Layout.Toolkit.dll" />
+		<File Source="$(var.Noterium.TargetDir)System.Windows.Interactivity.dll" />
+		<File Source="$(var.Noterium.TargetDir)WPFToolkit.dll" />
+		<File Source="$(var.Noterium.TargetDir)CommonMark.dll" />
+		<File Source="$(var.Noterium.TargetDir)Mono.Options.dll" />
+		<File Source="$(var.Noterium.TargetDir)MathParser.org-mXparser.Net462.dll" />
+		<File Source="$(var.Noterium.TargetDir)LICENSE-3RD-PARTY.txt" />
+	  </Component>
 		</ComponentGroup>
 	</Fragment>
 </Wix>
