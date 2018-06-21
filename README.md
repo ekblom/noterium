@@ -1,6 +1,3 @@
-### Note from the maintainer
-For the time being, I am unable to do much work on this project due to time constraints. I havent abandoned the project, and im using the application, just ignoring the bugs for now. :)
-
 ## Noterium
 An app for taking total control over your notes.
 
