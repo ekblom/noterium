@@ -175,6 +175,7 @@
             FontFamily="Consolas"
             FontSize="10pt"
             PreviewKeyDown="MarkdownText_KeyUp"
+            TextChanged="MarkdownText_OnTextChanged"
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto"
             FocusVisualStyle="{x:Null}"
