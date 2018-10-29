@@ -85,7 +85,7 @@
 		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.dll" />
 		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.SimpleChildWindow.dll" />
 		<File Source="$(var.Noterium.TargetDir)MahApps.Metro.IconPacks.dll" />
-		<File Source="$(var.Noterium.TargetDir)Microsoft.Practices.ServiceLocation.dll" />
+		<File Source="$(var.Noterium.TargetDir)CommonServiceLocator.dll" />
 		<File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.dll" />
 		<File Source="$(var.Noterium.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
 		<File Source="$(var.Noterium.TargetDir)MimeTypeMap.dll" />
@@ -97,7 +97,7 @@
 		<File Source="$(var.Noterium.TargetDir)WPFToolkit.dll" />
 		<File Source="$(var.Noterium.TargetDir)CommonMark.dll" />
 		<File Source="$(var.Noterium.TargetDir)Mono.Options.dll" />
-		<File Source="$(var.Noterium.TargetDir)MathParser.org-mXparser.Net462.dll" />
+		<File Source="$(var.Noterium.TargetDir)MathParser.org-mXparser.dll" />
 		<File Source="$(var.Noterium.TargetDir)LICENSE-3RD-PARTY.txt" />
 	  </Component>
 		</ComponentGroup>

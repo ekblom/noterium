@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
 using Noterium.Components.NotebookMenu;
 using Noterium.Components.NoteMenu;
 using Noterium.Core.DataCarriers;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonServiceLocator;
 
 namespace Noterium.ViewModels
 {

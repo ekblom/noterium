@@ -75,7 +75,7 @@
                 <iconPacks:PackIconModern Kind="CalendarDay" Foreground="{DynamicResource IdealForegroundColorBrush}" />
             </Button>
             <Button Name="InsertComment" CommandParameter="InsertComment" Click="ToolbarTagButtonClick" ToolTip="{x:Static p:Resources.NoteEditor_Toolbar_Comment}">
-                <iconPacks:PackIconFontAwesome Kind="Comment" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                <iconPacks:PackIconFontAwesome Kind="CommentRegular" Foreground="{DynamicResource IdealForegroundColorBrush}" />
             </Button>
             <Separator />
             <ToggleButton Name="ToggleWordWrapButton" Checked="ToggleWordWrapButton_OnClick" ToolTip="{x:Static p:Resources.NoteEditor_Toolbar_ToggleWordWrap}">
