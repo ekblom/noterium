@@ -5,7 +5,7 @@ using Noterium.Properties;
 namespace Noterium.Views.Dialogs
 {
     /// <summary>
-    /// Interaction logic for AuthenticationWindow.xaml
+    ///     Interaction logic for AuthenticationWindow.xaml
     /// </summary>
     public partial class LoadingWindow : INotifyPropertyChanged
     {
@@ -30,6 +30,7 @@ namespace Noterium.Views.Dialogs
                 Dispatcher.Invoke(() => SetMessage(message));
                 return;
             }
+
             LoadingText.Text = message;
         }
     }

@@ -63,6 +63,7 @@ namespace Noterium.Core.Helpers
                 var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL | FLASHW_TIMERNOFG, uint.MaxValue, 0);
                 return FlashWindowEx(ref fi);
             }
+
             return false;
         }
 
@@ -90,6 +91,7 @@ namespace Noterium.Core.Helpers
                 var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, count, 0);
                 return FlashWindowEx(ref fi);
             }
+
             return false;
         }
 
@@ -105,6 +107,7 @@ namespace Noterium.Core.Helpers
                 var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, uint.MaxValue, 0);
                 return FlashWindowEx(ref fi);
             }
+
             return false;
         }
 
@@ -120,6 +123,7 @@ namespace Noterium.Core.Helpers
                 var fi = Create_FLASHWINFO(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
                 return FlashWindowEx(ref fi);
             }
+
             return false;
         }
 

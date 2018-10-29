@@ -27,7 +27,7 @@ namespace Noterium.Core.Search
 
                 var tag = n.Tags.Any(t => t.IndexOf(searchTerm, StringComparison.InvariantCultureIgnoreCase) > -1);
 
-                return (text || tag);
+                return text || tag;
             }).ToList();
         }
     }

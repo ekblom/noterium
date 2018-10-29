@@ -29,7 +29,7 @@ namespace Noterium.Core.Security
 
         public bool SecureNotesEnabled
         {
-            get { return _secureNotesEnabled; }
+            get => _secureNotesEnabled;
             private set
             {
                 _secureNotesEnabled = value;
@@ -39,7 +39,7 @@ namespace Noterium.Core.Security
 
         public bool IsAuthenticated
         {
-            get { return _isAuthenticated; }
+            get => _isAuthenticated;
             private set
             {
                 _isAuthenticated = value;
@@ -49,7 +49,7 @@ namespace Noterium.Core.Security
 
         public bool AlwaysRequirePassword
         {
-            get { return _alwaysRequirePassword; }
+            get => _alwaysRequirePassword;
             private set
             {
                 _alwaysRequirePassword = value;
@@ -134,15 +134,14 @@ namespace Noterium.Core.Security
                 return;
 
             foreach (var n in Hub.Instance.Storage.GetAllNotes())
-            {
                 if (n.Encrypted)
                 {
                     n.Encrypted = false;
                     n.Save();
                 }
-            }
+
             File.Delete(_dataStore.MasterPasswordFile);
-			SecureNotesEnabled = false;
+            SecureNotesEnabled = false;
             _password = null;
         }
 
@@ -172,14 +171,14 @@ namespace Noterium.Core.Security
             if (!AlwaysRequirePassword && _password != null)
                 return _password;
 
-	        if (OnPasswordNeeded != null)
-	        {
-		        var pass = OnPasswordNeeded();
-		        if (ValidatePassword(pass))
-			        return pass;
-	        }
+            if (OnPasswordNeeded != null)
+            {
+                var pass = OnPasswordNeeded();
+                if (ValidatePassword(pass))
+                    return pass;
+            }
 
-	        throw new BadPasswordException();
+            throw new BadPasswordException();
         }
 
         public void StorePassword(SecureString pass)
@@ -208,8 +207,8 @@ namespace Noterium.Core.Security
             }
             else
             {
-				if (!string.IsNullOrWhiteSpace(note.Text))
-					note.Text = Decrypt(note.Text);
+                if (!string.IsNullOrWhiteSpace(note.Text))
+                    note.Text = Decrypt(note.Text);
             }
         }
     }

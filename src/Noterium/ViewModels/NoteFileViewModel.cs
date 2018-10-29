@@ -5,28 +5,28 @@ using Noterium.Core.DataCarriers;
 
 namespace Noterium.ViewModels
 {
-	public class NoteFileViewModel
-	{
-		public NoteFile NoteFile { get; set; }
+    public class NoteFileViewModel
+    {
+        public NoteFileViewModel(NoteFile noteFile)
+        {
+            NoteFile = noteFile;
+        }
 
-		public ImageSource Thumbnail
-		{
-			get
-			{
-				string filePath = NoteFile.FullName;
-				if (File.Exists(filePath))
-				{
-					ShellFile shellFile = ShellFile.FromFilePath(filePath);
-				    return shellFile.Thumbnail?.MediumBitmapSource;
-				}
-				return null;
-			}
-		}
+        public NoteFile NoteFile { get; set; }
 
-		public NoteFileViewModel(NoteFile noteFile)
-		{
-			NoteFile = noteFile;
+        public ImageSource Thumbnail
+        {
+            get
+            {
+                var filePath = NoteFile.FullName;
+                if (File.Exists(filePath))
+                {
+                    var shellFile = ShellFile.FromFilePath(filePath);
+                    return shellFile.Thumbnail?.MediumBitmapSource;
+                }
 
-		}
-	}
+                return null;
+            }
+        }
+    }
 }

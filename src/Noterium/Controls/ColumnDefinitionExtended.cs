@@ -12,15 +12,15 @@ namespace Noterium.Controls
         static ColumnDefinitionExtended()
         {
             VisibleProperty = DependencyProperty.Register("Visible",
-                typeof (bool),
-                typeof (ColumnDefinitionExtended),
+                typeof(bool),
+                typeof(ColumnDefinitionExtended),
                 new PropertyMetadata(true, OnVisibleChanged));
 
-            WidthProperty.OverrideMetadata(typeof (ColumnDefinitionExtended),
+            WidthProperty.OverrideMetadata(typeof(ColumnDefinitionExtended),
                 new FrameworkPropertyMetadata(new GridLength(1, GridUnitType.Star), null,
                     CoerceWidth));
 
-            MinWidthProperty.OverrideMetadata(typeof (ColumnDefinitionExtended),
+            MinWidthProperty.OverrideMetadata(typeof(ColumnDefinitionExtended),
                 new FrameworkPropertyMetadata((double) 0, null,
                     CoerceMinWidth));
         }
@@ -28,8 +28,8 @@ namespace Noterium.Controls
         // Properties
         public bool Visible
         {
-            get { return (bool) GetValue(VisibleProperty); }
-            set { SetValue(VisibleProperty, value); }
+            get => (bool) GetValue(VisibleProperty);
+            set => SetValue(VisibleProperty, value);
         }
 
         // Get/Set
@@ -51,12 +51,12 @@ namespace Noterium.Controls
 
         private static object CoerceWidth(DependencyObject obj, object nValue)
         {
-            return (((ColumnDefinitionExtended) obj).Visible) ? nValue : new GridLength(0);
+            return ((ColumnDefinitionExtended) obj).Visible ? nValue : new GridLength(0);
         }
 
         private static object CoerceMinWidth(DependencyObject obj, object nValue)
         {
-            return (((ColumnDefinitionExtended) obj).Visible) ? nValue : (double) 0;
+            return ((ColumnDefinitionExtended) obj).Visible ? nValue : (double) 0;
         }
     }
 }

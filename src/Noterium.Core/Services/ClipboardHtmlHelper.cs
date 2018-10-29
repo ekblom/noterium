@@ -29,8 +29,10 @@ namespace Noterium.Core.Services
                 {
                     return null;
                 }
+
                 return html;
             }
+
             return null;
         }
     }
@@ -44,10 +46,12 @@ namespace Noterium.Core.Services
         internal int startHTML;
         public double Version { get; internal set; }
         public string Source { get; internal set; }
+
         public string Input { get; internal set; }
+
         //public String Html { get { return Input.Substring(startHTML, (endHTML - startHTML)); } }
         public string Html => Input.Substring(startHTML, Math.Min(endHTML - startHTML, Input.Length - startHTML));
 
-        public string Fragment => Input.Substring(startFragment, (endFragment - startFragment));
+        public string Fragment => Input.Substring(startFragment, endFragment - startFragment);
     }
 }

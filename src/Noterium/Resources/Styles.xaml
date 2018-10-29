@@ -15,7 +15,9 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Canvas x:Key="NoteriumIconCanvas" Width="20" Height="16">
-        <Path x:Name="Path" Canvas.Left="0" Width="20" Height="16" Canvas.Top="-0.582703" Stretch="Fill" Fill="{DynamicResource Foreground}" Data="M 0,241.761C 32.3173,332.933 93.1093,391.996 180.031,425.256C 289.885,467.287 435.364,475.105 519.323,504.881C 550.484,465.641 597.224,441.985 628.385,402.751C 652.453,415.609 670.708,430.767 683.751,447.027L 683.375,446.272C 683.677,446.745 683.953,447.209 684.255,447.667C 693.364,459.172 699.88,471.224 703.979,483.423C 758.131,600.615 676.443,661.86 537.667,645.693C 444.693,634.865 325.579,601.079 208.349,520.98C 328.901,595.745 445.995,631.647 536.167,639.443C 648.287,649.152 718.527,609.573 708.964,524.448C 708.568,610.589 636.188,639.376 537.521,629.521C 362.969,612.084 176.964,527.412 46.74,376.781C 167.875,561.516 406.38,659.297 538.364,678.313C 753.511,709.333 891.088,469.527 706.276,330.048C 849.527,254.163 891.36,139.917 863.803,-0.582703C 834.953,68.084 795.193,126.527 728.787,156.943C 657.151,189.74 580.547,182.043 506.697,195.688C 485.401,199.615 467.437,314.756 492.084,427.885C 456.86,310.428 476.807,202.98 495.86,194.537C 466.973,180.891 456.521,193.865 452.683,209.735C 438.213,269.62 457.339,361.833 508.203,484.693C 451.88,369.157 432.693,278.428 443.193,213.579C 362.156,242.609 296.527,305.141 214.656,321.396C 139.167,336.376 60.588,300.043 0,241.761 Z M 726.115,358.563C 762.027,412.761 783.229,475.663 771.421,547.027C 792.036,491.297 791.323,424.095 726.115,358.563 Z M 481.36,483.349C 404.792,431.448 391.792,443.975 437.391,353.933C 428.079,327.595 426.604,300.308 424.912,270.625C 423.417,297.308 426.927,326.147 432.76,353.756C 401.183,413.548 396.76,434.016 418.932,448.896C 429.584,456.043 432.541,461.011 415.057,457.204C 316.864,435.808 198.167,423.672 115.041,377.849C 184.755,428.943 328.901,445.663 442.197,469.193C 457.557,472.381 467.625,475.772 481.36,483.349 Z M 527.885,474.917C 572.344,388.912 588.912,395.245 511.901,335.917C 502.907,310.677 502.385,283.563 505.729,255.589C 505.38,281.417 507.437,306.647 518.084,329.735C 578.479,374.511 582.401,389.724 561.005,424.381C 554.969,434.167 560.161,436.652 569.317,430.439C 585.203,419.652 608.937,401.704 629.115,377.297C 681.307,314.125 769.036,303.453 814.907,229.027C 775.109,307.453 687.708,315.355 629.907,385.136C 604.912,415.308 576.812,438.464 555.787,450.401C 540.26,459.209 535.751,463.615 527.885,474.917 Z M 508.812,205.631C 496.932,208.871 486.849,254.005 487.927,309.381C 491.803,255.803 501.355,221.381 512.745,239.084C 518,247.251 532.068,219.115 569.136,213.401C 631.609,203.767 730.683,172.12 757.412,147.287C 672.667,203.329 574.615,187.767 508.812,205.631 Z M 433.88,224.699C 432.495,250.105 434.823,278.183 437.76,305.016C 431.24,278.511 431.021,246.245 424.364,248.881C 421.693,249.939 420.917,254.781 417.787,260.115C 414.656,265.439 402.817,245.631 379.412,261.537C 336.041,291.005 266.896,325.98 224.073,325.109C 303.183,311.344 364.031,250.276 433.88,224.699 Z M 508.531,449.439C 521.527,447.016 534.688,438.439 534.057,426.939C 532.661,431.401 529.333,435.505 525.26,437.819C 533.661,427.677 532.713,417.792 523.771,410.125C 529.921,424.016 527.084,430.073 515.375,439.923C 517.609,418.719 522.469,397.891 529.527,377.776C 514.229,400.505 511.656,426.896 508.531,449.439 Z M 482.412,456.136C 469.828,460.188 454.177,458.907 449.255,448.491C 452.609,451.761 457.484,453.781 462.167,453.876C 449.948,448.953 446.084,439.819 450.292,428.808C 451.495,443.953 456.88,447.933 471.864,451.021C 459.803,433.439 445.62,417.433 429.839,403.105C 454.115,415.813 468.937,437.792 482.412,456.136 Z "/>
+        <Path x:Name="Path" Canvas.Left="0" Width="20" Height="16" Canvas.Top="-0.582703" Stretch="Fill"
+              Fill="{DynamicResource Foreground}"
+              Data="M 0,241.761C 32.3173,332.933 93.1093,391.996 180.031,425.256C 289.885,467.287 435.364,475.105 519.323,504.881C 550.484,465.641 597.224,441.985 628.385,402.751C 652.453,415.609 670.708,430.767 683.751,447.027L 683.375,446.272C 683.677,446.745 683.953,447.209 684.255,447.667C 693.364,459.172 699.88,471.224 703.979,483.423C 758.131,600.615 676.443,661.86 537.667,645.693C 444.693,634.865 325.579,601.079 208.349,520.98C 328.901,595.745 445.995,631.647 536.167,639.443C 648.287,649.152 718.527,609.573 708.964,524.448C 708.568,610.589 636.188,639.376 537.521,629.521C 362.969,612.084 176.964,527.412 46.74,376.781C 167.875,561.516 406.38,659.297 538.364,678.313C 753.511,709.333 891.088,469.527 706.276,330.048C 849.527,254.163 891.36,139.917 863.803,-0.582703C 834.953,68.084 795.193,126.527 728.787,156.943C 657.151,189.74 580.547,182.043 506.697,195.688C 485.401,199.615 467.437,314.756 492.084,427.885C 456.86,310.428 476.807,202.98 495.86,194.537C 466.973,180.891 456.521,193.865 452.683,209.735C 438.213,269.62 457.339,361.833 508.203,484.693C 451.88,369.157 432.693,278.428 443.193,213.579C 362.156,242.609 296.527,305.141 214.656,321.396C 139.167,336.376 60.588,300.043 0,241.761 Z M 726.115,358.563C 762.027,412.761 783.229,475.663 771.421,547.027C 792.036,491.297 791.323,424.095 726.115,358.563 Z M 481.36,483.349C 404.792,431.448 391.792,443.975 437.391,353.933C 428.079,327.595 426.604,300.308 424.912,270.625C 423.417,297.308 426.927,326.147 432.76,353.756C 401.183,413.548 396.76,434.016 418.932,448.896C 429.584,456.043 432.541,461.011 415.057,457.204C 316.864,435.808 198.167,423.672 115.041,377.849C 184.755,428.943 328.901,445.663 442.197,469.193C 457.557,472.381 467.625,475.772 481.36,483.349 Z M 527.885,474.917C 572.344,388.912 588.912,395.245 511.901,335.917C 502.907,310.677 502.385,283.563 505.729,255.589C 505.38,281.417 507.437,306.647 518.084,329.735C 578.479,374.511 582.401,389.724 561.005,424.381C 554.969,434.167 560.161,436.652 569.317,430.439C 585.203,419.652 608.937,401.704 629.115,377.297C 681.307,314.125 769.036,303.453 814.907,229.027C 775.109,307.453 687.708,315.355 629.907,385.136C 604.912,415.308 576.812,438.464 555.787,450.401C 540.26,459.209 535.751,463.615 527.885,474.917 Z M 508.812,205.631C 496.932,208.871 486.849,254.005 487.927,309.381C 491.803,255.803 501.355,221.381 512.745,239.084C 518,247.251 532.068,219.115 569.136,213.401C 631.609,203.767 730.683,172.12 757.412,147.287C 672.667,203.329 574.615,187.767 508.812,205.631 Z M 433.88,224.699C 432.495,250.105 434.823,278.183 437.76,305.016C 431.24,278.511 431.021,246.245 424.364,248.881C 421.693,249.939 420.917,254.781 417.787,260.115C 414.656,265.439 402.817,245.631 379.412,261.537C 336.041,291.005 266.896,325.98 224.073,325.109C 303.183,311.344 364.031,250.276 433.88,224.699 Z M 508.531,449.439C 521.527,447.016 534.688,438.439 534.057,426.939C 532.661,431.401 529.333,435.505 525.26,437.819C 533.661,427.677 532.713,417.792 523.771,410.125C 529.921,424.016 527.084,430.073 515.375,439.923C 517.609,418.719 522.469,397.891 529.527,377.776C 514.229,400.505 511.656,426.896 508.531,449.439 Z M 482.412,456.136C 469.828,460.188 454.177,458.907 449.255,448.491C 452.609,451.761 457.484,453.781 462.167,453.876C 449.948,448.953 446.084,439.819 450.292,428.808C 451.495,443.953 456.88,447.933 471.864,451.021C 459.803,433.439 445.62,417.433 429.839,403.105C 454.115,415.813 468.937,437.792 482.412,456.136 Z " />
     </Canvas>
 
     <Style x:Key="VSWindowStyleKey" TargetType="{x:Type controls:MetroWindow}">
@@ -77,7 +79,8 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
-                        <StackPanel x:Name="PART_Content" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <StackPanel x:Name="PART_Content" Orientation="Horizontal" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
                             <controls:ContentControlEx x:Name="ContentSite"
                                                        Padding="{TemplateBinding Padding}"
                                                        Foreground="{TemplateBinding Foreground}"
@@ -145,17 +148,17 @@
 
 
     <Style x:Key="CustomGridSplitterStyle" TargetType="{x:Type GridSplitter}">
-        <Setter Property="Background" Value="{DynamicResource BorderBrushNormal}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushNormal}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource BorderBrushNormal}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushNormal}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GridSplitter">
                     <Border
-                    x:Name="FocusVisual"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"/>
+                        x:Name="FocusVisual"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" />
 
                 </ControlTemplate>
             </Setter.Value>
@@ -208,7 +211,7 @@
     </Style>
 
     <Style x:Key="MorePopupStyle" TargetType="{x:Type Button}">
-        <Setter Property="controls:ButtonHelper.CornerRadius" Value="3"/>
+        <Setter Property="controls:ButtonHelper.CornerRadius" Value="3" />
 
         <Setter Property="Width" Value="25" />
         <Setter Property="Height" Value="25" />
@@ -223,31 +226,45 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{x:Null}" CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        <Border x:Name="DisabledVisualElement" Background="{DynamicResource ControlsDisabledBrush}" CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" IsHitTestVisible="False" Opacity="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <Border x:Name="Background" Background="{TemplateBinding Background}"
+                                CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" Background="{x:Null}"
+                                CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        <Border x:Name="DisabledVisualElement" Background="{DynamicResource ControlsDisabledBrush}"
+                                CornerRadius="{Binding (controls:ButtonHelper.CornerRadius), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                IsHitTestVisible="False" Opacity="0"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="controls:ButtonHelper.PreserveTextCase" Value="False">
-                            <Setter Property="Content" TargetName="contentPresenter" Value="{Binding Content, Converter={converters:ToUpperConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Setter Property="Content" TargetName="contentPresenter"
+                                    Value="{Binding Content, Converter={converters:ToUpperConverter}, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="controls:ButtonHelper.PreserveTextCase" Value="True">
-                            <Setter Property="Content" TargetName="contentPresenter" Value="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Setter Property="Content" TargetName="contentPresenter"
+                                    Value="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource GrayBrush8}"/>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource GrayBrush8}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource GrayBrush7}"/>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource GrayBrush7}" />
                         </Trigger>
                         <!--<Trigger Property="IsKeyboardFocusWithin" Value="True">
                                                     <Setter Property="BorderThickness" TargetName="Border" Value="2"/>
                                                     <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ButtonMouseOverBorderBrush}"/>
                                                 </Trigger>-->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" TargetName="DisabledVisualElement" Value="0.7"/>
-                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.3"/>
+                            <Setter Property="Opacity" TargetName="DisabledVisualElement" Value="0.7" />
+                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.3" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -255,7 +272,8 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NoteBookTreeViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MetroTreeViewItem}">
+    <Style x:Key="NoteBookTreeViewItemStyle" TargetType="{x:Type TreeViewItem}"
+           BasedOn="{StaticResource MetroTreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -267,28 +285,29 @@
     </Style>
 
     <Style TargetType="{x:Type Button}" x:Key="MainMenuButton">
-        <Setter Property="BorderBrush" Value="Transparent"></Setter>
-        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="Border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}"
-                                MinHeight="{TemplateBinding MinHeight}"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            MinHeight="{TemplateBinding MinHeight}"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <ContentPresenter x:Name="content"
-                                                HorizontalAlignment="Stretch"
-                                                RecognizesAccessKey="True"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                VerticalAlignment="Center"
-                                                Width="Auto" />
+                                          HorizontalAlignment="Stretch"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="Center"
+                                          Width="Auto" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger SourceName="Border" Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentColorBrush3}" />
+                            <Setter TargetName="Border" Property="Background"
+                                    Value="{DynamicResource AccentColorBrush3}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource GrayBrush7}" />
@@ -306,12 +325,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" Padding="3" Background="Transparent" BorderThickness="0" BorderBrush="{StaticResource AccentColorBrush}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="content"/>
+                    <Border x:Name="border" Padding="3" Background="Transparent" BorderThickness="0"
+                            BorderBrush="{StaticResource AccentColorBrush}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="content" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource FlatButtonBackgroundBrush}" TargetName="border" />
+                            <Setter Property="Background" Value="{DynamicResource FlatButtonBackgroundBrush}"
+                                    TargetName="border" />
                         </Trigger>
                         <Trigger Property="Tag" Value="Selected">
                             <Setter Property="BorderThickness" Value="0,0,0,2" TargetName="border" />
@@ -332,13 +353,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" BorderThickness="0" Padding="3" BorderBrush="Transparent" Background="Transparent">
-                        <ContentPresenter Name="content"/>
+                    <Border x:Name="border" BorderThickness="0" Padding="3" BorderBrush="Transparent"
+                            Background="Transparent">
+                        <ContentPresenter Name="content" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource BackgroundHighlighted}" TargetName="border"/>
-                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushHighlighted}" TargetName="border"/>
+                            <Setter Property="Background" Value="{DynamicResource BackgroundHighlighted}"
+                                    TargetName="border" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushHighlighted}"
+                                    TargetName="border" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -358,7 +382,8 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
-    <Style x:Key="TransparentScrollBars" TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MetroScrollViewer}">
+    <Style x:Key="TransparentScrollBars" TargetType="{x:Type ScrollViewer}"
+           BasedOn="{StaticResource MetroScrollViewer}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -369,29 +394,29 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ScrollContentPresenter Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+                        <ScrollContentPresenter Grid.ColumnSpan="2" Grid.RowSpan="2" />
                         <ScrollBar
-                                    Name="PART_VerticalScrollBar"
-                                    Width="6"
-                                    Opacity="0.75"
-                                    Grid.Column="1"
-                                    Value="{TemplateBinding VerticalOffset}"
-                                    Maximum="{TemplateBinding ScrollableHeight}"
-                                    ViewportSize="{TemplateBinding ViewportHeight}"
-                                    Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                            Name="PART_VerticalScrollBar"
+                            Width="6"
+                            Opacity="0.75"
+                            Grid.Column="1"
+                            Value="{TemplateBinding VerticalOffset}"
+                            Maximum="{TemplateBinding ScrollableHeight}"
+                            ViewportSize="{TemplateBinding ViewportHeight}"
+                            Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
                         <ScrollBar
-                                    Name="PART_HorizontalScrollBar"
-                                    Orientation="Horizontal"
-                                    Width="6"
-                                    Opacity="0.75"
-                                    Grid.Row="1"
-                                    Value="{TemplateBinding HorizontalOffset}"
-                                    Maximum="{TemplateBinding ScrollableWidth}"
-                                    ViewportSize="{TemplateBinding ViewportWidth}"
-                                    Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
+                            Name="PART_HorizontalScrollBar"
+                            Orientation="Horizontal"
+                            Width="6"
+                            Opacity="0.75"
+                            Grid.Row="1"
+                            Value="{TemplateBinding HorizontalOffset}"
+                            Maximum="{TemplateBinding ScrollableWidth}"
+                            ViewportSize="{TemplateBinding ViewportWidth}"
+                            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -399,23 +424,23 @@
     </Style>
 
     <Style TargetType="{x:Type Dialog:BaseMetroDialog}"
-        x:Key="CustomDialogStyle"
-        BasedOn="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
+           x:Key="CustomDialogStyle"
+           BasedOn="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Dialog:BaseMetroDialog}">
                     <ControlTemplate.Resources>
                         <Storyboard x:Key="DialogShownStoryboard">
                             <DoubleAnimation AccelerationRatio=".9"
-                                            BeginTime="0:0:0"
-                                            Duration="0:0:0.2"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1" />
+                                             BeginTime="0:0:0"
+                                             Duration="0:0:0.2"
+                                             Storyboard.TargetProperty="Opacity"
+                                             To="1" />
                         </Storyboard>
                     </ControlTemplate.Resources>
                     <Grid Background="{TemplateBinding Background}">
                         <Border FocusVisualStyle="{x:Null}"
-                            Focusable="False">
+                                Focusable="False">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -423,7 +448,7 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <ContentPresenter Grid.Row="0"
-                                                Content="{TemplateBinding DialogTop}" />
+                                                  Content="{TemplateBinding DialogTop}" />
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="10*" />
@@ -432,22 +457,22 @@
                                     </Grid.ColumnDefinitions>
                                     <!--  Content area  -->
                                     <Grid Grid.Column="1"
-                                        Margin="0 10 0 0">
+                                          Margin="0 10 0 0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0"
-                                                FontSize="{DynamicResource DialogTitleFontSize}"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Title}"
-                                                TextWrapping="Wrap" />
+                                                   FontSize="{DynamicResource DialogTitleFontSize}"
+                                                   Foreground="{TemplateBinding Foreground}"
+                                                   Text="{TemplateBinding Title}"
+                                                   TextWrapping="Wrap" />
                                         <ContentPresenter Grid.Row="1"
-                                                        Content="{TemplateBinding Content}" />
+                                                          Content="{TemplateBinding Content}" />
                                     </Grid>
                                 </Grid>
                                 <ContentPresenter Grid.Row="2"
-                                                Content="{TemplateBinding DialogBottom}" />
+                                                  Content="{TemplateBinding DialogBottom}" />
                             </Grid>
                         </Border>
                     </Grid>

@@ -9,60 +9,59 @@
         WindowStyle="ToolWindow">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="34"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="34"/>
+            <RowDefinition Height="34" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="34" />
         </Grid.RowDefinitions>
         <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True">
             <Button Click="AlignColumnLeft" ToolTip="Align column left">
-                <iconPacks:PackIconMaterial Kind="FormatAlignLeft"/>
+                <iconPacks:PackIconMaterial Kind="FormatAlignLeft" />
             </Button>
             <Button Click="AlignColumnCenter" ToolTip="Align column center">
-                <iconPacks:PackIconMaterial Kind="FormatAlignCenter"/>
+                <iconPacks:PackIconMaterial Kind="FormatAlignCenter" />
             </Button>
             <Button Click="AlignColumnRight" ToolTip="Align column right">
-                <iconPacks:PackIconMaterial Kind="FormatAlignRight"/>
+                <iconPacks:PackIconMaterial Kind="FormatAlignRight" />
             </Button>
-            <Separator/>
+            <Separator />
 
             <Button Click="AddRowBefore" ToolTip="Insert row before">
-                <iconPacks:PackIconMaterial Kind="TableRowPlusBefore"/>
+                <iconPacks:PackIconMaterial Kind="TableRowPlusBefore" />
             </Button>
             <Button Click="RemoveRow" ToolTip="Remove row">
-                <iconPacks:PackIconMaterial Kind="TableRowRemove"/>
+                <iconPacks:PackIconMaterial Kind="TableRowRemove" />
             </Button>
             <Button Click="AddRowAfter" ToolTip="Insert row after">
-                <iconPacks:PackIconMaterial Kind="TableRowPlusAfter"/>
+                <iconPacks:PackIconMaterial Kind="TableRowPlusAfter" />
             </Button>
-            <Separator/>
+            <Separator />
             <Button Click="AddColumnBefore" ToolTip="Insert column before">
-                <iconPacks:PackIconMaterial Kind="TableColumnPlusBefore"/>
+                <iconPacks:PackIconMaterial Kind="TableColumnPlusBefore" />
             </Button>
             <Button Click="RemoveColumn" ToolTip="Remove column">
-                <iconPacks:PackIconMaterial Kind="TableColumnRemove"/>
+                <iconPacks:PackIconMaterial Kind="TableColumnRemove" />
             </Button>
             <Button Click="AddColumnAfter" ToolTip="Insert column after">
-                <iconPacks:PackIconMaterial Kind="TableColumnPlusAfter"/>
+                <iconPacks:PackIconMaterial Kind="TableColumnPlusAfter" />
             </Button>
         </ToolBar>
-        <DataGrid Name="GridTable" 
-                          HeadersVisibility="Column"
-                          ItemsSource="{Binding}" 
-                          CanUserSortColumns="False" 
-                          CanUserReorderColumns="True" 
-                          CanUserAddRows="True"
-                          CanUserDeleteRows="True"
-                          Grid.Row="1" 
-                          Grid.Column="0" 
-                          LoadingRow="DataGrid_LoadingRow"
-                          GridLinesVisibility="All"
-                          SelectionUnit="Cell"
-                          AutoGenerateColumns="True"
-                    />
+        <DataGrid Name="GridTable"
+                  HeadersVisibility="Column"
+                  ItemsSource="{Binding}"
+                  CanUserSortColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserAddRows="True"
+                  CanUserDeleteRows="True"
+                  Grid.Row="1"
+                  Grid.Column="0"
+                  LoadingRow="DataGrid_LoadingRow"
+                  GridLinesVisibility="All"
+                  SelectionUnit="Cell"
+                  AutoGenerateColumns="True" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
             <Button Click="CloseTableEditor" Margin="0,0,5,0">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Close" Margin="0,0,5,0"/>
+                    <iconPacks:PackIconMaterial Kind="Close" Margin="0,0,5,0" />
                     <TextBlock>Cancel</TextBlock>
                 </StackPanel>
             </Button>
@@ -73,7 +72,7 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        
+
     </Grid>
 
 </Window>

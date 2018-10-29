@@ -28,7 +28,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 _name = value;
@@ -41,7 +41,7 @@ namespace Noterium.Core.DataCarriers
 
         public bool Deleted
         {
-            get { return _deleted; }
+            get => _deleted;
             private set
             {
                 _deleted = value;
@@ -53,11 +53,8 @@ namespace Noterium.Core.DataCarriers
 
         public int CompareTo(object obj)
         {
-            Notebook other = obj as Notebook;
-            if (other != null)
-            {
-                return CompareTo(other);
-            }
+            var other = obj as Notebook;
+            if (other != null) return CompareTo(other);
             return -1;
         }
 

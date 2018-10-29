@@ -38,7 +38,7 @@ namespace Noterium.Core.Security
         /// <returns></returns>
         public static byte[] NewKey()
         {
-            var key = new byte[KeyBitSize/8];
+            var key = new byte[KeyBitSize / 8];
             Random.NextBytes(key);
             return key;
         }
@@ -149,17 +149,17 @@ namespace Noterium.Core.Security
         public static byte[] SimpleEncrypt(byte[] secretMessage, byte[] key, byte[] nonSecretPayload = null)
         {
             //User Error Checks
-            if (key == null || key.Length != KeyBitSize/8)
+            if (key == null || key.Length != KeyBitSize / 8)
                 throw new ArgumentException($"Key needs to be {KeyBitSize} bit!", nameof(key));
 
             if (secretMessage == null || secretMessage.Length == 0)
                 throw new ArgumentException("Secret Message Required!", nameof(secretMessage));
 
             //Non-secret Payload Optional
-            nonSecretPayload = nonSecretPayload ?? new byte[] {};
+            nonSecretPayload = nonSecretPayload ?? new byte[] { };
 
             //Using random nonce large enough not to repeat
-            var nonce = new byte[NonceBitSize/8];
+            var nonce = new byte[NonceBitSize / 8];
             Random.NextBytes(nonce, 0, nonce.Length);
 
             var cipher = new GcmBlockCipher(new AesFastEngine());
@@ -183,6 +183,7 @@ namespace Noterium.Core.Security
                     //Write Cipher Text
                     binaryWriter.Write(cipherText);
                 }
+
                 return combinedStream.ToArray();
             }
         }
@@ -197,7 +198,7 @@ namespace Noterium.Core.Security
         public static byte[] SimpleDecrypt(byte[] encryptedMessage, byte[] key, int nonSecretPayloadLength = 0)
         {
             //User Error Checks
-            if (key == null || key.Length != KeyBitSize/8)
+            if (key == null || key.Length != KeyBitSize / 8)
                 throw new ArgumentException($"Key needs to be {KeyBitSize} bit!", nameof(key));
 
             if (encryptedMessage == null || encryptedMessage.Length == 0)
@@ -210,7 +211,7 @@ namespace Noterium.Core.Security
                 var nonSecretPayload = cipherReader.ReadBytes(nonSecretPayloadLength);
 
                 //Grab Nonce
-                var nonce = cipherReader.ReadBytes(NonceBitSize/8);
+                var nonce = cipherReader.ReadBytes(NonceBitSize / 8);
 
                 var cipher = new GcmBlockCipher(new AesFastEngine());
                 var parameters = new AeadParameters(new KeyParameter(key), MacBitSize, nonce, nonSecretPayload);
@@ -252,7 +253,7 @@ namespace Noterium.Core.Security
         /// </remarks>
         public static byte[] SimpleEncryptWithPassword(byte[] secretMessage, string password, byte[] nonSecretPayload = null)
         {
-            nonSecretPayload = nonSecretPayload ?? new byte[] {};
+            nonSecretPayload = nonSecretPayload ?? new byte[] { };
 
             //User Error Checks
             if (string.IsNullOrWhiteSpace(password) || password.Length < MinPasswordLength)
@@ -264,7 +265,7 @@ namespace Noterium.Core.Security
             var generator = new Pkcs5S2ParametersGenerator();
 
             //Use Random Salt to minimize pre-generated weak password attacks.
-            var salt = new byte[SaltBitSize/8];
+            var salt = new byte[SaltBitSize / 8];
             Random.NextBytes(salt);
 
             generator.Init(
@@ -309,7 +310,7 @@ namespace Noterium.Core.Security
             var generator = new Pkcs5S2ParametersGenerator();
 
             //Grab Salt from Payload
-            var salt = new byte[SaltBitSize/8];
+            var salt = new byte[SaltBitSize / 8];
             Array.Copy(encryptedMessage, nonSecretPayloadLength, salt, 0, salt.Length);
 
             generator.Init(

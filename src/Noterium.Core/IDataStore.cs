@@ -13,8 +13,8 @@ namespace Noterium.Core
         int GetTotalNoteCount();
         List<Notebook> GetNoteBooks();
         List<Note> GetAllNotes();
-        void SaveSettings(DataCarriers.Settings settings);
-        DataCarriers.Settings GetSettings();
+        void SaveSettings(Settings settings);
+        Settings GetSettings();
         Note GetNote(Guid id);
         void DeleteNote(Note note);
         void DeleteNoteBook(Notebook noteBook);

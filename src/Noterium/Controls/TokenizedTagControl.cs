@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,291 +8,275 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
 
 namespace Noterium.Controls
 {
-	[ValueConversion(typeof (bool), typeof (Visibility))]
-	public class InvertedBoolToVisibility : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var enabled = (bool) value;
-			if (enabled)
-			{
-				return Visibility.Collapsed;
-			}
-			return Visibility.Visible;
-		}
+    [ValueConversion(typeof(bool), typeof(Visibility))]
+    public class InvertedBoolToVisibility : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var enabled = (bool) value;
+            if (enabled) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return null;
-		}
-	}
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 
-	[TemplatePart(Name = "PART_CreateTagButton", Type = typeof (Button))]
-	public class TokenizedTagControl : ListBox //, INotifyPropertyChanged
-	{
-		public static readonly DependencyProperty AllTagsProperty = DependencyProperty.Register("AllTags", typeof (List<string>), typeof (TokenizedTagControl), new PropertyMetadata(new List<string>()));
-		public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register("Placeholder", typeof (string), typeof (TokenizedTagControl), new PropertyMetadata("Click here to enter tags..."));
-		public static readonly DependencyProperty IsSelectableProperty = DependencyProperty.Register("IsSelectable", typeof (bool), typeof (TokenizedTagControl), new PropertyMetadata(false));
+    [TemplatePart(Name = "PART_CreateTagButton", Type = typeof(Button))]
+    public class TokenizedTagControl : ListBox //, INotifyPropertyChanged
+    {
+        public static readonly DependencyProperty AllTagsProperty = DependencyProperty.Register("AllTags", typeof(List<string>), typeof(TokenizedTagControl), new PropertyMetadata(new List<string>()));
+        public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register("Placeholder", typeof(string), typeof(TokenizedTagControl), new PropertyMetadata("Click here to enter tags..."));
+        public static readonly DependencyProperty IsSelectableProperty = DependencyProperty.Register("IsSelectable", typeof(bool), typeof(TokenizedTagControl), new PropertyMetadata(false));
 
-		private List<string> _allTags = new List<string>();
+        private static readonly DependencyPropertyKey IsEditingPropertyKey = DependencyProperty.RegisterReadOnly("IsEditing", typeof(bool), typeof(TokenizedTagControl), new FrameworkPropertyMetadata(false));
+        public static readonly DependencyProperty IsEditingProperty = IsEditingPropertyKey.DependencyProperty;
 
-		public TokenizedTagControl()
-		{
-			if (ItemsSource == null)
-			{
-				var source = new List<TokenizedTagItem>();
-				if(ViewModelBase.IsInDesignModeStatic)
-				{
-					source.Add(new TokenizedTagItem("Tag 1"));
-					source.Add(new TokenizedTagItem("Tag 2"));
-					source.Add(new TokenizedTagItem("Tag 3"));
-				}
-				ItemsSource = source;
-			}
+        private List<string> _allTags = new List<string>();
 
-			if (AllTags == null)
-				AllTags = new List<string>();
+        static TokenizedTagControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TokenizedTagControl), new FrameworkPropertyMetadata(typeof(TokenizedTagControl)));
+        }
 
-			LostKeyboardFocus += TokenizedTagControlLostKeyboardFocus;
-		}
+        public TokenizedTagControl()
+        {
+            if (ItemsSource == null)
+            {
+                var source = new List<TokenizedTagItem>();
+                if (ViewModelBase.IsInDesignModeStatic)
+                {
+                    source.Add(new TokenizedTagItem("Tag 1"));
+                    source.Add(new TokenizedTagItem("Tag 2"));
+                    source.Add(new TokenizedTagItem("Tag 3"));
+                }
 
-		static TokenizedTagControl()
-		{
-			DefaultStyleKeyProperty.OverrideMetadata(typeof (TokenizedTagControl), new FrameworkPropertyMetadata(typeof (TokenizedTagControl)));
-		}
+                ItemsSource = source;
+            }
 
-		public List<string> EnteredTags
-		{
-			get
-			{
-				if (!ReferenceEquals(ItemsSource, null) && ((IList<TokenizedTagItem>) ItemsSource).Any())
-				{
-					var tokenizedTagItems = (IList<TokenizedTagItem>) ItemsSource;
-					var typedTags = (from TokenizedTagItem item in tokenizedTagItems
-						select item.Text);
-					return typedTags.ToList();
-				}
-				return new List<string>(0);
-			}
-		}
+            if (AllTags == null)
+                AllTags = new List<string>();
 
-		public List<string> AllTags
-		{
-			get
-			{
-				if (!ReferenceEquals(ItemsSource, null) && ((IList<TokenizedTagItem>) ItemsSource).Any())
-				{
-					var tokenizedTagItems = (IList<TokenizedTagItem>) ItemsSource;
-					var typedTags = (from TokenizedTagItem item in tokenizedTagItems select item.Text);
+            LostKeyboardFocus += TokenizedTagControlLostKeyboardFocus;
+        }
 
-					return (_allTags).Except(typedTags).ToList();
-				}
-				return _allTags;
-			}
-			set
-			{
-				SetValue(AllTagsProperty, value);
-				_allTags = value;
-			}
-		}
+        public List<string> EnteredTags
+        {
+            get
+            {
+                if (!ReferenceEquals(ItemsSource, null) && ((IList<TokenizedTagItem>) ItemsSource).Any())
+                {
+                    var tokenizedTagItems = (IList<TokenizedTagItem>) ItemsSource;
+                    var typedTags = from TokenizedTagItem item in tokenizedTagItems
+                        select item.Text;
+                    return typedTags.ToList();
+                }
 
-		public string Placeholder
-		{
-			get { return (string) GetValue(PlaceholderProperty); }
-			set { SetValue(PlaceholderProperty, value); }
-		}
+                return new List<string>(0);
+            }
+        }
 
-		public bool IsSelectable
-		{
-			get { return (bool) GetValue(IsSelectableProperty); }
-			set { SetValue(IsSelectableProperty, value); }
-		}
+        public List<string> AllTags
+        {
+            get
+            {
+                if (!ReferenceEquals(ItemsSource, null) && ((IList<TokenizedTagItem>) ItemsSource).Any())
+                {
+                    var tokenizedTagItems = (IList<TokenizedTagItem>) ItemsSource;
+                    var typedTags = from TokenizedTagItem item in tokenizedTagItems select item.Text;
 
-		public bool IsEditing
-		{
-			get { return (bool) GetValue(IsEditingProperty); }
-			internal set { SetValue(IsEditingPropertyKey, value); }
-		}
+                    return _allTags.Except(typedTags).ToList();
+                }
 
-		public event EventHandler<TokenizedTagEventArgs> TagClick;
-		public event EventHandler<TokenizedTagEventArgs> TagAdded;
-		public event EventHandler<TokenizedTagEventArgs> TagApplied;
-		public event EventHandler<TokenizedTagEventArgs> TagRemoved;
+                return _allTags;
+            }
+            set
+            {
+                SetValue(AllTagsProperty, value);
+                _allTags = value;
+            }
+        }
 
-		private void TokenizedTagControlLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-		{
-			if (!IsSelectable)
-			{
-				SelectedItem = null;
-				return;
-			}
+        public string Placeholder
+        {
+            get => (string) GetValue(PlaceholderProperty);
+            set => SetValue(PlaceholderProperty, value);
+        }
 
-			TokenizedTagItem itemToSelect = null;
-			if (Items.Count > 0 && !ReferenceEquals((TokenizedTagItem) Items.CurrentItem, null))
-			{
-				if (SelectedItem != null && ((TokenizedTagItem) SelectedItem).Text != null &&
-				    !((TokenizedTagItem) SelectedItem).IsEditing)
-				{
-					itemToSelect = (TokenizedTagItem) SelectedItem;
-				}
-				else if (!String.IsNullOrWhiteSpace(((TokenizedTagItem) Items.CurrentItem).Text))
-				{
-					itemToSelect = (TokenizedTagItem) Items.CurrentItem;
-				}
-			}
+        public bool IsSelectable
+        {
+            get => (bool) GetValue(IsSelectableProperty);
+            set => SetValue(IsSelectableProperty, value);
+        }
 
-			// select the previous item
-			if (!ReferenceEquals(itemToSelect, null))
-			{
-				e.Handled = true;
-				RaiseTagApplied(itemToSelect);
-				if (IsSelectable)
-				{
-					SelectedItem = itemToSelect;
-				}
-			}
-		}
+        public bool IsEditing
+        {
+            get => (bool) GetValue(IsEditingProperty);
+            internal set => SetValue(IsEditingPropertyKey, value);
+        }
 
-		private void UpdateAllTagsProperty()
-		{
-			SetValue(AllTagsProperty, AllTags);
-		}
+        public event EventHandler<TokenizedTagEventArgs> TagClick;
+        public event EventHandler<TokenizedTagEventArgs> TagAdded;
+        public event EventHandler<TokenizedTagEventArgs> TagApplied;
+        public event EventHandler<TokenizedTagEventArgs> TagRemoved;
 
-		public override void OnApplyTemplate()
-		{
-			OnApplyTemplate();
-		}
+        private void TokenizedTagControlLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (!IsSelectable)
+            {
+                SelectedItem = null;
+                return;
+            }
 
-	    // ReSharper disable once MethodOverloadWithOptionalParameter
-		public void OnApplyTemplate(TokenizedTagItem appliedTag = null)
-		{
-			var createBtn = GetTemplateChild("PART_CreateTagButton") as Button;
-			if (createBtn != null)
-			{
-				createBtn.Click -= CreateBtnClick;
-				createBtn.Click += CreateBtnClick;
-			}
+            TokenizedTagItem itemToSelect = null;
+            if (Items.Count > 0 && !ReferenceEquals((TokenizedTagItem) Items.CurrentItem, null))
+            {
+                if (SelectedItem != null && ((TokenizedTagItem) SelectedItem).Text != null &&
+                    !((TokenizedTagItem) SelectedItem).IsEditing)
+                    itemToSelect = (TokenizedTagItem) SelectedItem;
+                else if (!string.IsNullOrWhiteSpace(((TokenizedTagItem) Items.CurrentItem).Text)) itemToSelect = (TokenizedTagItem) Items.CurrentItem;
+            }
 
-			base.OnApplyTemplate();
+            // select the previous item
+            if (!ReferenceEquals(itemToSelect, null))
+            {
+                e.Handled = true;
+                RaiseTagApplied(itemToSelect);
+                if (IsSelectable) SelectedItem = itemToSelect;
+            }
+        }
 
-			if (appliedTag != null && !ReferenceEquals(TagApplied, null))
-			{
-				TagApplied.Invoke(this, new TokenizedTagEventArgs(appliedTag));
-			}
-		}
+        private void UpdateAllTagsProperty()
+        {
+            SetValue(AllTagsProperty, AllTags);
+        }
 
-		/// <summary>
-		///     Executed when create new tag button is clicked.
-		///     Adds an TokenizedTagItem to the collection and puts it in edit mode.
-		/// </summary>
-		private void CreateBtnClick(object sender, RoutedEventArgs e)
-		{
-			SelectedItem = InitializeNewTag();
-		}
+        public override void OnApplyTemplate()
+        {
+            OnApplyTemplate();
+        }
 
-		internal TokenizedTagItem InitializeNewTag(bool suppressEditing = false)
-		{
-			var newItem = new TokenizedTagItem {IsEditing = !suppressEditing};
-			AddTag(newItem);
-			UpdateAllTagsProperty();
-			IsEditing = !suppressEditing;
+        // ReSharper disable once MethodOverloadWithOptionalParameter
+        public void OnApplyTemplate(TokenizedTagItem appliedTag = null)
+        {
+            var createBtn = GetTemplateChild("PART_CreateTagButton") as Button;
+            if (createBtn != null)
+            {
+                createBtn.Click -= CreateBtnClick;
+                createBtn.Click += CreateBtnClick;
+            }
 
-			return newItem;
-		}
+            base.OnApplyTemplate();
 
-		/// <summary>
-		///     Adds a tag to the collection
-		/// </summary>
-		internal void AddTag(TokenizedTagItem tag)
-		{
-			TokenizedTagItem itemToSelect = null;
-			if (SelectedItem == null && Items.Count > 0)
-			{
-				itemToSelect = (TokenizedTagItem) SelectedItem;
-			}
-			((ObservableCollection<TokenizedTagItem>) ItemsSource).Add(tag); // assume IList for convenience
-			Items.Refresh();
+            if (appliedTag != null && !ReferenceEquals(TagApplied, null)) TagApplied.Invoke(this, new TokenizedTagEventArgs(appliedTag));
+        }
 
-			// select the previous item
-			if (!ReferenceEquals(itemToSelect, null))
-			{
-				RaiseTagClick(itemToSelect);
-				if (IsSelectable)
-					SelectedItem = itemToSelect;
-			}
+        /// <summary>
+        ///     Executed when create new tag button is clicked.
+        ///     Adds an TokenizedTagItem to the collection and puts it in edit mode.
+        /// </summary>
+        private void CreateBtnClick(object sender, RoutedEventArgs e)
+        {
+            SelectedItem = InitializeNewTag();
+        }
 
-			TagAdded?.Invoke(this, new TokenizedTagEventArgs(tag));
-		}
+        internal TokenizedTagItem InitializeNewTag(bool suppressEditing = false)
+        {
+            var newItem = new TokenizedTagItem {IsEditing = !suppressEditing};
+            AddTag(newItem);
+            UpdateAllTagsProperty();
+            IsEditing = !suppressEditing;
 
-		/// <summary>
-		///     Removes a tag from the collection
-		/// </summary>
-		internal void RemoveTag(TokenizedTagItem tag, bool cancelEvent = false)
-		{
-			if (ItemsSource != null)
-			{
-				((IList) ItemsSource).Remove(tag); // assume IList for convenience
-				Items.Refresh();
+            return newItem;
+        }
 
-				if (TagRemoved != null && !cancelEvent)
-				{
-					TagRemoved(this, new TokenizedTagEventArgs(tag));
-				}
+        /// <summary>
+        ///     Adds a tag to the collection
+        /// </summary>
+        internal void AddTag(TokenizedTagItem tag)
+        {
+            TokenizedTagItem itemToSelect = null;
+            if (SelectedItem == null && Items.Count > 0) itemToSelect = (TokenizedTagItem) SelectedItem;
+            ((ObservableCollection<TokenizedTagItem>) ItemsSource).Add(tag); // assume IList for convenience
+            Items.Refresh();
 
-				// select the last item
-				if (SelectedItem == null && Items.Count > 0)
-				{
-					//TokenizedTagItem itemToSelect = this.Items.GetItemAt(0) as TokenizedTagItem;
-					var itemToSelect = Items.GetItemAt(Items.Count - 1) as TokenizedTagItem;
-					if (!ReferenceEquals(itemToSelect, null))
-					{
-						RaiseTagClick(itemToSelect);
-						if (IsSelectable)
-							SelectedItem = itemToSelect;
-					}
-				}
-			}
-		}
+            // select the previous item
+            if (!ReferenceEquals(itemToSelect, null))
+            {
+                RaiseTagClick(itemToSelect);
+                if (IsSelectable)
+                    SelectedItem = itemToSelect;
+            }
 
-		/// <summary>
-		///     Raises the TagClick event
-		/// </summary>
-		internal void RaiseTagClick(TokenizedTagItem tag)
-		{
-			TagClick?.Invoke(this, new TokenizedTagEventArgs(tag));
-		}
+            TagAdded?.Invoke(this, new TokenizedTagEventArgs(tag));
+        }
 
-		/// <summary>
-		///     Raises the TagClick event
-		/// </summary>
-		internal void RaiseTagApplied(TokenizedTagItem tag)
-		{
-			TagApplied?.Invoke(this, new TokenizedTagEventArgs(tag));
-		}
+        /// <summary>
+        ///     Removes a tag from the collection
+        /// </summary>
+        internal void RemoveTag(TokenizedTagItem tag, bool cancelEvent = false)
+        {
+            if (ItemsSource != null)
+            {
+                ((IList) ItemsSource).Remove(tag); // assume IList for convenience
+                Items.Refresh();
 
-		/// <summary>
-		///     Raises the TagDoubleClick event
-		/// </summary>
-		internal void RaiseTagDoubleClick(TokenizedTagItem tag)
-		{
-			UpdateAllTagsProperty();
-			tag.IsEditing = true;
-		}
+                if (TagRemoved != null && !cancelEvent) TagRemoved(this, new TokenizedTagEventArgs(tag));
 
-		private static readonly DependencyPropertyKey IsEditingPropertyKey = DependencyProperty.RegisterReadOnly("IsEditing", typeof (bool), typeof (TokenizedTagControl), new FrameworkPropertyMetadata(false));
-		public static readonly DependencyProperty IsEditingProperty = IsEditingPropertyKey.DependencyProperty;
-	}
+                // select the last item
+                if (SelectedItem == null && Items.Count > 0)
+                {
+                    //TokenizedTagItem itemToSelect = this.Items.GetItemAt(0) as TokenizedTagItem;
+                    var itemToSelect = Items.GetItemAt(Items.Count - 1) as TokenizedTagItem;
+                    if (!ReferenceEquals(itemToSelect, null))
+                    {
+                        RaiseTagClick(itemToSelect);
+                        if (IsSelectable)
+                            SelectedItem = itemToSelect;
+                    }
+                }
+            }
+        }
 
-	public class TokenizedTagEventArgs : EventArgs
-	{
-		public TokenizedTagEventArgs(TokenizedTagItem item)
-		{
-			Item = item;
-		}
+        /// <summary>
+        ///     Raises the TagClick event
+        /// </summary>
+        internal void RaiseTagClick(TokenizedTagItem tag)
+        {
+            TagClick?.Invoke(this, new TokenizedTagEventArgs(tag));
+        }
 
-		public TokenizedTagItem Item { get; set; }
-	}
+        /// <summary>
+        ///     Raises the TagClick event
+        /// </summary>
+        internal void RaiseTagApplied(TokenizedTagItem tag)
+        {
+            TagApplied?.Invoke(this, new TokenizedTagEventArgs(tag));
+        }
+
+        /// <summary>
+        ///     Raises the TagDoubleClick event
+        /// </summary>
+        internal void RaiseTagDoubleClick(TokenizedTagItem tag)
+        {
+            UpdateAllTagsProperty();
+            tag.IsEditing = true;
+        }
+    }
+
+    public class TokenizedTagEventArgs : EventArgs
+    {
+        public TokenizedTagEventArgs(TokenizedTagItem item)
+        {
+            Item = item;
+        }
+
+        public TokenizedTagItem Item { get; set; }
+    }
 }

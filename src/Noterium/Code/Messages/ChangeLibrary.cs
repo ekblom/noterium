@@ -2,13 +2,13 @@
 
 namespace Noterium.Code.Messages
 {
-	internal struct ChangeLibrary
-	{
-		public Library Library { get; private set; }
+    internal struct ChangeLibrary
+    {
+        public Library Library { get; }
 
-		public ChangeLibrary(Library l)
-		{
-			Library = l;
-		}
-	}
+        public ChangeLibrary(Library l)
+        {
+            Library = l;
+        }
+    }
 }

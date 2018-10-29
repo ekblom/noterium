@@ -99,7 +99,7 @@ namespace Noterium.Core.Annotations
             FormatParameterName = formatParameterName;
         }
 
-        public string FormatParameterName { get; private set; }
+        public string FormatParameterName { get; }
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ namespace Noterium.Core.Annotations
         }
 
         [NotNull]
-        public string Name { get; private set; }
+        public string Name { get; }
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ namespace Noterium.Core.Annotations
             ParameterName = parameterName;
         }
 
-        public string ParameterName { get; private set; }
+        public string ParameterName { get; }
     }
 
     /// <summary>
@@ -279,8 +279,8 @@ namespace Noterium.Core.Annotations
             ForceFullStates = forceFullStates;
         }
 
-        public string Contract { get; private set; }
-        public bool ForceFullStates { get; private set; }
+        public string Contract { get; }
+        public bool ForceFullStates { get; }
     }
 
     /// <summary>
@@ -307,7 +307,7 @@ namespace Noterium.Core.Annotations
             Required = required;
         }
 
-        public bool Required { get; private set; }
+        public bool Required { get; }
     }
 
     /// <summary>
@@ -351,7 +351,7 @@ namespace Noterium.Core.Annotations
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    [BaseTypeRequired(typeof (Attribute))]
+    [BaseTypeRequired(typeof(Attribute))]
     [Conditional("JETBRAINS_ANNOTATIONS")]
     public sealed class BaseTypeRequiredAttribute : Attribute
     {
@@ -361,7 +361,7 @@ namespace Noterium.Core.Annotations
         }
 
         [NotNull]
-        public Type BaseType { get; private set; }
+        public Type BaseType { get; }
     }
 
     /// <summary>
@@ -395,8 +395,8 @@ namespace Noterium.Core.Annotations
             TargetFlags = targetFlags;
         }
 
-        public ImplicitUseKindFlags UseKindFlags { get; private set; }
-        public ImplicitUseTargetFlags TargetFlags { get; private set; }
+        public ImplicitUseKindFlags UseKindFlags { get; }
+        public ImplicitUseTargetFlags TargetFlags { get; }
     }
 
     /// <summary>
@@ -431,10 +431,10 @@ namespace Noterium.Core.Annotations
         }
 
         [UsedImplicitly]
-        public ImplicitUseKindFlags UseKindFlags { get; private set; }
+        public ImplicitUseKindFlags UseKindFlags { get; }
 
         [UsedImplicitly]
-        public ImplicitUseTargetFlags TargetFlags { get; private set; }
+        public ImplicitUseTargetFlags TargetFlags { get; }
     }
 
     [Flags]
@@ -492,7 +492,7 @@ namespace Noterium.Core.Annotations
             Comment = comment;
         }
 
-        public string Comment { get; private set; }
+        public string Comment { get; }
     }
 
     /// <summary>
@@ -544,7 +544,7 @@ namespace Noterium.Core.Annotations
             BasePath = basePath;
         }
 
-        public string BasePath { get; private set; }
+        public string BasePath { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -556,7 +556,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -568,7 +568,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -580,7 +580,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -592,7 +592,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -604,7 +604,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -616,7 +616,7 @@ namespace Noterium.Core.Annotations
             Format = format;
         }
 
-        public string Format { get; private set; }
+        public string Format { get; }
     }
 
     /// <summary>
@@ -638,7 +638,7 @@ namespace Noterium.Core.Annotations
             AnonymousProperty = anonymousProperty;
         }
 
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -659,7 +659,7 @@ namespace Noterium.Core.Annotations
             AnonymousProperty = anonymousProperty;
         }
 
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -681,7 +681,7 @@ namespace Noterium.Core.Annotations
             AnonymousProperty = anonymousProperty;
         }
 
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -803,7 +803,7 @@ namespace Noterium.Core.Annotations
             Name = name;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
     }
 
     [AttributeUsage(
@@ -817,7 +817,7 @@ namespace Noterium.Core.Annotations
         }
 
         [NotNull]
-        public string Name { get; private set; }
+        public string Name { get; }
     }
 
     /// <summary>
@@ -843,7 +843,7 @@ namespace Noterium.Core.Annotations
             CollectionAccessType = collectionAccessType;
         }
 
-        public CollectionAccessType CollectionAccessType { get; private set; }
+        public CollectionAccessType CollectionAccessType { get; }
     }
 
     [Flags]
@@ -887,7 +887,7 @@ namespace Noterium.Core.Annotations
             ConditionType = conditionType;
         }
 
-        public AssertionConditionType ConditionType { get; private set; }
+        public AssertionConditionType ConditionType { get; }
     }
 
     /// <summary>
@@ -985,8 +985,8 @@ namespace Noterium.Core.Annotations
             ControlType = controlType;
         }
 
-        public string TagName { get; private set; }
-        public Type ControlType { get; private set; }
+        public string TagName { get; }
+        public Type ControlType { get; }
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
@@ -1016,7 +1016,7 @@ namespace Noterium.Core.Annotations
             Attribute = attribute;
         }
 
-        public string Attribute { get; private set; }
+        public string Attribute { get; }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
@@ -1028,7 +1028,7 @@ namespace Noterium.Core.Annotations
             CreateConstructorReferences = createConstructorReferences;
         }
 
-        public bool CreateConstructorReferences { get; private set; }
+        public bool CreateConstructorReferences { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -1040,7 +1040,7 @@ namespace Noterium.Core.Annotations
             Name = name;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -1053,8 +1053,8 @@ namespace Noterium.Core.Annotations
             FieldName = fieldName;
         }
 
-        public string Type { get; private set; }
-        public string FieldName { get; private set; }
+        public string Type { get; }
+        public string FieldName { get; }
     }
 
     [AttributeUsage(AttributeTargets.Method)]

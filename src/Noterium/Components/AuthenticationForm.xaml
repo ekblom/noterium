@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="Noterium.Components.AuthenticationForm"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-			 xmlns:p="clr-namespace:Noterium.Properties"
-             mc:Ignorable="d" 
+             xmlns:p="clr-namespace:Noterium.Properties"
+             mc:Ignorable="d"
              d:DesignHeight="170" d:DesignWidth="440">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,29 +18,34 @@
     </UserControl.Resources>
     <Grid Height="170" Width="440">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="160" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-		<iconPacks:PackIconMaterial Kind="Lock" Width="130" Height="130" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-        
-		<StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Left">
-			<TextBlock Foreground="{DynamicResource IdealForegroundColorBrush}" Text="{x:Static p:Resources.Settings_EncryptionPassword}"/>
-			<PasswordBox Name="Password" HorizontalAlignment="Right"
-                             controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
-                             controls:TextBoxHelper.UseFloatingWatermark="False"
-                             controls:PasswordBoxHelper.CapsLockIcon="CAPS"
-							 VerticalAlignment="Center"
-                             Style="{DynamicResource MetroButtonPasswordBox}" Width="250" Height="25" PreviewKeyDown="PasswordBox_OnPreviewKeyDown">
-				<controls:PasswordBoxHelper.CapsLockWarningToolTip>
-					<TextBlock>
-						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
-						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
-						<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
-					</TextBlock>
-				</controls:PasswordBoxHelper.CapsLockWarningToolTip>
-			</PasswordBox>
-		</StackPanel>
-        
+        <iconPacks:PackIconMaterial Kind="Lock" Width="130" Height="130" VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+
+        <StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <TextBlock Foreground="{DynamicResource IdealForegroundColorBrush}"
+                       Text="{x:Static p:Resources.Settings_EncryptionPassword}" />
+            <PasswordBox Name="Password" HorizontalAlignment="Right"
+                         controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
+                         controls:TextBoxHelper.UseFloatingWatermark="False"
+                         controls:PasswordBoxHelper.CapsLockIcon="CAPS"
+                         VerticalAlignment="Center"
+                         Style="{DynamicResource MetroButtonPasswordBox}" Width="250" Height="25"
+                         PreviewKeyDown="PasswordBox_OnPreviewKeyDown">
+                <controls:PasswordBoxHelper.CapsLockWarningToolTip>
+                    <TextBlock>
+                        <Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+                        <Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline"
+                             Foreground="Red" />
+                        <Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
+                    </TextBlock>
+                </controls:PasswordBoxHelper.CapsLockWarningToolTip>
+            </PasswordBox>
+        </StackPanel>
+
     </Grid>
 </UserControl>

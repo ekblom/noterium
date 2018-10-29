@@ -4,90 +4,94 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-			 xmlns:p="clr-namespace:Noterium.Properties"
-			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-			xmlns:converters="clr-namespace:Noterium.Code.Converters"
-			mc:Ignorable="d"
-			DataContext="{Binding Settings, Source={StaticResource Locator}}">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<converters:MultiValueBindingConverter x:Key="MultiValueBindingConverter" />
+             xmlns:p="clr-namespace:Noterium.Properties"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converters="clr-namespace:Noterium.Code.Converters"
+             mc:Ignorable="d"
+             DataContext="{Binding Settings, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:MultiValueBindingConverter x:Key="MultiValueBindingConverter" />
 
-			<converters:BooleanToVisibilityConverter
-				x:Key="ReversedBooleanToVisibilityConverter"
-				True="Collapsed"
-				False="Visible" />
-		</ResourceDictionary>
-	</UserControl.Resources>
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<StackPanel Width="250" Margin="15">
-			<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-				<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Security}" />
-				<PasswordBox Name="PasswordBox" Height="25" HorizontalAlignment="Left"
+            <converters:BooleanToVisibilityConverter
+                x:Key="ReversedBooleanToVisibilityConverter"
+                True="Collapsed"
+                False="Visible" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Width="250" Margin="15">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
+                <TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Security}" />
+                <PasswordBox Name="PasswordBox" Height="25" HorizontalAlignment="Left"
                              controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_EncryptionPassword}"
                              controls:TextBoxHelper.UseFloatingWatermark="False"
                              controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
                              Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
-					<controls:PasswordBoxHelper.CapsLockWarningToolTip>
-						<TextBlock>
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
-						</TextBlock>
-					</controls:PasswordBoxHelper.CapsLockWarningToolTip>
-				</PasswordBox>
-				<PasswordBox Name="PasswordBoxVerify" Height="25" HorizontalAlignment="Left"
+                    <controls:PasswordBoxHelper.CapsLockWarningToolTip>
+                        <TextBlock>
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline"
+                                 Foreground="Red" />
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
+                        </TextBlock>
+                    </controls:PasswordBoxHelper.CapsLockWarningToolTip>
+                </PasswordBox>
+                <PasswordBox Name="PasswordBoxVerify" Height="25" HorizontalAlignment="Left"
                              controls:TextBoxHelper.Watermark="{x:Static p:Resources.Settings_RepeatEncryptionPassword}"
                              controls:TextBoxHelper.UseFloatingWatermark="False"
                              controls:PasswordBoxHelper.CapsLockIcon="CAPS" Margin="0,0,0,15"
                              Style="{DynamicResource MetroButtonPasswordBox}" Width="250">
-					<controls:PasswordBoxHelper.CapsLockWarningToolTip>
-						<TextBlock>
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline" Foreground="Red" />
-										<Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
-						</TextBlock>
-					</controls:PasswordBoxHelper.CapsLockWarningToolTip>
-				</PasswordBox>
+                    <controls:PasswordBoxHelper.CapsLockWarningToolTip>
+                        <TextBlock>
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning1}" />
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning2}" TextDecorations="Underline"
+                                 Foreground="Red" />
+                            <Run Text="{x:Static p:Resources.Settings_CapsLockWarning3}" />
+                        </TextBlock>
+                    </controls:PasswordBoxHelper.CapsLockWarningToolTip>
+                </PasswordBox>
 
-				<Button Content="{x:Static p:Resources.Settings_EnableSecureNotes}" Command="{Binding TurnOnEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
-							Visibility="{Binding SecureNotesEnabled, Mode=OneWay, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Visible}">
-					<Button.CommandParameter>
-						<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
-							<Binding ElementName="PasswordBox" />
-							<Binding ElementName="PasswordBoxVerify" />
-						</MultiBinding>
-					</Button.CommandParameter>
-				</Button>
-				<Button Content="{x:Static p:Resources.Settings_DisableSecureNotes}" Command="{Binding TurnOffEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
-							Visibility="{Binding SecureNotesEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
-					<Button.CommandParameter>
-						<MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
-							<Binding ElementName="PasswordBox" />
-							<Binding ElementName="PasswordBoxVerify" />
-						</MultiBinding>
-					</Button.CommandParameter>
-				</Button>
+                <Button Content="{x:Static p:Resources.Settings_EnableSecureNotes}"
+                        Command="{Binding TurnOnEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
+                        Visibility="{Binding SecureNotesEnabled, Mode=OneWay, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Visible}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
+                            <Binding ElementName="PasswordBox" />
+                            <Binding ElementName="PasswordBoxVerify" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+                <Button Content="{x:Static p:Resources.Settings_DisableSecureNotes}"
+                        Command="{Binding TurnOffEncryptionCommand}" Margin="0,0,0,15" Height="25" Width="250"
+                        Visibility="{Binding SecureNotesEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource MultiValueBindingConverter}">
+                            <Binding ElementName="PasswordBox" />
+                            <Binding ElementName="PasswordBoxVerify" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
 
-				<TextBlock>
-								<Run Text="{x:Static p:Resources.Settings_LockMainWindowAfterMinutes}" />
-				</TextBlock>
-				<controls:NumericUpDown Value="{Binding Settings.AutoLockMainWindowAfter, Mode=TwoWay}"
-										Maximum="30"
-										Minimum="0"
+                <TextBlock>
+                    <Run Text="{x:Static p:Resources.Settings_LockMainWindowAfterMinutes}" />
+                </TextBlock>
+                <controls:NumericUpDown Value="{Binding Settings.AutoLockMainWindowAfter, Mode=TwoWay}"
+                                        Maximum="30"
+                                        Minimum="0"
                                         Interval="5" Width="250"
                                         IsEnabled="{Binding SecureNotesEnabled, Mode=OneWay}">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="ValueChanged">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-				</controls:NumericUpDown>
-			</StackPanel>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="ValueChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </controls:NumericUpDown>
+            </StackPanel>
 
-			<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-				<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Visual}" />
-				<!--<TextBlock>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
+                <TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Visual}" />
+                <!--<TextBlock>
 								<Run>Theme:</Run>
 							</TextBlock>
 							<ComboBox SelectedItem="{Binding Settings.Theme}"
@@ -101,82 +105,85 @@
 								</i:Interaction.Triggers>
 							</ComboBox>-->
 
-				<TextBlock Text="{x:Static p:Resources.Settings_Theme}" />
+                <TextBlock Text="{x:Static p:Resources.Settings_Theme}" />
 
-				<ComboBox SelectedItem="{Binding SelectedAccent, Mode=TwoWay}"
-                                  ItemsSource="{Binding AccentColors, Mode=TwoWay}"
-                                   Margin="0,0,0,25" Width="100">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="SelectionChanged">
-							<i:InvokeCommandAction Command="{Binding Path=ChangeThemeCommand}"/>
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-				</ComboBox>
+                <ComboBox SelectedItem="{Binding SelectedAccent, Mode=TwoWay}"
+                          ItemsSource="{Binding AccentColors, Mode=TwoWay}"
+                          Margin="0,0,0,25" Width="100">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=ChangeThemeCommand}" />
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
 
-			</StackPanel>
+            </StackPanel>
 
-			<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-				<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Behaviour}" />
-				<TextBlock Text="{x:Static p:Resources.Settings_DefaultNoteView}"/>
-				<ComboBox SelectedItem="{Binding Settings.DefaultNoteView}"
-                                  ItemsSource="{Binding NoteViewModes, Mode=TwoWay}"
-                                   Margin="0,0,0,25">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="SelectionChanged">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-				</ComboBox>
-				<CheckBox IsChecked="{Binding Settings.EnableAdvancedControls, Mode=TwoWay}" Margin="0,0,0,25">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="Checked">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-						<i:EventTrigger EventName="Unchecked">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-					<TextBlock Text="{x:Static p:Resources.Settings_EnableExperimentalFeatures}"/>
-				</CheckBox>
-			</StackPanel>
-			<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
-				<TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Backups}" />
-				<CheckBox IsChecked="{Binding Settings.AutoBackup, Mode=TwoWay}" Margin="0,0,0,15">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="Checked">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-						<i:EventTrigger EventName="Unchecked">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-					<TextBlock Text="{x:Static p:Resources.Settings_AutomaticallyBackup}"/>
-				</CheckBox>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
+                <TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Behaviour}" />
+                <TextBlock Text="{x:Static p:Resources.Settings_DefaultNoteView}" />
+                <ComboBox SelectedItem="{Binding Settings.DefaultNoteView}"
+                          ItemsSource="{Binding NoteViewModes, Mode=TwoWay}"
+                          Margin="0,0,0,25">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <CheckBox IsChecked="{Binding Settings.EnableAdvancedControls, Mode=TwoWay}" Margin="0,0,0,25">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unchecked">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <TextBlock Text="{x:Static p:Resources.Settings_EnableExperimentalFeatures}" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="0,0,0,25">
+                <TextBlock Margin="0,0,0,15" FontSize="18" Text="{x:Static p:Resources.Settings_Backups}" />
+                <CheckBox IsChecked="{Binding Settings.AutoBackup, Mode=TwoWay}" Margin="0,0,0,15">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unchecked">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <TextBlock Text="{x:Static p:Resources.Settings_AutomaticallyBackup}" />
+                </CheckBox>
 
-				<TextBlock Text="{x:Static p:Resources.Settings_BackupsToKeep}"/>
-				<controls:NumericUpDown Value="{Binding Settings.NumberOfBackupsToKeep, Mode=TwoWay}" Margin="0,0,0,15"
-										Maximum="30"
-										Minimum="0"
+                <TextBlock Text="{x:Static p:Resources.Settings_BackupsToKeep}" />
+                <controls:NumericUpDown Value="{Binding Settings.NumberOfBackupsToKeep, Mode=TwoWay}" Margin="0,0,0,15"
+                                        Maximum="30"
+                                        Minimum="0"
                                         Interval="1">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="ValueChanged">
-							<i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-				</controls:NumericUpDown>
-				<Button Content="{x:Static p:Resources.Settings_BackupNow}" Width="100" Command="{Binding BackupNowCommand}" HorizontalAlignment="Left" Margin="0,0,0,15" />
-				<TextBlock Margin="0,0,0,15">
-						    <Run Text="{x:Static p:Resources.Settings_LastBackup}"/>
-						    <Run Name="LastBackupDate" Text="{Binding LastBackupDate}"></Run>
-				</TextBlock>
-				<Button Content="{x:Static p:Resources.Settings_OpenBackupManager}" Command="{Binding OpenBackupManagerCommand}" HorizontalAlignment="Left" />
-			</StackPanel>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="ValueChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=SaveSettingsCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </controls:NumericUpDown>
+                <Button Content="{x:Static p:Resources.Settings_BackupNow}" Width="100"
+                        Command="{Binding BackupNowCommand}" HorizontalAlignment="Left" Margin="0,0,0,15" />
+                <TextBlock Margin="0,0,0,15">
+                    <Run Text="{x:Static p:Resources.Settings_LastBackup}" />
+                    <Run Name="LastBackupDate" Text="{Binding LastBackupDate}" />
+                </TextBlock>
+                <Button Content="{x:Static p:Resources.Settings_OpenBackupManager}"
+                        Command="{Binding OpenBackupManagerCommand}" HorizontalAlignment="Left" />
+            </StackPanel>
 
-			<StackPanel HorizontalAlignment="Left" Orientation="Vertical">
-				<Button Content="{x:Static p:Resources.Settings_AboutNoterium}" Command="{Binding ShowAboutWindowCommand}" />
-			</StackPanel>
-		</StackPanel>
-	</ScrollViewer>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+                <Button Content="{x:Static p:Resources.Settings_AboutNoterium}"
+                        Command="{Binding ShowAboutWindowCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>

@@ -5,16 +5,16 @@ using Noterium.ViewModels;
 namespace Noterium.Windows
 {
     /// <summary>
-    /// Interaction logic for AboutWindow.xaml
+    ///     Interaction logic for AboutWindow.xaml
     /// </summary>
     public partial class AboutWindow
     {
-        public AboutWindowViewModel CurrentModel => (AboutWindowViewModel)DataContext;
-
         public AboutWindow()
         {
             InitializeComponent();
         }
+
+        public AboutWindowViewModel CurrentModel => (AboutWindowViewModel) DataContext;
 
         private void LinkRequestNavigate(object sender, RequestNavigateEventArgs e)
         {

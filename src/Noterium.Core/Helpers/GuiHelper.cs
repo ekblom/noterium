@@ -9,7 +9,7 @@ namespace Noterium.Core.Helpers
         {
             double a = p.X - q.X;
             double b = p.Y - q.Y;
-            var distance = Math.Sqrt(a*a + b*b);
+            var distance = Math.Sqrt(a * a + b * b);
             return distance;
         }
     }

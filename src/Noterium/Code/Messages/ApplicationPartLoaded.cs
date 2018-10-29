@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Noterium.Code.Messages
+﻿namespace Noterium.Code.Messages
 {
-	internal struct ApplicationPartLoaded
-	{
-		public enum ApplicationParts
-		{
-			NoteView,
-			NoteMenu,
-			NotebookMenu
-		}
+    internal struct ApplicationPartLoaded
+    {
+        public enum ApplicationParts
+        {
+            NoteView,
+            NoteMenu,
+            NotebookMenu
+        }
 
-		public ApplicationParts Part{ get; private set; }
+        public ApplicationParts Part { get; }
 
-		public ApplicationPartLoaded(ApplicationParts part)
-		{
-			Part = part;
-		}
-	}
+        public ApplicationPartLoaded(ApplicationParts part)
+        {
+            Part = part;
+        }
+    }
 }

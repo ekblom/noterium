@@ -1,55 +1,62 @@
 ﻿<controls:MetroWindow x:Class="Noterium.Views.Dialogs.StorageSelector"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        mc:Ignorable="d"
-		WindowStyle="None" ShowTitleBar="False"
-        Title="AuthenticationWindow" Height="345" Width="440"
-		Loaded="AuthenticationWindow_OnLoaded" ResizeMode="NoResize"
-		GlowBrush="{DynamicResource AccentColorBrush}"
-		WindowStartupLocation="CenterScreen">
-		<Window.Resources>
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      mc:Ignorable="d"
+                      WindowStyle="None" ShowTitleBar="False"
+                      Title="AuthenticationWindow" Height="345" Width="440"
+                      Loaded="AuthenticationWindow_OnLoaded" ResizeMode="NoResize"
+                      GlowBrush="{DynamicResource AccentColorBrush}"
+                      WindowStartupLocation="CenterScreen">
+    <Window.Resources>
 
-	</Window.Resources>
+    </Window.Resources>
     <Grid Margin="15">
         <Grid.RowDefinitions>
-			<RowDefinition Height="135" />
-			<RowDefinition Height="155" />
-			<RowDefinition Height="25" />
-		</Grid.RowDefinitions>
-		<TextBlock TextWrapping="Wrap">
-			<Run FontSize="22" FontWeight="Bold">
-				Welcome!
-			</Run>
-			<LineBreak/>
-			<Run>Before you start you need to decide where to store your notes. I have two options for you, Dropbox or a folder of your choosing. The simplest is to select Dropbox (if you have it installed, otherwise you can get it</Run>
-			<Hyperlink NavigateUri="https://db.tt/Hlvc0GG">here</Hyperlink><Run>) and the application does the rest, else you can select a folder on your computer and all files will be stored there.</Run>
-		</TextBlock>
-		<ListBox Grid.Row="1" Name="StorageTypeListBox" Grid.IsSharedSizeScope="True" SelectionChanged="StorageTypeListBox_OnSelectionChanged">
-			<ListBoxItem Tag="DropBox">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-						<ColumnDefinition Width="*" SharedSizeGroup="Label" />
-					</Grid.ColumnDefinitions>
-					<iconPacks:PackIconFontAwesome Kind="Dropbox" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-					<TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Dropbox</TextBlock>
-				</Grid>
-			</ListBoxItem>
-			<ListBoxItem Tag="Filesystem">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-						<ColumnDefinition Width="*" SharedSizeGroup="Label" />
-					</Grid.ColumnDefinitions>
-					<iconPacks:PackIconFontAwesome Kind="HddOutline" Height="60" Width="60" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-					<TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Filesystem</TextBlock>
-				</Grid>
-			</ListBoxItem>
-		</ListBox>
-		<Button Name="NextButton" Grid.Row="2" Height="25" Width="100" HorizontalAlignment="Right" Click="NextButtonClick" IsEnabled="False">next</Button>
-	</Grid>
+            <RowDefinition Height="135" />
+            <RowDefinition Height="155" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <TextBlock TextWrapping="Wrap">
+            <Run FontSize="22" FontWeight="Bold">
+                Welcome!
+            </Run>
+            <LineBreak />
+            <Run>Before you start you need to decide where to store your notes. I have two options for you, Dropbox or a folder of your choosing. The simplest is to select Dropbox (if you have it installed, otherwise you can get it</Run>
+            <Hyperlink NavigateUri="https://db.tt/Hlvc0GG">here</Hyperlink>
+            <Run>) and the application does the rest, else you can select a folder on your computer and all files will be stored there.</Run>
+        </TextBlock>
+        <ListBox Grid.Row="1" Name="StorageTypeListBox" Grid.IsSharedSizeScope="True"
+                 SelectionChanged="StorageTypeListBox_OnSelectionChanged">
+            <ListBoxItem Tag="DropBox">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                        <ColumnDefinition Width="*" SharedSizeGroup="Label" />
+                    </Grid.ColumnDefinitions>
+                    <iconPacks:PackIconFontAwesome Kind="Dropbox" Height="60" Width="60" Margin="5"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Dropbox</TextBlock>
+                </Grid>
+            </ListBoxItem>
+            <ListBoxItem Tag="Filesystem">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                        <ColumnDefinition Width="*" SharedSizeGroup="Label" />
+                    </Grid.ColumnDefinitions>
+                    <iconPacks:PackIconFontAwesome Kind="HddOutline" Height="60" Width="60" Margin="5"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Filesystem</TextBlock>
+                </Grid>
+            </ListBoxItem>
+        </ListBox>
+        <Button Name="NextButton" Grid.Row="2" Height="25" Width="100" HorizontalAlignment="Right"
+                Click="NextButtonClick" IsEnabled="False">
+            next
+        </Button>
+    </Grid>
 </controls:MetroWindow>

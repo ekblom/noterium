@@ -23,10 +23,8 @@ namespace Noterium.Core.Utilities
         {
             var secureStr = new SecureString();
             if (s.Length > 0)
-            {
                 foreach (var c in s.ToCharArray())
                     secureStr.AppendChar(c);
-            }
             return secureStr;
         }
 

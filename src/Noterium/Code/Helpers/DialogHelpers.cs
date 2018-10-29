@@ -6,14 +6,12 @@ namespace Noterium.Code.Helpers
     {
         public static MetroDialogSettings GetDefaultDialogSettings()
         {
-            MetroDialogSettings settings = new MetroDialogSettings();
+            var settings = new MetroDialogSettings();
             settings.AnimateShow = false;
             settings.AnimateHide = false;
             settings.DefaultButtonFocus = MessageDialogResult.Negative;
-			settings.ColorScheme = MetroDialogColorScheme.Theme;
+            settings.ColorScheme = MetroDialogColorScheme.Theme;
             return settings;
         }
-
-
     }
 }

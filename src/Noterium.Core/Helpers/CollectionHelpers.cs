@@ -12,7 +12,6 @@ namespace Noterium.Core.Helpers
 
             var ptr = 0;
             while (ptr < sorted.Count)
-            {
                 if (!observable[ptr].Equals(sorted[ptr]))
                 {
                     var t = observable[ptr];
@@ -23,7 +22,6 @@ namespace Noterium.Core.Helpers
                 {
                     ptr++;
                 }
-            }
         }
     }
 }

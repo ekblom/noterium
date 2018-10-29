@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Noterium.Code.Messages
+﻿namespace Noterium.Code.Messages
 {
-	internal struct ConfigureControlsForParnetType
-	{
-		public ParentType Type { get; private set; }
+    internal struct ConfigureControlsForParnetType
+    {
+        public ParentType Type { get; }
 
-		public ConfigureControlsForParnetType(ParentType type)
-		{
-			Type = type;
-		}
+        public ConfigureControlsForParnetType(ParentType type)
+        {
+            Type = type;
+        }
 
-		public enum ParentType
-		{
-			Notebook,
-			Tag,
-			Library
-		}
-	}
+        public enum ParentType
+        {
+            Notebook,
+            Tag,
+            Library
+        }
+    }
 }

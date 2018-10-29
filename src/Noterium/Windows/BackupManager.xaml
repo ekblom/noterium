@@ -1,83 +1,89 @@
 ﻿<controls:MetroWindow x:Class="Noterium.Windows.BackupManager"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:p="clr-namespace:Noterium.Properties"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:converters="clr-namespace:Noterium.Code.Converters"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        mc:Ignorable="d" WindowStartupLocation="CenterOwner"
-		Style="{DynamicResource VSWindowStyleKey}"
-        ShowIconOnTitleBar="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowInTaskbar="True"
-		Title="Backup manager" Height="600" Width="800"
-		DataContext="{Binding BackupManager, Source={StaticResource Locator}}">
-	<Window.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Resources/Styles.xaml" />
-			</ResourceDictionary.MergedDictionaries>
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:p="clr-namespace:Noterium.Properties"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:converters="clr-namespace:Noterium.Code.Converters"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      mc:Ignorable="d" WindowStartupLocation="CenterOwner"
+                      Style="{DynamicResource VSWindowStyleKey}"
+                      ShowIconOnTitleBar="False" ShowMaxRestoreButton="False" ShowMinButton="False"
+                      ShowSystemMenuOnRightClick="False" ShowInTaskbar="True"
+                      Title="Backup manager" Height="600" Width="800"
+                      DataContext="{Binding BackupManager, Source={StaticResource Locator}}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-			<converters:BooleanToVisibilityConverter
-				x:Key="BooleanToVisibilityConverter"
-				True="Visible"
-				False="Collapsed" />
-		</ResourceDictionary>
-	</Window.Resources>
-	<Grid Margin="5">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="35" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="250" />
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
-			<TextBlock FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,5,0" Text="{x:Static p:Resources.BackupManager_SelectSet}"/>
-			<ComboBox Name="BackupSets" Width="250" Margin="0,2,0,2" DisplayMemberPath="FileName" ItemsSource="{Binding BackupSets}" SelectedItem="{Binding SelectedBackupSet, Mode=TwoWay}" />
-		</StackPanel>
-		<TreeView Name="BackupTree" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding BackupSetNodes}" SelectedItemChanged="BackupTree_OnSelectedItemChanged">
-			<TreeView.ItemContainerStyle>
-				<Style TargetType="{x:Type TreeViewItem}">
-					<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-					<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-					<Setter Property="FontWeight" Value="Normal" />
-					<Setter Property="Padding" Value="5" />
-					<Style.Triggers>
-						<Trigger Property="IsSelected" Value="True">
-							<Setter Property="FontWeight" Value="Bold" />
-						</Trigger>
-					</Style.Triggers>
-				</Style>
-			</TreeView.ItemContainerStyle>
+            <converters:BooleanToVisibilityConverter
+                x:Key="BooleanToVisibilityConverter"
+                True="Visible"
+                False="Collapsed" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
+            <TextBlock FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,5,0"
+                       Text="{x:Static p:Resources.BackupManager_SelectSet}" />
+            <ComboBox Name="BackupSets" Width="250" Margin="0,2,0,2" DisplayMemberPath="FileName"
+                      ItemsSource="{Binding BackupSets}" SelectedItem="{Binding SelectedBackupSet, Mode=TwoWay}" />
+        </StackPanel>
+        <TreeView Name="BackupTree" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding BackupSetNodes}"
+                  SelectedItemChanged="BackupTree_OnSelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="Padding" Value="5" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
 
-			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate ItemsSource="{Binding Chi	ldren}">
-					<TextBlock Text="{Binding Name}" />
-				</HierarchicalDataTemplate>
-			</TreeView.ItemTemplate>
-		</TreeView>
-		<Grid Grid.Row="1" Grid.Column="1" Margin="15,15,15,0"
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Chi	ldren}">
+                    <TextBlock Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <Grid Grid.Row="1" Grid.Column="1" Margin="15,15,15,0"
               Visibility="{Binding ShowNoteFields, Converter={StaticResource BooleanToVisibilityConverter}}">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
-			<StackPanel Grid.Row="0">
-				<Button HorizontalAlignment="Left" Width="100" Command="{Binding RestoreNoteCommand}">
-					<StackPanel Orientation="Horizontal">
-						<iconPacks:PackIconModern Kind="Undo" Width="18" Height="18" />
-						<TextBlock Text="{x:Static p:Resources.BackupManager_Restore}" Margin="5,0,0,0"/>
-					</StackPanel>
-				</Button>
-			</StackPanel>
-			<TextBlock Grid.Row="1" VerticalAlignment="Center" Text="{Binding SelectedFileNode.Name}" FontWeight="Bold" FontSize="25" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button HorizontalAlignment="Left" Width="100" Command="{Binding RestoreNoteCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconModern Kind="Undo" Width="18" Height="18" />
+                        <TextBlock Text="{x:Static p:Resources.BackupManager_Restore}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" Text="{Binding SelectedFileNode.Name}" FontWeight="Bold"
+                       FontSize="25" />
 
-			<TextBox Grid.Row="2" Text="{Binding SelectedFileNode.Note.Text}" FontFamily="Consolas" FontSize="12" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
-		</Grid>
+            <TextBox Grid.Row="2" Text="{Binding SelectedFileNode.Note.Text}" FontFamily="Consolas" FontSize="12"
+                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+        </Grid>
 
 
-	</Grid>
+    </Grid>
 </controls:MetroWindow>

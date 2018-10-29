@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -7,100 +8,91 @@ using Noterium.Core.Helpers;
 
 namespace Noterium.Controls.Behaviors
 {
-	public class PasteBehavior : Behavior<UIElement>
-	{
-		public delegate void FilePasted(FileInfo file);
-		public event FilePasted OnFilePasted;
+    public class PasteBehavior : Behavior<UIElement>
+    {
+        public delegate void FilePasted(FileInfo file);
 
-		public delegate void ImagePasted(System.Drawing.Image image, string fileName);
-		public event ImagePasted OnImagePasted;
+        public delegate void HyperLinkPasted(Uri uri);
 
-		public delegate void HyperLinkPasted(Uri uri);
-		public event HyperLinkPasted OnHyperLinkPasted;
+        public delegate void ImagePasted(Image image, string fileName);
 
-		protected override void OnAttached()
-		{
-			base.OnAttached();
+        public event FilePasted OnFilePasted;
+        public event ImagePasted OnImagePasted;
+        public event HyperLinkPasted OnHyperLinkPasted;
 
-			CommandManager.AddPreviewCanExecuteHandler(AssociatedObject, onPreviewCanExecute);
-			CommandManager.AddPreviewExecutedHandler(AssociatedObject, OnPreviewExecuted);
-		}
+        protected override void OnAttached()
+        {
+            base.OnAttached();
 
-		private void onPreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			// In this case, we just say it always can be executed (only for a Paste command), but you can 
-			// write some checks here
-			if (e.Command == ApplicationCommands.Paste)
-			{
-				e.CanExecute = true;
-				e.Handled = true;
-			}
-		}
+            CommandManager.AddPreviewCanExecuteHandler(AssociatedObject, onPreviewCanExecute);
+            CommandManager.AddPreviewExecutedHandler(AssociatedObject, OnPreviewExecuted);
+        }
 
-		private void OnPreviewExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			// If it is a paste command..
-			if (e.Command == ApplicationCommands.Paste)
-			{
-				// .. and the clipboard contains an image
-				if (Clipboard.ContainsImage() || Clipboard.ContainsFileDropList() || Clipboard.ContainsData(DataFormats.FileDrop))
-				{
-					if (OnImagePasted != null)
-					{
-						System.Drawing.Image img = ClipboardHelper.GetImageFromClipboard();
-						if (img != null)
-						{
-							string fileName = null;
-							if (Clipboard.ContainsFileDropList())
-							{
-								var fileNames = Clipboard.GetFileDropList();
-								if (fileNames.Count > 0)
-								{
-									fileName = fileNames[0];
-								}
-							}
-							OnImagePasted(img, fileName);
-							return;
-						}
-					}
+        private void onPreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // In this case, we just say it always can be executed (only for a Paste command), but you can 
+            // write some checks here
+            if (e.Command == ApplicationCommands.Paste)
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
 
-					if (OnFilePasted != null)
-					{
-						if (Clipboard.ContainsData(DataFormats.FileDrop))
-						{
-							var files = Clipboard.GetFileDropList();
-							if (files.Count == 1)
-							{
-								string fileName = files[0];
-								if (File.Exists(fileName))
-								{
-									FileInfo fi = new FileInfo(fileName);
-									OnFilePasted(fi);
-								}
-							}
-						}
-					}
+        private void OnPreviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // If it is a paste command..
+            if (e.Command == ApplicationCommands.Paste)
+                if (Clipboard.ContainsImage() || Clipboard.ContainsFileDropList() || Clipboard.ContainsData(DataFormats.FileDrop))
+                {
+                    if (OnImagePasted != null)
+                    {
+                        var img = ClipboardHelper.GetImageFromClipboard();
+                        if (img != null)
+                        {
+                            string fileName = null;
+                            if (Clipboard.ContainsFileDropList())
+                            {
+                                var fileNames = Clipboard.GetFileDropList();
+                                if (fileNames.Count > 0) fileName = fileNames[0];
+                            }
 
-					if (OnHyperLinkPasted != null)
-					{
-						string text = Clipboard.GetText();
-						if (Uri.IsWellFormedUriString(text, UriKind.Absolute))
-						{
-							OnHyperLinkPasted(new Uri(text));
-						}
-					}
+                            OnImagePasted(img, fileName);
+                            return;
+                        }
+                    }
 
-					e.Handled = true;
-				}
-			}
-		}
+                    if (OnFilePasted != null)
+                        if (Clipboard.ContainsData(DataFormats.FileDrop))
+                        {
+                            var files = Clipboard.GetFileDropList();
+                            if (files.Count == 1)
+                            {
+                                var fileName = files[0];
+                                if (File.Exists(fileName))
+                                {
+                                    var fi = new FileInfo(fileName);
+                                    OnFilePasted(fi);
+                                }
+                            }
+                        }
 
-		protected override void OnDetaching()
-		{
-			base.OnDetaching();
+                    if (OnHyperLinkPasted != null)
+                    {
+                        var text = Clipboard.GetText();
+                        if (Uri.IsWellFormedUriString(text, UriKind.Absolute)) OnHyperLinkPasted(new Uri(text));
+                    }
 
-			CommandManager.RemovePreviewExecutedHandler(AssociatedObject, OnPreviewExecuted);
-			CommandManager.RemovePreviewCanExecuteHandler(AssociatedObject, onPreviewCanExecute);
-		}
-	}
+                    e.Handled = true;
+                }
+        }
+
+        protected override void OnDetaching()
+        {
+            base.OnDetaching();
+
+            CommandManager.RemovePreviewExecutedHandler(AssociatedObject, OnPreviewExecuted);
+            CommandManager.RemovePreviewCanExecuteHandler(AssociatedObject, onPreviewCanExecute);
+        }
+    }
 }

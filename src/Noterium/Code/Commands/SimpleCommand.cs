@@ -5,13 +5,13 @@ namespace Noterium.Code.Commands
 {
     public class SimpleCommand : ICommand
     {
-        public Predicate<object> CanExecuteDelegate { get; set; }
-        public Action<object> ExecuteDelegate { get; }
-
         public SimpleCommand(Action<object> action)
         {
             ExecuteDelegate = action;
         }
+
+        public Predicate<object> CanExecuteDelegate { get; set; }
+        public Action<object> ExecuteDelegate { get; }
 
         public bool CanExecute(object parameter)
         {
@@ -22,8 +22,8 @@ namespace Noterium.Code.Commands
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
 
         public void Execute(object parameter)

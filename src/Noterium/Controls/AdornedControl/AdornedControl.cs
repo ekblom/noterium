@@ -11,33 +11,33 @@ namespace Noterium.Controls.AdornedControl
         ///     Dependency properties.
         /// </summary>
         public static readonly DependencyProperty IsAdornerVisibleProperty =
-            DependencyProperty.Register("IsAdornerVisible", typeof (bool), typeof (AdornedControl),
+            DependencyProperty.Register("IsAdornerVisible", typeof(bool), typeof(AdornedControl),
                 new FrameworkPropertyMetadata(IsAdornerVisiblePropertyChanged));
 
         public static readonly DependencyProperty AdornerContentProperty =
-            DependencyProperty.Register("AdornerContent", typeof (FrameworkElement), typeof (AdornedControl),
+            DependencyProperty.Register("AdornerContent", typeof(FrameworkElement), typeof(AdornedControl),
                 new FrameworkPropertyMetadata(AdornerContentPropertyChanged));
 
         public static readonly DependencyProperty HorizontalAdornerPlacementProperty =
-            DependencyProperty.Register("HorizontalAdornerPlacement", typeof (AdornerPlacement), typeof (AdornedControl),
+            DependencyProperty.Register("HorizontalAdornerPlacement", typeof(AdornerPlacement), typeof(AdornedControl),
                 new FrameworkPropertyMetadata(AdornerPlacement.Inside));
 
         public static readonly DependencyProperty VerticalAdornerPlacementProperty =
-            DependencyProperty.Register("VerticalAdornerPlacement", typeof (AdornerPlacement), typeof (AdornedControl),
+            DependencyProperty.Register("VerticalAdornerPlacement", typeof(AdornerPlacement), typeof(AdornedControl),
                 new FrameworkPropertyMetadata(AdornerPlacement.Inside));
 
         public static readonly DependencyProperty AdornerOffsetXProperty =
-            DependencyProperty.Register("AdornerOffsetX", typeof (double), typeof (AdornedControl));
+            DependencyProperty.Register("AdornerOffsetX", typeof(double), typeof(AdornedControl));
 
         public static readonly DependencyProperty AdornerOffsetYProperty =
-            DependencyProperty.Register("AdornerOffsetY", typeof (double), typeof (AdornedControl));
+            DependencyProperty.Register("AdornerOffsetY", typeof(double), typeof(AdornedControl));
 
         /// <summary>
         ///     Commands.
         /// </summary>
-        public static readonly RoutedCommand ShowAdornerCommand = new RoutedCommand("ShowAdorner", typeof (AdornedControl));
+        public static readonly RoutedCommand ShowAdornerCommand = new RoutedCommand("ShowAdorner", typeof(AdornedControl));
 
-        public static readonly RoutedCommand HideAdornerCommand = new RoutedCommand("HideAdorner", typeof (AdornedControl));
+        public static readonly RoutedCommand HideAdornerCommand = new RoutedCommand("HideAdorner", typeof(AdornedControl));
 
         public AdornedControl()
         {
@@ -50,8 +50,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public bool IsAdornerVisible
         {
-            get { return (bool) GetValue(IsAdornerVisibleProperty); }
-            set { SetValue(IsAdornerVisibleProperty, value); }
+            get => (bool) GetValue(IsAdornerVisibleProperty);
+            set => SetValue(IsAdornerVisibleProperty, value);
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public FrameworkElement AdornerContent
         {
-            get { return (FrameworkElement) GetValue(AdornerContentProperty); }
-            set { SetValue(AdornerContentProperty, value); }
+            get => (FrameworkElement) GetValue(AdornerContentProperty);
+            set => SetValue(AdornerContentProperty, value);
         }
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public AdornerPlacement HorizontalAdornerPlacement
         {
-            get { return (AdornerPlacement) GetValue(HorizontalAdornerPlacementProperty); }
-            set { SetValue(HorizontalAdornerPlacementProperty, value); }
+            get => (AdornerPlacement) GetValue(HorizontalAdornerPlacementProperty);
+            set => SetValue(HorizontalAdornerPlacementProperty, value);
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public AdornerPlacement VerticalAdornerPlacement
         {
-            get { return (AdornerPlacement) GetValue(VerticalAdornerPlacementProperty); }
-            set { SetValue(VerticalAdornerPlacementProperty, value); }
+            get => (AdornerPlacement) GetValue(VerticalAdornerPlacementProperty);
+            set => SetValue(VerticalAdornerPlacementProperty, value);
         }
 
         /// <summary>
@@ -86,8 +86,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public double AdornerOffsetX
         {
-            get { return (double) GetValue(AdornerOffsetXProperty); }
-            set { SetValue(AdornerOffsetXProperty, value); }
+            get => (double) GetValue(AdornerOffsetXProperty);
+            set => SetValue(AdornerOffsetXProperty, value);
         }
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         public double AdornerOffsetY
         {
-            get { return (double) GetValue(AdornerOffsetYProperty); }
-            set { SetValue(AdornerOffsetYProperty, value); }
+            get => (double) GetValue(AdornerOffsetYProperty);
+            set => SetValue(AdornerOffsetYProperty, value);
         }
 
         /// <summary>
@@ -112,10 +112,7 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         private void UpdateAdornerDataContext()
         {
-            if (AdornerContent != null)
-            {
-                AdornerContent.DataContext = DataContext;
-            }
+            if (AdornerContent != null) AdornerContent.DataContext = DataContext;
         }
 
         /// <summary>
@@ -162,8 +159,8 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         static AdornedControl()
         {
-            CommandManager.RegisterClassCommandBinding(typeof (AdornedControl), ShowAdornerCommandBinding);
-            CommandManager.RegisterClassCommandBinding(typeof (AdornedControl), HideAdornerCommandBinding);
+            CommandManager.RegisterClassCommandBinding(typeof(AdornedControl), ShowAdornerCommandBinding);
+            CommandManager.RegisterClassCommandBinding(typeof(AdornedControl), HideAdornerCommandBinding);
         }
 
         /// <summary>
@@ -208,13 +205,9 @@ namespace Noterium.Controls.AdornedControl
         private void ShowOrHideAdornerInternal()
         {
             if (IsAdornerVisible)
-            {
                 ShowAdornerInternal();
-            }
             else
-            {
                 HideAdornerInternal();
-            }
         }
 
         /// <summary>
@@ -222,18 +215,11 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         private void ShowAdornerInternal()
         {
-            if (_adorner != null)
-            {
-                // Already adorned.
-                return;
-            }
+            if (_adorner != null) return;
 
             if (AdornerContent != null)
             {
-                if (_adornerLayer == null)
-                {
-                    _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                }
+                if (_adornerLayer == null) _adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
                 if (_adornerLayer != null)
                 {
@@ -251,11 +237,7 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         private void HideAdornerInternal()
         {
-            if (_adornerLayer == null || _adorner == null)
-            {
-                // Not already adorned.
-                return;
-            }
+            if (_adornerLayer == null || _adorner == null) return;
 
             _adornerLayer.Remove(_adorner);
             _adorner.DisconnectChild();

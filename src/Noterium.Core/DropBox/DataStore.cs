@@ -8,389 +8,365 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using log4net;
-using Newtonsoft.Json;
 using Noterium.Core.DataCarriers;
 using Noterium.Core.Helpers;
 using File = Noterium.Core.Constants.File;
 
 namespace Noterium.Core.DropBox
 {
-	public class DataStore
-	{
-		private const string BackupFileDateFormat = "yyyyMMddHHmmss";
-		private readonly DirectoryInfo _backupFolder;
-		private readonly DirectoryInfo _dataFolder;
+    public class DataStore
+    {
+        private const string BackupFileDateFormat = "yyyyMMddHHmmss";
+        private readonly DirectoryInfo _backupFolder;
+        private readonly DirectoryInfo _dataFolder;
 
 
-		private readonly ILog _log = LogManager.GetLogger(typeof(DataStore));
-		private readonly DirectoryInfo _rootFolder;
+        private readonly ILog _log = LogManager.GetLogger(typeof(DataStore));
+        private readonly DirectoryInfo _rootFolder;
 
-		private readonly string _rootPath;
+        private readonly string _rootPath;
 
-		private Dictionary<Notebook, List<Note>> _cache;
-		private FileSystemWatcher _watcher;
+        private Dictionary<Notebook, List<Note>> _cache;
+        private FileSystemWatcher _watcher;
 
-		public DataStore(string path)
-		{
-			_rootPath = string.IsNullOrWhiteSpace(path) ? GetDropBoxPath() : path;
+        public DataStore(string path)
+        {
+            _rootPath = string.IsNullOrWhiteSpace(path) ? GetDropBoxPath() : path;
 
-			if (!string.IsNullOrWhiteSpace(_rootPath))
-			{
-				EnsureFolder(_rootPath);
-				_rootFolder = new DirectoryInfo(_rootPath);
+            if (!string.IsNullOrWhiteSpace(_rootPath))
+            {
+                EnsureFolder(_rootPath);
+                _rootFolder = new DirectoryInfo(_rootPath);
 
-				var dataPath = _rootPath + "\\data";
-				EnsureFolder(dataPath);
-				_dataFolder = new DirectoryInfo(dataPath);
+                var dataPath = _rootPath + "\\data";
+                EnsureFolder(dataPath);
+                _dataFolder = new DirectoryInfo(dataPath);
 
-				var backupPath = _rootPath + "\\backup";
-				EnsureFolder(backupPath);
-				_backupFolder = new DirectoryInfo(backupPath);
-			}
-		}
+                var backupPath = _rootPath + "\\backup";
+                EnsureFolder(backupPath);
+                _backupFolder = new DirectoryInfo(backupPath);
+            }
+        }
 
-		private void StartWatch(string path)
-		{
-			_watcher = new FileSystemWatcher();
-			_watcher.Path = path;
-			_watcher.NotifyFilter = NotifyFilters.LastWrite;
-			_watcher.IncludeSubdirectories = true;
-			_watcher.Filter = "*.*";
-			_watcher.Changed += OnChanged;
-			_watcher.Created += OnChanged;
-			_watcher.Deleted += OnChanged;
-			_watcher.EnableRaisingEvents = true;
-		}
+        public string RootFolder => _rootFolder.FullName;
 
-		private void DisableWatcher()
-		{
-			if (_watcher != null)
-			{
-				//_log.Debug("Disabling file system watcher. StackTrace: \n\n" + Environment.StackTrace);
-				_watcher.EnableRaisingEvents = false;
-			}
-		}
+        public string DataFolder => _dataFolder.FullName;
 
-		private void EnableWatcher()
-		{
-			if (_watcher != null)
-			{
-				//_log.Debug("Enabling file system watcher...");
-				_watcher.EnableRaisingEvents = true;
-			}
-		}
-		private void OnChanged(object sender, FileSystemEventArgs e)
-		{
-			_log.Debug($"Change detected on {e.FullPath}");
-			if (e.Name.EndsWith(File.NoteFileExtension))
-			{
-				HandleNoteChange(e);
-			}
-			else if (e.Name.EndsWith(File.NotebookFileExtension))
-			{
-				HandleNotebookChange(e);
-			}
-			_log.Debug($"Handled {e.Name}, reason {e.ChangeType}.");
-		}
+        #region -- Security --
 
-		private void HandleNoteChange(FileSystemEventArgs e)
-		{
-			string fileName = Path.GetFileName(e.FullPath);
-			if (string.IsNullOrWhiteSpace(fileName))
-				return;
+        internal string MasterPasswordFile => _rootFolder.FullName + "\\noterium.key";
 
-			string idString = fileName.Replace("." + File.NoteFileExtension, string.Empty);
-			Guid noteId;
-			if (Guid.TryParse(idString, out noteId))
-			{
-				Note n = GetNote(noteId);
-				if (n != null)
-				{
-					if (e.ChangeType == WatcherChangeTypes.Changed)
-					{
-						Note tempNote = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
-						if (tempNote.Changed > n.Changed)
-						{
-							try
-							{
-								n.IsUpdatingFromDisc = true;
-								Application.Current.Dispatcher.Invoke(() =>
-								{
-									tempNote?.CopyProperties(n);
-									tempNote?.RaiseRefreshedFromDisk();
-								});
-							}
-							catch (Exception ex)
-							{
-								_log.Error("Unable to update note from disk", ex);
-							}
-							finally
-							{
-								n.IsUpdatingFromDisc = false;
-							}
-						}
-					}
-					else if (e.ChangeType == WatcherChangeTypes.Deleted)
-					{
-						DeleteNote(n);
-					}
-				}
-				else
-				{
-					n = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
-					if (n != null)
-					{
-						Notebook nb = GetNoteBook(n.Notebook);
-						if (nb != null && _cache.ContainsKey(nb))
-						{
-							var noteList = _cache[nb];
-							if (!noteList.Contains(n))
-								noteList.Add(n);
-						}
-					}
-				}
-			}
+        #endregion
 
-			_log.Debug($"Handled changed note {e.Name}");
-		}
+        private void StartWatch(string path)
+        {
+            _watcher = new FileSystemWatcher();
+            _watcher.Path = path;
+            _watcher.NotifyFilter = NotifyFilters.LastWrite;
+            _watcher.IncludeSubdirectories = true;
+            _watcher.Filter = "*.*";
+            _watcher.Changed += OnChanged;
+            _watcher.Created += OnChanged;
+            _watcher.Deleted += OnChanged;
+            _watcher.EnableRaisingEvents = true;
+        }
 
-		private void HandleNotebookChange(FileSystemEventArgs e)
-		{
-			string fileName = Path.GetFileName(e.FullPath);
-			if (string.IsNullOrWhiteSpace(fileName))
-				return;
+        private void DisableWatcher()
+        {
+            if (_watcher != null) _watcher.EnableRaisingEvents = false;
+        }
 
-			string idString = fileName.Replace("." + File.NotebookFileExtension, string.Empty);
-			Guid notebookId;
-			if (Guid.TryParse(idString, out notebookId))
-			{
-				Notebook nb = GetNoteBook(notebookId);
-				if (nb != null)
-				{
-					if (e.ChangeType == WatcherChangeTypes.Changed)
-					{
-						Notebook tempNotebook = FileHelpers.LoadObjectFromFile<Notebook>(new FileInfo(e.FullPath));
-						Application.Current.Dispatcher.Invoke(() =>
-					   {
-						   tempNotebook?.CopyProperties(nb);
-					   });
-					}
-					else if (e.ChangeType == WatcherChangeTypes.Deleted)
-					{
-						DeleteNoteBook(nb);
-					}
-				}
-			}
+        private void EnableWatcher()
+        {
+            if (_watcher != null) _watcher.EnableRaisingEvents = true;
+        }
 
-			_log.Debug($"Handled changed notebook {e.Name}");
-		}
+        private void OnChanged(object sender, FileSystemEventArgs e)
+        {
+            _log.Debug($"Change detected on {e.FullPath}");
+            if (e.Name.EndsWith(File.NoteFileExtension))
+                HandleNoteChange(e);
+            else if (e.Name.EndsWith(File.NotebookFileExtension)) HandleNotebookChange(e);
+            _log.Debug($"Handled {e.Name}, reason {e.ChangeType}.");
+        }
 
-		public string RootFolder => _rootFolder.FullName;
+        private void HandleNoteChange(FileSystemEventArgs e)
+        {
+            var fileName = Path.GetFileName(e.FullPath);
+            if (string.IsNullOrWhiteSpace(fileName))
+                return;
 
-		public string DataFolder => _dataFolder.FullName;
+            var idString = fileName.Replace("." + File.NoteFileExtension, string.Empty);
+            Guid noteId;
+            if (Guid.TryParse(idString, out noteId))
+            {
+                var n = GetNote(noteId);
+                if (n != null)
+                {
+                    if (e.ChangeType == WatcherChangeTypes.Changed)
+                    {
+                        var tempNote = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
+                        if (tempNote.Changed > n.Changed)
+                            try
+                            {
+                                n.IsUpdatingFromDisc = true;
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    tempNote?.CopyProperties(n);
+                                    tempNote?.RaiseRefreshedFromDisk();
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error("Unable to update note from disk", ex);
+                            }
+                            finally
+                            {
+                                n.IsUpdatingFromDisc = false;
+                            }
+                    }
+                    else if (e.ChangeType == WatcherChangeTypes.Deleted)
+                    {
+                        DeleteNote(n);
+                    }
+                }
+                else
+                {
+                    n = FileHelpers.LoadObjectFromFile<Note>(new FileInfo(e.FullPath));
+                    if (n != null)
+                    {
+                        var nb = GetNoteBook(n.Notebook);
+                        if (nb != null && _cache.ContainsKey(nb))
+                        {
+                            var noteList = _cache[nb];
+                            if (!noteList.Contains(n))
+                                noteList.Add(n);
+                        }
+                    }
+                }
+            }
 
-		#region -- Security --
+            _log.Debug($"Handled changed note {e.Name}");
+        }
 
-		internal string MasterPasswordFile
-		{
-			get { return _rootFolder.FullName + "\\noterium.key"; }
-		}
+        private void HandleNotebookChange(FileSystemEventArgs e)
+        {
+            var fileName = Path.GetFileName(e.FullPath);
+            if (string.IsNullOrWhiteSpace(fileName))
+                return;
 
-		#endregion
+            var idString = fileName.Replace("." + File.NotebookFileExtension, string.Empty);
+            Guid notebookId;
+            if (Guid.TryParse(idString, out notebookId))
+            {
+                var nb = GetNoteBook(notebookId);
+                if (nb != null)
+                {
+                    if (e.ChangeType == WatcherChangeTypes.Changed)
+                    {
+                        var tempNotebook = FileHelpers.LoadObjectFromFile<Notebook>(new FileInfo(e.FullPath));
+                        Application.Current.Dispatcher.Invoke(() => { tempNotebook?.CopyProperties(nb); });
+                    }
+                    else if (e.ChangeType == WatcherChangeTypes.Deleted)
+                    {
+                        DeleteNoteBook(nb);
+                    }
+                }
+            }
 
-		public void SaveSettings(Settings settings)
-		{
-			var filePath = _rootFolder.FullName + "\\settings.json";
-			Save(settings, filePath);
-		}
+            _log.Debug($"Handled changed notebook {e.Name}");
+        }
 
-		private void Save<T>(T o, string filePath)
-		{
-			DisableWatcher();
-			FileHelpers.Save(o, filePath);
-			EnableWatcher();
-		}
+        public void SaveSettings(Settings settings)
+        {
+            var filePath = _rootFolder.FullName + "\\settings.json";
+            Save(settings, filePath);
+        }
 
-		public Settings GetSettings()
-		{
-			var filePath = _rootFolder.FullName + "\\settings.json";
-			var fi = new FileInfo(filePath);
-			if (fi.Exists)
-				return FileHelpers.LoadObjectFromFile<DataCarriers.Settings>(fi);
+        private void Save<T>(T o, string filePath)
+        {
+            DisableWatcher();
+            FileHelpers.Save(o, filePath);
+            EnableWatcher();
+        }
 
-			var settings = new DataCarriers.Settings();
-			SaveSettings(settings);
-			return settings;
-		}
+        public Settings GetSettings()
+        {
+            var filePath = _rootFolder.FullName + "\\settings.json";
+            var fi = new FileInfo(filePath);
+            if (fi.Exists)
+                return FileHelpers.LoadObjectFromFile<Settings>(fi);
 
-		public void SaveNote(Note note, bool skipAddToGroup = false)
-		{
-			var filePath = GetNoteFilePath(note);
-			_log.Debug($"Saving note {note.Name}, ID: {note.ID}");
-			Save(note, filePath);
+            var settings = new Settings();
+            SaveSettings(settings);
+            return settings;
+        }
 
-			if (!skipAddToGroup)
-				AddNoteToGroup(note);
-		}
+        public void SaveNote(Note note, bool skipAddToGroup = false)
+        {
+            var filePath = GetNoteFilePath(note);
+            _log.Debug($"Saving note {note.Name}, ID: {note.ID}");
+            Save(note, filePath);
 
-		public void MoveNote(Note note, Notebook notebook)
-		{
-			var oldNotebook = note.Notebook;
+            if (!skipAddToGroup)
+                AddNoteToGroup(note);
+        }
 
-			var filePath = GetNoteFilePath(note);
-			var fi = new FileInfo(filePath);
+        public void MoveNote(Note note, Notebook notebook)
+        {
+            var oldNotebook = note.Notebook;
 
-			DisableWatcher();
+            var filePath = GetNoteFilePath(note);
+            var fi = new FileInfo(filePath);
 
-			//NOTE: Move files before updating notebook id since nf.FullName uses that.
-			string noteFolder = GetNotebookFolderPath(notebook.ID);
-			foreach (NoteFile nf in note.Files)
-			{
-				FileInfo noteFile = new FileInfo(nf.FullName);
-				if (noteFile.Exists)
-					noteFile.MoveTo(String.Join("\\", noteFolder, nf.FileName));
-			}
+            DisableWatcher();
 
-			note.Notebook = notebook.ID;
-			filePath = GetNoteFilePath(note);
+            //NOTE: Move files before updating notebook id since nf.FullName uses that.
+            var noteFolder = GetNotebookFolderPath(notebook.ID);
+            foreach (var nf in note.Files)
+            {
+                var noteFile = new FileInfo(nf.FullName);
+                if (noteFile.Exists)
+                    noteFile.MoveTo(string.Join("\\", noteFolder, nf.FileName));
+            }
 
-			fi.MoveTo(filePath);
+            note.Notebook = notebook.ID;
+            filePath = GetNoteFilePath(note);
 
-			EnableWatcher();
+            fi.MoveTo(filePath);
 
-			SaveNote(note, true);
+            EnableWatcher();
 
-			foreach (var cachItem in _cache)
-			{
-				if (cachItem.Key.ID == oldNotebook)
-				{
-					cachItem.Value.Remove(note);
-					break;
-				}
-			}
+            SaveNote(note, true);
 
-			_cache[notebook].Add(note);
-		}
+            foreach (var cachItem in _cache)
+                if (cachItem.Key.ID == oldNotebook)
+                {
+                    cachItem.Value.Remove(note);
+                    break;
+                }
 
-		private string GetNoteFilePath(Note note)
-		{
-			string filePath;
-			if (note.Notebook != Guid.Empty)
-			{
-				var folderPath = GetNotebookFolderPath(note.Notebook);
-				EnsureFolder(folderPath);
-				filePath = string.Format("{0}\\{1}.{2}", folderPath, note.ID, File.NoteFileExtension);
-			}
-			else
-				filePath = GetNoteFilePath(note.ID, File.NoteFileExtension);
-			return filePath;
-		}
+            _cache[notebook].Add(note);
+        }
 
-		private void AddNoteToGroup(Note note)
-		{
-			var g = GetGroup(note.Notebook);
-			if (!_cache[g].Contains(note))
-				_cache[g].Add(note);
-		}
+        private string GetNoteFilePath(Note note)
+        {
+            string filePath;
+            if (note.Notebook != Guid.Empty)
+            {
+                var folderPath = GetNotebookFolderPath(note.Notebook);
+                EnsureFolder(folderPath);
+                filePath = string.Format("{0}\\{1}.{2}", folderPath, note.ID, File.NoteFileExtension);
+            }
+            else
+            {
+                filePath = GetNoteFilePath(note.ID, File.NoteFileExtension);
+            }
 
-		private Notebook GetGroup(Guid @group)
-		{
-			foreach (var keyValuePair in _cache)
-			{
-				if (keyValuePair.Key.ID == @group)
-					return keyValuePair.Key;
-			}
-			return null;
-		}
+            return filePath;
+        }
 
-		public void SaveNoteBook(Notebook noteBook)
-		{
-			var folderPath = GetNotebookFolderPath(noteBook.ID);
-			EnsureFolder(folderPath);
+        private void AddNoteToGroup(Note note)
+        {
+            var g = GetGroup(note.Notebook);
+            if (!_cache[g].Contains(note))
+                _cache[g].Add(note);
+        }
 
-			var filePath = string.Format("{0}\\{1}.{2}", folderPath, noteBook.ID, File.NotebookFileExtension);
+        private Notebook GetGroup(Guid group)
+        {
+            foreach (var keyValuePair in _cache)
+                if (keyValuePair.Key.ID == group)
+                    return keyValuePair.Key;
+            return null;
+        }
 
-			Save(noteBook, filePath);
+        public void SaveNoteBook(Notebook noteBook)
+        {
+            var folderPath = GetNotebookFolderPath(noteBook.ID);
+            EnsureFolder(folderPath);
 
-			if (!_cache.ContainsKey(noteBook))
-				_cache.Add(noteBook, new List<Note>());
-		}
+            var filePath = string.Format("{0}\\{1}.{2}", folderPath, noteBook.ID, File.NotebookFileExtension);
 
-		public List<Note> GetNotes(Notebook notebook)
-		{
-			return _cache[notebook];
-		}
+            Save(noteBook, filePath);
 
-		public List<Notebook> GetNoteBooks()
-		{
-			return _cache.Keys.ToList();
-		}
+            if (!_cache.ContainsKey(noteBook))
+                _cache.Add(noteBook, new List<Note>());
+        }
 
-		public int GetNoteCount(Notebook notebook)
-		{
-			return _cache[notebook].Count;
-		}
+        public List<Note> GetNotes(Notebook notebook)
+        {
+            return _cache[notebook];
+        }
 
-		public int GetTotalNoteCount()
-		{
-			return _cache.Values.Sum(k => k.Count);
-		}
+        public List<Notebook> GetNoteBooks()
+        {
+            return _cache.Keys.ToList();
+        }
 
-		public List<Note> GetAllNotes()
-		{
-			return _cache.SelectMany(kvp => kvp.Value).ToList();
-		}
+        public int GetNoteCount(Notebook notebook)
+        {
+            return _cache[notebook].Count;
+        }
 
-		public Note GetNote(Guid id)
-		{
-			foreach (var kvp in _cache)
-			{
-				foreach (var m in kvp.Value)
-				{
-					if (m.ID == id)
-						return m;
-				}
-			}
+        public int GetTotalNoteCount()
+        {
+            return _cache.Values.Sum(k => k.Count);
+        }
 
-			return null;
-		}
+        public List<Note> GetAllNotes()
+        {
+            return _cache.SelectMany(kvp => kvp.Value).ToList();
+        }
 
-		public void DeleteNote(Note note)
-		{
-			var filePath = GetNoteFilePath(note);
-			var fi = new FileInfo(filePath);
-			if (fi.Exists)
-			{
-				DisableWatcher();
-				fi.Delete();
-				EnableWatcher();
-			}
-			ReloadNotebook(note.Notebook);
-		}
+        public Note GetNote(Guid id)
+        {
+            foreach (var kvp in _cache)
+            foreach (var m in kvp.Value)
+                if (m.ID == id)
+                    return m;
 
-		public void DeleteNoteBook(Notebook noteBook)
-		{
-			var di = GetGroupDirectory(noteBook);
-			if (di.Exists)
-			{
-				DisableWatcher();
-				di.Delete(true);
-				EnableWatcher();
-			}
-			_cache.Remove(noteBook);
-		}
+            return null;
+        }
 
-		public void EnsureOneNotebook()
-		{
-			if (_cache.Count == 0)
-			{
-				var nb = new Notebook { ID = Guid.NewGuid(), Created = DateTime.Now, Name = "My notes" };
-				SaveNoteBook(nb);
-				var n = new Note
-				{
-					Notebook = nb.ID,
-					Name = "Welcome!",
-					Text = @"Welcome!
+        public void DeleteNote(Note note)
+        {
+            var filePath = GetNoteFilePath(note);
+            var fi = new FileInfo(filePath);
+            if (fi.Exists)
+            {
+                DisableWatcher();
+                fi.Delete();
+                EnableWatcher();
+            }
+
+            ReloadNotebook(note.Notebook);
+        }
+
+        public void DeleteNoteBook(Notebook noteBook)
+        {
+            var di = GetGroupDirectory(noteBook);
+            if (di.Exists)
+            {
+                DisableWatcher();
+                di.Delete(true);
+                EnableWatcher();
+            }
+
+            _cache.Remove(noteBook);
+        }
+
+        public void EnsureOneNotebook()
+        {
+            if (_cache.Count == 0)
+            {
+                var nb = new Notebook {ID = Guid.NewGuid(), Created = DateTime.Now, Name = "My notes"};
+                SaveNoteBook(nb);
+                var n = new Note
+                {
+                    Notebook = nb.ID,
+                    Name = "Welcome!",
+                    Text = @"Welcome!
 
 In noterium you write your notes in plain text with MarkDown suport.
 
@@ -451,230 +427,225 @@ And you can make tables:
 
 [examplelink]: http://www.example.se ""A link to example.com""
  [google]: http://www.google.se ""Google""",
-					Created = DateTime.Now,
-					Tags = new ObservableCollection<string>(new List<string> { "welcome", "noterium" })
-				};
-				n.SetIsInitialized();
-				n.Save();
+                    Created = DateTime.Now,
+                    Tags = new ObservableCollection<string>(new List<string> {"welcome", "noterium"})
+                };
+                n.SetIsInitialized();
+                n.Save();
 
-				//InitCache();
-			}
-		}
+                //InitCache();
+            }
+        }
 
-		public string GetStoragePath()
-		{
-			return _dataFolder.FullName;
-		}
+        public string GetStoragePath()
+        {
+            return _dataFolder.FullName;
+        }
 
-		public bool EnsureDropBox()
-		{
-			return !string.IsNullOrWhiteSpace(_rootPath);
-		}
-
-
-		public void BackupData()
-		{
-			try
-			{
-				var backupFile = _backupFolder.FullName + "\\" + DateTime.Now.ToString(BackupFileDateFormat) + ".zip";
-				ZipFile.CreateFromDirectory(_dataFolder.FullName, backupFile, CompressionLevel.Fastest, false);
-			}
-			catch (Exception e)
-			{
-				_log.Error("Error when creating backup file.", e);
-			}
-		}
-
-		public DateTime GetLastBackupDate()
-		{
-			var files = GetBackupFiles();
-			if (!files.Any())
-				return DateTime.MinValue;
-
-			var backupDate = DateTime.MinValue;
-			foreach (var fi in files)
-			{
-				var dt = GetFileDate(fi);
-				if (dt > backupDate)
-					backupDate = dt;
-			}
-
-			return backupDate;
-		}
-
-		public List<FileInfo> GetBackupFiles()
-		{
-			return _backupFolder.GetFiles("*.zip").ToList();
-		}
-
-		public void CleanBackupData(int backupsToKeep)
-		{
-			if (backupsToKeep <= 0)
-				return;
-
-			try
-			{
-				var temp = _backupFolder.GetFiles("*.zip");
-				if (temp.Length == 0)
-					return;
-
-				var files = new List<FileInfo>();
-				files.AddRange(temp);
-
-				files.Sort((x, y) => DateTime.Compare(GetFileDate(y), GetFileDate(x)));
-
-				var filesToDelete = files.Skip(backupsToKeep).ToList();
-
-				filesToDelete.ForEach(fi => fi.Delete());
-			}
-			catch (Exception e)
-			{
-				_log.Error(e.Message, e);
-			}
-		}
-
-		private DateTime GetFileDate(FileInfo fi)
-		{
-			try
-			{
-				var fileName = fi.Name.Replace(fi.Extension, string.Empty);
-				return DateTime.ParseExact(fileName, BackupFileDateFormat, CultureInfo.InvariantCulture);
-			}
-			catch
-			{
-			}
-			return DateTime.MinValue;
-		}
-
-		public Notebook GetNoteBook(Guid guid)
-		{
-			return _cache.Keys.FirstOrDefault(key => key.ID == guid);
-		}
-
-		#region -- File system --
-
-		private void EnsureFolder(string path)
-		{
-			var di = new DirectoryInfo(path);
-			if (!di.Exists)
-			{
-				if (_watcher != null)
-					_watcher.EnableRaisingEvents = false;
-
-				di.Create();
-
-				if (_watcher != null)
-					_watcher.EnableRaisingEvents = true;
-			}
-		}
-
-		private DirectoryInfo GetGroupDirectory(Notebook notebook)
-		{
-			DirectoryInfo di = null;
-			if (notebook != null)
-			{
-				di = new DirectoryInfo(_dataFolder.FullName + "\\" + notebook.ID);
-			}
-			return di;
-		}
-
-		internal string GetNoteFilePath(Guid guid, string extension)
-		{
-			return string.Format("{0}\\{1}.{2}", DataFolder, guid, extension);
-		}
-
-		internal string GetNotebookFolderPath(Guid guid)
-		{
-			return string.Format("{0}\\{1}", DataFolder, guid);
-		}
-
-		public static string GetDropBoxPath()
-		{
-			var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			var dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
-
-			if (!System.IO.File.Exists(dbPath))
-			{
-				appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-				dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
-
-				if (!System.IO.File.Exists(dbPath))
-					return null;
-			}
-
-			var lines = System.IO.File.ReadAllLines(dbPath);
-			var dbBase64Text = Convert.FromBase64String(lines[1]);
-			var folderPath = Encoding.UTF8.GetString(dbBase64Text);
-
-			return folderPath + "\\noterium";
-		}
+        public bool EnsureDropBox()
+        {
+            return !string.IsNullOrWhiteSpace(_rootPath);
+        }
 
 
+        public void BackupData()
+        {
+            try
+            {
+                var backupFile = _backupFolder.FullName + "\\" + DateTime.Now.ToString(BackupFileDateFormat) + ".zip";
+                ZipFile.CreateFromDirectory(_dataFolder.FullName, backupFile, CompressionLevel.Fastest, false);
+            }
+            catch (Exception e)
+            {
+                _log.Error("Error when creating backup file.", e);
+            }
+        }
 
-		#endregion
+        public DateTime GetLastBackupDate()
+        {
+            var files = GetBackupFiles();
+            if (!files.Any())
+                return DateTime.MinValue;
 
-		#region -- Cache --
+            var backupDate = DateTime.MinValue;
+            foreach (var fi in files)
+            {
+                var dt = GetFileDate(fi);
+                if (dt > backupDate)
+                    backupDate = dt;
+            }
 
-		public void InitCache(Action<string> callback)
-		{
-			// TODO: i18n
-			_cache = new Dictionary<Notebook, List<Note>>();
-			callback("Loading notebooks");
-			var notebooks = GetNotebookFromDisc();
+            return backupDate;
+        }
 
-			for (var index = 0; index < notebooks.Count; index++)
-			{
-				callback("Loading notes from notebook " + (index + 1) + " of " + notebooks.Count);
+        public List<FileInfo> GetBackupFiles()
+        {
+            return _backupFolder.GetFiles("*.zip").ToList();
+        }
 
-				var group = notebooks[index];
-				var notes = GetNotesFromDisc(group);
-				notes.ForEach(n => n.SetIsInitialized());
-				_cache.Add(@group, notes);
-			}
+        public void CleanBackupData(int backupsToKeep)
+        {
+            if (backupsToKeep <= 0)
+                return;
 
-			StartWatch(DataFolder);
-		}
+            try
+            {
+                var temp = _backupFolder.GetFiles("*.zip");
+                if (temp.Length == 0)
+                    return;
 
-		private void ReloadNotebook(Guid notebookId)
-		{
-			var notebook = _cache.Keys.FirstOrDefault(memorygroup => memorygroup.ID == notebookId);
-			if (notebook == null)
-				return;
+                var files = new List<FileInfo>();
+                files.AddRange(temp);
 
-			var notes = GetNotesFromDisc(notebook);
-			var cachedNotes = _cache[notebook];
+                files.Sort((x, y) => DateTime.Compare(GetFileDate(y), GetFileDate(x)));
 
-			var notesToRemove = cachedNotes.Where(cachedMemory => !notes.Contains(cachedMemory)).ToList();
-			notesToRemove.ForEach(n => cachedNotes.Remove(n));
+                var filesToDelete = files.Skip(backupsToKeep).ToList();
 
-			foreach (var note in notes)
-			{
-				var existing = cachedNotes.FirstOrDefault(mm => mm.ID == note.ID);
-				if (existing == null)
-				{
-					note.SetIsInitialized();
-					_cache[notebook].Add(note);
-				}
-			}
-		}
+                filesToDelete.ForEach(fi => fi.Delete());
+            }
+            catch (Exception e)
+            {
+                _log.Error(e.Message, e);
+            }
+        }
 
-		public List<Note> GetNotesFromDisc(Notebook noteBook)
-		{
-			var di = GetGroupDirectory(noteBook);
+        private DateTime GetFileDate(FileInfo fi)
+        {
+            try
+            {
+                var fileName = fi.Name.Replace(fi.Extension, string.Empty);
+                return DateTime.ParseExact(fileName, BackupFileDateFormat, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+            }
 
-			var files = di.GetFiles("*." + File.NoteFileExtension);
+            return DateTime.MinValue;
+        }
 
-			return FileHelpers.ConvertFileInfos<Note>(files);
-		}
+        public Notebook GetNoteBook(Guid guid)
+        {
+            return _cache.Keys.FirstOrDefault(key => key.ID == guid);
+        }
 
-		public List<Notebook> GetNotebookFromDisc()
-		{
-			var files = _dataFolder.GetFiles("*." + File.NotebookFileExtension, SearchOption.AllDirectories);
+        #region -- File system --
 
-			return FileHelpers.ConvertFileInfos<Notebook>(files);
-		}
+        private void EnsureFolder(string path)
+        {
+            var di = new DirectoryInfo(path);
+            if (!di.Exists)
+            {
+                if (_watcher != null)
+                    _watcher.EnableRaisingEvents = false;
 
-		#endregion
+                di.Create();
 
-	}
+                if (_watcher != null)
+                    _watcher.EnableRaisingEvents = true;
+            }
+        }
+
+        private DirectoryInfo GetGroupDirectory(Notebook notebook)
+        {
+            DirectoryInfo di = null;
+            if (notebook != null) di = new DirectoryInfo(_dataFolder.FullName + "\\" + notebook.ID);
+            return di;
+        }
+
+        internal string GetNoteFilePath(Guid guid, string extension)
+        {
+            return string.Format("{0}\\{1}.{2}", DataFolder, guid, extension);
+        }
+
+        internal string GetNotebookFolderPath(Guid guid)
+        {
+            return string.Format("{0}\\{1}", DataFolder, guid);
+        }
+
+        public static string GetDropBoxPath()
+        {
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
+
+            if (!System.IO.File.Exists(dbPath))
+            {
+                appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
+
+                if (!System.IO.File.Exists(dbPath))
+                    return null;
+            }
+
+            var lines = System.IO.File.ReadAllLines(dbPath);
+            var dbBase64Text = Convert.FromBase64String(lines[1]);
+            var folderPath = Encoding.UTF8.GetString(dbBase64Text);
+
+            return folderPath + "\\noterium";
+        }
+
+        #endregion
+
+        #region -- Cache --
+
+        public void InitCache(Action<string> callback)
+        {
+            // TODO: i18n
+            _cache = new Dictionary<Notebook, List<Note>>();
+            callback("Loading notebooks");
+            var notebooks = GetNotebookFromDisc();
+
+            for (var index = 0; index < notebooks.Count; index++)
+            {
+                callback("Loading notes from notebook " + (index + 1) + " of " + notebooks.Count);
+
+                var group = notebooks[index];
+                var notes = GetNotesFromDisc(group);
+                notes.ForEach(n => n.SetIsInitialized());
+                _cache.Add(group, notes);
+            }
+
+            StartWatch(DataFolder);
+        }
+
+        private void ReloadNotebook(Guid notebookId)
+        {
+            var notebook = _cache.Keys.FirstOrDefault(memorygroup => memorygroup.ID == notebookId);
+            if (notebook == null)
+                return;
+
+            var notes = GetNotesFromDisc(notebook);
+            var cachedNotes = _cache[notebook];
+
+            var notesToRemove = cachedNotes.Where(cachedMemory => !notes.Contains(cachedMemory)).ToList();
+            notesToRemove.ForEach(n => cachedNotes.Remove(n));
+
+            foreach (var note in notes)
+            {
+                var existing = cachedNotes.FirstOrDefault(mm => mm.ID == note.ID);
+                if (existing == null)
+                {
+                    note.SetIsInitialized();
+                    _cache[notebook].Add(note);
+                }
+            }
+        }
+
+        public List<Note> GetNotesFromDisc(Notebook noteBook)
+        {
+            var di = GetGroupDirectory(noteBook);
+
+            var files = di.GetFiles("*." + File.NoteFileExtension);
+
+            return FileHelpers.ConvertFileInfos<Note>(files);
+        }
+
+        public List<Notebook> GetNotebookFromDisc()
+        {
+            var files = _dataFolder.GetFiles("*." + File.NotebookFileExtension, SearchOption.AllDirectories);
+
+            return FileHelpers.ConvertFileInfos<Notebook>(files);
+        }
+
+        #endregion
+    }
 }

@@ -11,29 +11,27 @@ using Noterium.Code.Data;
 
 namespace Noterium.Windows
 {
-	/// <summary>
-	/// Interaction logic for TableEditor.xaml
-	/// </summary>
-	public partial class TableEditor
-	{
-	    private readonly string _tableString;
-	    private readonly DocumentEntitiy _currentEntity;
-	    private DataTable _currentTable;
-	    private List<TextAlignment> _columnAlignments;
+    /// <summary>
+    ///     Interaction logic for TableEditor.xaml
+    /// </summary>
+    public partial class TableEditor
+    {
+        public delegate void TableSave(string newTable, DocumentEntitiy entitiy);
 
-	    public delegate void TableSaveError(DocumentEntitiy entitiy, Exception e);
-	    public delegate void TableSave(string newTable, DocumentEntitiy entitiy);
+        public delegate void TableSaveError(DocumentEntitiy entitiy, Exception e);
 
-	    public event TableSave OnTableSave;
-	    public event TableSaveError OnTableSaveError;
+        private readonly DocumentEntitiy _currentEntity;
+        private readonly string _tableString;
+        private List<TextAlignment> _columnAlignments;
+        private readonly DataTable _currentTable;
 
-	    public TableEditor(string tableString, DocumentEntitiy currentEntity)
-	    {
-	        _tableString = tableString;
-	        _currentEntity = currentEntity;
-	        InitializeComponent();
+        public TableEditor(string tableString, DocumentEntitiy currentEntity)
+        {
+            _tableString = tableString;
+            _currentEntity = currentEntity;
+            InitializeComponent();
 
-	        GenerateTable(tableString, out _currentTable, out _columnAlignments);
+            GenerateTable(tableString, out _currentTable, out _columnAlignments);
 
             var view = _currentTable.AsDataView();
             view.AllowDelete = true;
@@ -44,77 +42,71 @@ namespace Noterium.Windows
             GridTable.ItemsSource = null;
             GridTable.ItemsSource = view;
 
-	        InitColAlignments();
-	    }
-
-	    private void InitColAlignments()
-	    {
-	        for (int i = 0; i < GridTable.Columns.Count; i++)
-	        {
-	            var col = GridTable.Columns[i];
-                //col.GetCellContent()
-
-	        }
-
+            InitColAlignments();
         }
 
-	    private void GenerateTable(string rowsString, out DataTable table, out List<TextAlignment> colAlignments)
+        public event TableSave OnTableSave;
+        public event TableSaveError OnTableSaveError;
+
+        private void InitColAlignments()
+        {
+            for (var i = 0; i < GridTable.Columns.Count; i++)
+            {
+                var col = GridTable.Columns[i];
+                //col.GetCellContent()
+            }
+        }
+
+        private void GenerateTable(string rowsString, out DataTable table, out List<TextAlignment> colAlignments)
         {
             table = new DataTable();
             colAlignments = new List<TextAlignment>();
 
-            List<string> rows = rowsString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var rows = rowsString.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
             if (!rows.Any())
                 return;
 
-            Regex reg = new Regex("([-:|].*)", RegexOptions.Compiled | RegexOptions.Singleline);
+            var reg = new Regex("([-:|].*)", RegexOptions.Compiled | RegexOptions.Singleline);
 
 
-            string head = rows.First().Trim();
-            string[] headColumns = head.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < headColumns.Length; i++)
+            var head = rows.First().Trim();
+            var headColumns = head.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < headColumns.Length; i++)
             {
-                DataColumn c = new DataColumn();
+                var c = new DataColumn();
                 table.Columns.Add(c);
             }
 
-            foreach (string rowString in rows)
+            foreach (var rowString in rows)
             {
-                string s = rowString.Trim();
+                var s = rowString.Trim();
                 if (string.IsNullOrWhiteSpace(s))
                     continue;
 
-                string[] rowColumns = s.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var rowColumns = s.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
                 if (reg.IsMatch(s))
                 {
-                    for (int i = 0; i < rowColumns.Length; i++)
+                    for (var i = 0; i < rowColumns.Length; i++)
                     {
-                        string text = rowColumns[i].Trim();
+                        var text = rowColumns[i].Trim();
                         if (text.StartsWith(":-") && text.EndsWith("-:"))
-                        {
                             colAlignments.Add(TextAlignment.Center);
-                        }
                         else if (text.StartsWith(":-"))
-                        {
                             colAlignments.Add(TextAlignment.Left);
-                        }
                         else if (text.EndsWith("-:"))
-                        {
                             colAlignments.Add(TextAlignment.Right);
-                        }
                         else
                             colAlignments.Add(TextAlignment.Left);
-
                     }
 
                     continue;
                 }
 
-                DataRow row = table.Rows.Add();
-                for (int i = 0; i < rowColumns.Length; i++)
+                var row = table.Rows.Add();
+                for (var i = 0; i < rowColumns.Length; i++)
                 {
-                    string text = rowColumns[i].Trim();
+                    var text = rowColumns[i].Trim();
                     row[i] = text;
                 }
             }
@@ -125,12 +117,12 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                DataRowView dr = firstCell.Item as DataRowView;
+                var dr = firstCell.Item as DataRowView;
                 if (dr == null)
                     return;
 
-                int rowIndex = _currentTable.Rows.IndexOf(dr.Row);
-                DataRow newRow = _currentTable.NewRow();
+                var rowIndex = _currentTable.Rows.IndexOf(dr.Row);
+                var newRow = _currentTable.NewRow();
                 _currentTable.Rows.InsertAt(newRow, rowIndex);
             }
         }
@@ -140,7 +132,7 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                DataRowView dr = firstCell.Item as DataRowView;
+                var dr = firstCell.Item as DataRowView;
                 if (dr == null)
                     return;
 
@@ -153,18 +145,18 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                DataRowView dr = firstCell.Item as DataRowView;
+                var dr = firstCell.Item as DataRowView;
                 if (dr == null)
                     return;
 
-                int rowIndex = _currentTable.Rows.IndexOf(dr.Row);
-                if (_currentTable.Rows.Count == (rowIndex + 1))
+                var rowIndex = _currentTable.Rows.IndexOf(dr.Row);
+                if (_currentTable.Rows.Count == rowIndex + 1)
                 {
                     _currentTable.Rows.Add();
                 }
                 else
                 {
-                    DataRow newRow = _currentTable.NewRow();
+                    var newRow = _currentTable.NewRow();
                     _currentTable.Rows.InsertAt(newRow, rowIndex + 1);
                 }
             }
@@ -172,7 +164,7 @@ namespace Noterium.Windows
 
         private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString();
+            e.Row.Header = e.Row.GetIndex().ToString();
         }
 
         private void AddColumnBefore(object sender, RoutedEventArgs e)
@@ -180,8 +172,8 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                int index = firstCell.Column.DisplayIndex;
-                DataGridTextColumn textColumn = new DataGridTextColumn();
+                var index = firstCell.Column.DisplayIndex;
+                var textColumn = new DataGridTextColumn();
                 GridTable.Columns.Insert(index, textColumn);
 
                 FixColumnNames();
@@ -193,7 +185,7 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                int index = firstCell.Column.DisplayIndex;
+                var index = firstCell.Column.DisplayIndex;
                 GridTable.Columns.RemoveAt(index);
                 FixColumnNames();
             }
@@ -204,11 +196,11 @@ namespace Noterium.Windows
             var firstCell = GridTable.SelectedCells.FirstOrDefault();
             if (firstCell.IsValid)
             {
-                int index = firstCell.Column.DisplayIndex;
-                string columnname = "COLUMN" + GridTable.Columns.Count;
-                var view = (DataView)GridTable.ItemsSource;
+                var index = firstCell.Column.DisplayIndex;
+                var columnname = "COLUMN" + GridTable.Columns.Count;
+                var view = (DataView) GridTable.ItemsSource;
                 var c = view.Table.Columns.Add(columnname);
-                DataGridTextColumn textColumn = new DataGridTextColumn();
+                var textColumn = new DataGridTextColumn();
                 textColumn.Binding = new Binding(columnname);
 
                 if (GridTable.Columns.Count == index + 1)
@@ -227,76 +219,63 @@ namespace Noterium.Windows
 
         private void FixColumnNames()
         {
-            for (int i = 0; i < GridTable.Columns.Count; i++)
+            for (var i = 0; i < GridTable.Columns.Count; i++)
             {
-                DataGridColumn dataGridColumn = GridTable.Columns[i];
+                var dataGridColumn = GridTable.Columns[i];
                 dataGridColumn.Header = $"COLUMN{i + 1}";
             }
         }
 
         private void AlignColumnLeft(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void AlignColumnCenter(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void AlignColumnRight(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void SaveTable(object sender, RoutedEventArgs e)
         {
             try
             {
-                StringBuilder builder = new StringBuilder();
-                var table = ((DataView)GridTable.ItemsSource).Table;
-                List<string[]> rows = new List<string[]>();
+                var builder = new StringBuilder();
+                var table = ((DataView) GridTable.ItemsSource).Table;
+                var rows = new List<string[]>();
                 foreach (DataRow row in table.Rows)
                 {
                     var strings = row.ItemArray.ToList().ConvertAll(o => o.ToString()).ToArray();
                     rows.Add(strings);
                 }
 
-                Dictionary<int, int> longestStringLengths = new Dictionary<int, int>();
-                foreach (string[] strings in rows)
-                {
-                    for (int i = 0; i < strings.Length; i++)
+                var longestStringLengths = new Dictionary<int, int>();
+                foreach (var strings in rows)
+                    for (var i = 0; i < strings.Length; i++)
                     {
-                        string s = strings[i].Trim();
+                        var s = strings[i].Trim();
                         if (!longestStringLengths.ContainsKey(i))
                             longestStringLengths.Add(i, 0);
 
                         if (s.Length > longestStringLengths[i])
-                        {
                             if (!s.StartsWith(":-") && !s.EndsWith("-:"))
                                 longestStringLengths[i] = s.Length;
-                        }
                     }
-                }
 
-                foreach (string[] strings in rows)
+                foreach (var strings in rows)
                 {
-                    for (int i = 0; i < strings.Length; i++)
+                    for (var i = 0; i < strings.Length; i++)
                     {
-                        int longestStringLength = longestStringLengths[i];
-                        string s = strings[i];
+                        var longestStringLength = longestStringLengths[i];
+                        var s = strings[i];
                         if (s.StartsWith(":-") && s.EndsWith("-:"))
-                        {
                             strings[i] = ":" + "-".PadRight(longestStringLength, '-') + ":";
-                        }
                         else if (s.StartsWith(":-"))
-                        {
                             strings[i] = ":" + "-".PadRight(longestStringLength, '-') + " ";
-                        }
                         else if (s.EndsWith("-:"))
-                        {
                             strings[i] = " " + "-".PadRight(longestStringLength, '-') + ":";
-                        }
                         else
                             strings[i] = " " + s.PadRight(longestStringLength) + " ";
                     }
@@ -309,7 +288,7 @@ namespace Noterium.Windows
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                
+
                 OnTableSaveError?.Invoke(_currentEntity, exception);
             }
 

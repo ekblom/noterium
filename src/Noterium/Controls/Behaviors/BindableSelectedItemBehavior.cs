@@ -17,10 +17,7 @@ namespace Noterium.Controls.Behaviors
         {
             base.OnDetaching();
 
-            if (AssociatedObject != null)
-            {
-                AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
-            }
+            if (AssociatedObject != null) AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
         }
 
         private void OnTreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -32,12 +29,12 @@ namespace Noterium.Controls.Behaviors
 
         public object SelectedItem
         {
-            get { return GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
+            get => GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof (object), typeof (BindableSelectedItemBehavior), new UIPropertyMetadata(null, OnSelectedItemChanged));
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(BindableSelectedItemBehavior), new UIPropertyMetadata(null, OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {

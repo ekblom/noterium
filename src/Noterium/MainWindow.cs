@@ -3,422 +3,419 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
+using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.IconPacks;
 using Microsoft.Win32;
+using Noterium.Code.Messages;
 using Noterium.Core;
 using Noterium.ViewModels;
-using Noterium.Windows;
-using GalaSoft.MvvmLight.Messaging;
-using Noterium.Code.Messages;
 
 namespace Noterium
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : IDisposable
-	{
-		private bool _loaded;
+    /// <summary>
+    ///     Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : IDisposable
+    {
+        private bool _loaded;
 
-		public bool IsLocked { get; set; }
-		public MainViewModel Model { get; set; }
+        public MainWindow()
+        {
+            InitializeComponent();
 
-		public MainWindow()
-		{
-			InitializeComponent();
+            SystemEvents.PowerModeChanged += OnPowerChange;
+        }
 
-			SystemEvents.PowerModeChanged += OnPowerChange;
-		}
+        public bool IsLocked { get; set; }
+        public MainViewModel Model { get; set; }
 
-		private void AuthenticationForm1_OnAuthenticated()
-		{
-			AuthenticationForm1.Password.Clear();
-			Unlock();
-		}
+        public void Dispose()
+        {
+            Model.NoteViewModels.Clear();
+        }
 
-		public void Lock(bool authenticate = false)
-		{
-			AuthenticationForm1.OnlyVerifyPassword = !authenticate;
+        private void AuthenticationForm1_OnAuthenticated()
+        {
+            AuthenticationForm1.Password.Clear();
+            Unlock();
+        }
 
-			SettingsFlyout.IsOpen = false;
-			LibrarysFlyout.IsOpen = false;
-			IsLocked = true;
-			MainGrid.Effect = new BlurEffect { Radius = 17 };
-			AuthenticationForm1.Reset();
-			OverlayPanel.Visibility = Visibility.Visible;
-			LockButton.Visibility = Visibility.Collapsed;
-			SettingsButton.Visibility = Visibility.Collapsed;
+        public void Lock(bool authenticate = false)
+        {
+            AuthenticationForm1.OnlyVerifyPassword = !authenticate;
 
-			//if (Model.NoteMenuContext.SelectedNote != null && Model.NoteMenuContext.SelectedNote.Note.Encrypted)
-			//{
-			// _selectedNoteWhenLocked = Model.NoteMenuContext.SelectedNote;
+            SettingsFlyout.IsOpen = false;
+            LibrarysFlyout.IsOpen = false;
+            IsLocked = true;
+            MainGrid.Effect = new BlurEffect {Radius = 17};
+            AuthenticationForm1.Reset();
+            OverlayPanel.Visibility = Visibility.Visible;
+            LockButton.Visibility = Visibility.Collapsed;
+            SettingsButton.Visibility = Visibility.Collapsed;
 
-			//}
-		}
+            //if (Model.NoteMenuContext.SelectedNote != null && Model.NoteMenuContext.SelectedNote.Note.Encrypted)
+            //{
+            // _selectedNoteWhenLocked = Model.NoteMenuContext.SelectedNote;
 
-		public void Unlock()
-		{
-			Messenger.Default.Send(new ApplicationUnlocked());
+            //}
+        }
 
-			MainGrid.Effect = null;
-			OverlayPanel.Visibility = Visibility.Collapsed;
-			IsLocked = false;
-			LockButton.Visibility = Model.IsSecureNotesEnabled ? Visibility.Visible : Visibility.Collapsed;
-			SettingsButton.Visibility = Visibility.Visible;
-		}
+        public void Unlock()
+        {
+            Messenger.Default.Send(new ApplicationUnlocked());
 
-		#region Treeview drag drop
+            MainGrid.Effect = null;
+            OverlayPanel.Visibility = Visibility.Collapsed;
+            IsLocked = false;
+            LockButton.Visibility = Model.IsSecureNotesEnabled ? Visibility.Visible : Visibility.Collapsed;
+            SettingsButton.Visibility = Visibility.Visible;
+        }
 
-		//private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
-		//{
-		//	if (e.ChangedButton == MouseButton.Left)
-		//	{
-		//		_lastMouseDown = e.GetPosition(tvParameters);
-		//	}
-		//}
+        private void AddNoteButtonClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null)
+                return;
 
-		//private void treeView_MouseMove(object sender, MouseEventArgs e)
-		//{
-		//	try
-		//	{
-		//		if (e.LeftButton == MouseButtonState.Pressed)
-		//		{
-		//			Point currentPosition = e.GetPosition(tvParameters);
+            button.ContextMenu.IsEnabled = true;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+        }
 
-		//			if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
-		//				(Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
-		//			{
-		//				draggedItem = (TreeViewItem)tvParameters.SelectedItem;
-		//				if (draggedItem != null)
-		//				{
-		//					DragDropEffects finalDropEffect =
-		//		DragDrop.DoDragDrop(tvParameters,
-		//			tvParameters.SelectedValue,
-		//						DragDropEffects.Move);
-		//					//Checking target is not null and item is
-		//					//dragging(moving)
-		//					if ((finalDropEffect == DragDropEffects.Move) &&
-		//			(_target != null))
-		//					{
-		//						// A Move drop was accepted
-		//						if (!draggedItem.Header.ToString().Equals
-		//			(_target.Header.ToString()))
-		//						{
-		//							CopyItem(draggedItem, _target);
-		//							_target = null;
-		//							draggedItem = null;
-		//						}
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//	catch (Exception)
-		//	{
-		//	}
-		//}
+        private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (IsLocked)
+            {
+                if (e.Key == Key.Tab)
+                    e.Handled = true;
+                else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (e.Key == Key.N || e.Key == Key.F)
+                        e.Handled = true;
+            }
+        }
 
-		//private void treeView_DragOver(object sender, DragEventArgs e)
-		//{
-		//	try
-		//	{
-		//		Point currentPosition = e.GetPosition(tvParameters);
+        private void SettingsFlyout_OnIsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (SettingsFlyout.IsOpen || LibrarysFlyout.IsOpen)
+            {
+                ShowOverlayPanel();
+                LockButton.IsEnabled = false;
+            }
+            else
+            {
+                LockButton.IsEnabled = true;
+                HideOverlayPanel();
+            }
+        }
 
-		//		if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
-		//		   (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
-		//		{
-		//			// Verify that this is a valid drop and then store the drop target
-		//			TreeViewItem item = GetNearestContainer
-		//			(e.OriginalSource as UIElement);
-		//			if (CheckDropTarget(draggedItem, item))
-		//			{
-		//				e.Effects = DragDropEffects.Move;
-		//			}
-		//			else
-		//			{
-		//				e.Effects = DragDropEffects.None;
-		//			}
-		//		}
-		//		e.Handled = true;
-		//	}
-		//	catch (Exception)
-		//	{
-		//	}
-		//}
+        private void SearchFlyout_OnIsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (SearchFlyout.IsOpen)
+            {
+                ShowOverlayPanel();
+                SearchFlyoutTextBox.Text = string.Empty;
+                SearchFlyoutTextBox.Focus();
+            }
+            else
+            {
+                SearchFlyoutTextBox.Text = string.Empty;
+                HideOverlayPanel();
+            }
+        }
 
-		//private void treeView_Drop(object sender, DragEventArgs e)
-		//{
-		//	try
-		//	{
-		//		e.Effects = DragDropEffects.None;
-		//		e.Handled = true;
+        private void ShowOverlayPanel()
+        {
+            MainGrid.Effect = new BlurEffect {Radius = 3};
+            OverlayPanel.Visibility = Visibility.Visible;
+            OverlayPanel.MouseDown += OverlayPanelMouseDown;
+            LockButton.IsEnabled = false;
+            AuthenticationForm.Visibility = Visibility.Collapsed;
+        }
 
-		//		// Verify that this is a valid drop and then store the drop target
-		//		TreeViewItem TargetItem = GetNearestContainer(e.OriginalSource as UIElement);
-		//		if (TargetItem != null && draggedItem != null)
-		//		{
-		//			_target = TargetItem;
-		//			e.Effects = DragDropEffects.Move;
-		//		}
-		//	}
-		//	catch (Exception)
-		//	{
-		//	}
-		//}
+        private void HideOverlayPanel()
+        {
+            OverlayPanel.Visibility = Visibility.Collapsed;
+            OverlayPanel.MouseDown -= OverlayPanelMouseDown;
+            MainGrid.Effect = null;
+            LockButton.IsEnabled = true;
+            AuthenticationForm.Visibility = Visibility.Visible;
+        }
 
-		#endregion
+        private void OverlayPanelMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (SettingsFlyout.IsOpen)
+                SettingsFlyout.IsOpen = false;
 
-		private void AddNoteButtonClick(object sender, RoutedEventArgs e)
-		{
-			Button button = sender as Button;
-			if (button == null)
-				return;
+            if (LibrarysFlyout.IsOpen)
+                LibrarysFlyout.IsOpen = false;
 
-			button.ContextMenu.IsEnabled = true;
-			button.ContextMenu.PlacementTarget = button;
-			button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-			button.ContextMenu.IsOpen = true;
-		}
+            if (SearchFlyout.IsOpen) Model.CloseSearchCommand.Execute(null);
+        }
 
-		private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (IsLocked)
-			{
-				if (e.Key == Key.Tab)
-					e.Handled = true;
-				else if (Keyboard.Modifiers == ModifierKeys.Control)
-				{
-					if (e.Key == Key.N || e.Key == Key.F)
-						e.Handled = true;
-				}
-			}
-		}
+        private void ColumnOnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!_loaded)
+                return;
 
-		private void SettingsFlyout_OnIsOpenChanged(object sender, RoutedEventArgs e)
-		{
-			if (SettingsFlyout.IsOpen || LibrarysFlyout.IsOpen)
-			{
-				ShowOverlayPanel();
-				LockButton.IsEnabled = false;
-			}
-			else
-			{
-				LockButton.IsEnabled = true;
-				HideOverlayPanel();
-			}
-		}
+            var changed = false;
+            if (NoteColumn.ActualWidth > 0)
+            {
+                Hub.Instance.CurrentLibrary.NoteColumnWidth = NoteColumn.ActualWidth;
+                changed = true;
+            }
 
-		private void SearchFlyout_OnIsOpenChanged(object sender, RoutedEventArgs e)
-		{
-			if (SearchFlyout.IsOpen)
-			{
-				ShowOverlayPanel();
-				SearchFlyoutTextBox.Text = string.Empty;
-				SearchFlyoutTextBox.Focus();
-			}
-			else
-			{
-				SearchFlyoutTextBox.Text = string.Empty;
-				HideOverlayPanel();
-			}
-		}
+            if (NotebookColumn.ActualWidth > 0)
+            {
+                Hub.Instance.CurrentLibrary.NotebookColumnWidth = NotebookColumn.ActualWidth;
+                changed = true;
+            }
 
-		private void ShowOverlayPanel()
-		{
-			MainGrid.Effect = new BlurEffect { Radius = 3 };
-			OverlayPanel.Visibility = Visibility.Visible;
-			OverlayPanel.MouseDown += OverlayPanelMouseDown;
-			LockButton.IsEnabled = false;
-			AuthenticationForm.Visibility = Visibility.Collapsed;
-		}
+            if (changed)
+                Hub.Instance.CurrentLibrary.Save();
+        }
 
-		private void HideOverlayPanel()
-		{
-			OverlayPanel.Visibility = Visibility.Collapsed;
-			OverlayPanel.MouseDown -= OverlayPanelMouseDown;
-			MainGrid.Effect = null;
-			LockButton.IsEnabled = true;
-			AuthenticationForm.Visibility = Visibility.Visible;
-		}
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!_loaded)
+                return;
 
-		private void OverlayPanelMouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (SettingsFlyout.IsOpen)
-				SettingsFlyout.IsOpen = false;
+            Hub.Instance.CurrentLibrary.WindowSize = e.NewSize;
+            Hub.Instance.CurrentLibrary.Save();
+        }
 
-			if (LibrarysFlyout.IsOpen)
-				LibrarysFlyout.IsOpen = false;
+        private void MainWindow_OnStateChanged(object sender, EventArgs e)
+        {
+            if (!_loaded)
+                return;
 
-			if (SearchFlyout.IsOpen)
-			{
-				Model.CloseSearchCommand.Execute(null);
-			}
-		}
+            Hub.Instance.CurrentLibrary.WindowState = WindowState;
+            Hub.Instance.CurrentLibrary.Save();
+        }
 
-		private void ColumnOnSizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			if (!_loaded)
-				return;
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            NoteColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NoteColumnWidth);
+            NotebookColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NotebookColumnWidth);
 
-			bool changed = false;
-			if (NoteColumn.ActualWidth > 0)
-			{
-				Hub.Instance.CurrentLibrary.NoteColumnWidth = NoteColumn.ActualWidth;
-				changed = true;
-			}
-			if (NotebookColumn.ActualWidth > 0)
-			{
-				Hub.Instance.CurrentLibrary.NotebookColumnWidth = NotebookColumn.ActualWidth;
-				changed = true;
-			}
-			if (changed)
-				Hub.Instance.CurrentLibrary.Save();
-		}
+            _loaded = true;
+        }
 
-		private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			if (!_loaded)
-				return;
+        private void SearchResultList_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (!Model.SearchResult.Any())
+                return;
 
-			Hub.Instance.CurrentLibrary.WindowSize = e.NewSize;
-			Hub.Instance.CurrentLibrary.Save();
-		}
+            if (e.Key == Key.Enter)
+            {
+                Model.SearchResultSelectedCommand.Execute(SearchResultList.SelectedValue);
+            }
+            else if (e.Key == Key.Escape)
+            {
+                Model.CloseSearchCommand.Execute(null);
+                SearchFlyoutTextBox.Text = string.Empty;
+            }
+        }
 
-		private void MainWindow_OnStateChanged(object sender, EventArgs e)
-		{
-			if (!_loaded)
-				return;
+        private void SearchFlyoutTextBox_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                if (Model.SearchResult.Any())
+                {
+                    SearchResultList.SelectedIndex = 0;
+                    SearchResultList.Focus();
+                }
+            }
+            else if (e.Key == Key.Escape)
+            {
+                Model.CloseSearchCommand.Execute(null);
+                SearchFlyoutTextBox.Text = string.Empty;
+            }
+        }
 
-			Hub.Instance.CurrentLibrary.WindowState = WindowState;
-			Hub.Instance.CurrentLibrary.Save();
-		}
+        private void SearchResultList_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up && SearchResultList.SelectedIndex == 0)
+            {
+                e.Handled = true;
+                SearchResultList.SelectedItem = null;
+                SearchFlyoutTextBox.Focus();
+            }
+        }
 
-		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
-		{
-			NoteColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NoteColumnWidth);
-			NotebookColumn.Width = new GridLength(Hub.Instance.CurrentLibrary.NotebookColumnWidth);
+        private void SearchResultList_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SearchResultList.SelectedValue != null)
+                Model.SearchResultSelectedCommand.Execute(SearchResultList.SelectedValue);
+        }
 
-			_loaded = true;
-		}
+        private void HelpOverlayPanel_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (IsLocked)
+                return;
 
-		private void SearchResultList_OnKeyDown(object sender, KeyEventArgs e)
-		{
-			if (!Model.SearchResult.Any())
-				return;
+            MainGrid.Effect = HelpOverlayPanel.Visibility == Visibility.Visible ? new BlurEffect {Radius = 3} : null;
+        }
 
-			if (e.Key == Key.Enter)
-			{
-				Model.SearchResultSelectedCommand.Execute(SearchResultList.SelectedValue);
-			}
-			else if (e.Key == Key.Escape)
-			{
-				Model.CloseSearchCommand.Execute(null);
-				SearchFlyoutTextBox.Text = string.Empty;
-			}
-		}
+        private void SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var tb = (TextBox) sender;
+            Model.SearchTerm = tb.Text;
+        }
 
-		private void SearchFlyoutTextBox_OnKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Down)
-			{
-				if (Model.SearchResult.Any())
-				{
-					SearchResultList.SelectedIndex = 0;
-					SearchResultList.Focus();
-				}
-			}
-			else if (e.Key == Key.Escape)
-			{
-				Model.CloseSearchCommand.Execute(null);
-				SearchFlyoutTextBox.Text = string.Empty;
-			}
-		}
+        private void ToggleSortMode(object sender, RoutedEventArgs e)
+        {
+            var sp = SortModeButton.Content as StackPanel;
+            if (sp == null)
+                return;
 
-		private void SearchResultList_OnPreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Up && SearchResultList.SelectedIndex == 0)
-			{
-				e.Handled = true;
-				SearchResultList.SelectedItem = null;
-				SearchFlyoutTextBox.Focus();
-			}
-		}
+            var icon = (PackIconModern) sp.FindName("SortButtonIcon");
 
-		private void SearchResultList_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			if (SearchResultList.SelectedValue != null)
-				Model.SearchResultSelectedCommand.Execute(SearchResultList.SelectedValue);
-		}
+            if (Model.NoteMenuContext.SortMode == "AZ")
+            {
+                Model.NoteMenuContext.SortMode = "ZA";
+                icon.Kind = PackIconModernKind.SortAlphabeticalDescending;
+            }
+            else if (Model.NoteMenuContext.SortMode == "ZA")
+            {
+                Model.NoteMenuContext.SortMode = "Index";
+                icon.Kind = PackIconModernKind.SortNumeric;
+            }
+            else if (Model.NoteMenuContext.SortMode == "Index")
+            {
+                Model.NoteMenuContext.SortMode = "AZ";
+                icon.Kind = PackIconModernKind.SortAlphabeticalAscending;
+            }
+        }
 
-		private void HelpOverlayPanel_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			if (IsLocked)
-				return;
+        private void OnPowerChange(object sender, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Suspend:
+                    Model.NoteMenuContext.SelectedNote.SaveNote();
+                    break;
+            }
+        }
 
-			MainGrid.Effect = HelpOverlayPanel.Visibility == Visibility.Visible ? new BlurEffect { Radius = 3 } : null;
-		}
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (NoteView != null && NoteView.NoteEditor != null)
+                NoteView.NoteEditor.SaveNoteText();
+            if (Model != null && Model.NoteMenuContext != null && Model.NoteMenuContext.SelectedNote != null)
+                Model.NoteMenuContext.SelectedNote.SaveNote();
 
-		private void SearchFlyoutTextBox_OnTextChangedTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			TextBox tb = (TextBox)sender;
-			Model.SearchTerm = tb.Text;
-		}
+            SystemEvents.PowerModeChanged -= OnPowerChange;
+        }
 
-		private void ToggleSortMode(object sender, RoutedEventArgs e)
-		{
-			StackPanel sp = SortModeButton.Content as StackPanel;
-			if (sp == null)
-				return;
+        private void LibrarysButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Model.LibrarysFlyoutIsVisible = true;
+        }
 
-			PackIconModern icon = (PackIconModern)sp.FindName("SortButtonIcon");
+        #region Treeview drag drop
 
-			if (Model.NoteMenuContext.SortMode == "AZ")
-			{
-				Model.NoteMenuContext.SortMode = "ZA";
-				icon.Kind = PackIconModernKind.SortAlphabeticalDescending;
-			}
-			else if (Model.NoteMenuContext.SortMode == "ZA")
-			{
-				Model.NoteMenuContext.SortMode = "Index";
-				icon.Kind = PackIconModernKind.SortNumeric;
-			}
-			else if (Model.NoteMenuContext.SortMode == "Index")
-			{
-				Model.NoteMenuContext.SortMode = "AZ";
-				icon.Kind = PackIconModernKind.SortAlphabeticalAscending;
-			}
-		}
+        //private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //	if (e.ChangedButton == MouseButton.Left)
+        //	{
+        //		_lastMouseDown = e.GetPosition(tvParameters);
+        //	}
+        //}
 
-		void OnPowerChange(Object sender, PowerModeChangedEventArgs e)
-		{
-			switch (e.Mode)
-			{
-				case PowerModes.Suspend:
-					Model.NoteMenuContext.SelectedNote.SaveNote();
-					break;
-			}
-		}
+        //private void treeView_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //	try
+        //	{
+        //		if (e.LeftButton == MouseButtonState.Pressed)
+        //		{
+        //			Point currentPosition = e.GetPosition(tvParameters);
 
-		private void MainWindow_OnClosing(object sender, CancelEventArgs e)
-		{
-			if(NoteView != null && NoteView.NoteEditor != null)
-				NoteView.NoteEditor.SaveNoteText();
-			if (Model != null && Model.NoteMenuContext != null && Model.NoteMenuContext.SelectedNote != null)
-				Model.NoteMenuContext.SelectedNote.SaveNote();
+        //			if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
+        //				(Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
+        //			{
+        //				draggedItem = (TreeViewItem)tvParameters.SelectedItem;
+        //				if (draggedItem != null)
+        //				{
+        //					DragDropEffects finalDropEffect =
+        //		DragDrop.DoDragDrop(tvParameters,
+        //			tvParameters.SelectedValue,
+        //						DragDropEffects.Move);
+        //					//Checking target is not null and item is
+        //					//dragging(moving)
+        //					if ((finalDropEffect == DragDropEffects.Move) &&
+        //			(_target != null))
+        //					{
+        //						// A Move drop was accepted
+        //						if (!draggedItem.Header.ToString().Equals
+        //			(_target.Header.ToString()))
+        //						{
+        //							CopyItem(draggedItem, _target);
+        //							_target = null;
+        //							draggedItem = null;
+        //						}
+        //					}
+        //				}
+        //			}
+        //		}
+        //	}
+        //	catch (Exception)
+        //	{
+        //	}
+        //}
 
-			SystemEvents.PowerModeChanged -= OnPowerChange;
-		}
+        //private void treeView_DragOver(object sender, DragEventArgs e)
+        //{
+        //	try
+        //	{
+        //		Point currentPosition = e.GetPosition(tvParameters);
 
-		private void LibrarysButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			Model.LibrarysFlyoutIsVisible = true;
-		}
+        //		if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
+        //		   (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
+        //		{
+        //			// Verify that this is a valid drop and then store the drop target
+        //			TreeViewItem item = GetNearestContainer
+        //			(e.OriginalSource as UIElement);
+        //			if (CheckDropTarget(draggedItem, item))
+        //			{
+        //				e.Effects = DragDropEffects.Move;
+        //			}
+        //			else
+        //			{
+        //				e.Effects = DragDropEffects.None;
+        //			}
+        //		}
+        //		e.Handled = true;
+        //	}
+        //	catch (Exception)
+        //	{
+        //	}
+        //}
 
-		public void Dispose()
-		{
-			Model.NoteViewModels.Clear();
-		}
-	}
+        //private void treeView_Drop(object sender, DragEventArgs e)
+        //{
+        //	try
+        //	{
+        //		e.Effects = DragDropEffects.None;
+        //		e.Handled = true;
+
+        //		// Verify that this is a valid drop and then store the drop target
+        //		TreeViewItem TargetItem = GetNearestContainer(e.OriginalSource as UIElement);
+        //		if (TargetItem != null && draggedItem != null)
+        //		{
+        //			_target = TargetItem;
+        //			e.Effects = DragDropEffects.Move;
+        //		}
+        //	}
+        //	catch (Exception)
+        //	{
+        //	}
+        //}
+
+        #endregion
+    }
 }

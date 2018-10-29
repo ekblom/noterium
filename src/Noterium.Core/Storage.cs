@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Win32;
 using Noterium.Core.DataCarriers;
 using Noterium.Core.DropBox;
 
@@ -28,16 +27,10 @@ namespace Noterium.Core
                 {
                     _tags = new HashSet<string>();
                     foreach (var n in GetAllNotes())
-                    {
                         if (n.Tags != null && n.Tags.Count > 0)
-                        {
                             foreach (var t in n.Tags)
-                            {
                                 if (!_tags.Contains(t))
                                     _tags.Add(t);
-                            }
-                        }
-                    }
                 }
 
                 return _tags.ToList();
@@ -51,18 +44,18 @@ namespace Noterium.Core
             if (library == null)
                 throw new ApplicationException("Unable to detect storage type.");
 
-	        _tags = null;
+            _tags = null;
 
-	        string path = null;
-	        if (library.StorageType == StorageType.DropBox)
-		        path = DataStore.GetDropBoxPath();
-			else if(!string.IsNullOrWhiteSpace(library.Path))
-			path = library.Path;
+            string path = null;
+            if (library.StorageType == StorageType.DropBox)
+                path = DataStore.GetDropBoxPath();
+            else if (!string.IsNullOrWhiteSpace(library.Path))
+                path = library.Path;
 
-	        if (path == null)
-		        throw new Exception("Library path is null");
+            if (path == null)
+                throw new Exception("Library path is null");
 
-			DataStore = new DataStore(path);
+            DataStore = new DataStore(path);
         }
 
         internal void SaveNote(Note note)
@@ -71,13 +64,11 @@ namespace Noterium.Core
 
             var updated = false;
             foreach (var t in note.Tags)
-            {
                 if (!Tags.Contains(t))
                 {
                     Tags.Add(t);
                     updated = true;
                 }
-            }
 
             if (updated)
                 OnTagListUpdated?.Invoke();
@@ -113,12 +104,12 @@ namespace Noterium.Core
             return DataStore.GetAllNotes();
         }
 
-        internal void SaveSettings(DataCarriers.Settings settings)
+        internal void SaveSettings(Settings settings)
         {
             DataStore.SaveSettings(settings);
         }
 
-        internal DataCarriers.Settings GetSettings()
+        internal Settings GetSettings()
         {
             return DataStore.GetSettings();
         }

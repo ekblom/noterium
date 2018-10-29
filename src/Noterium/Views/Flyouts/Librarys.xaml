@@ -1,101 +1,118 @@
 ﻿<UserControl x:Class="Noterium.Views.Flyouts.Librarys"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:p="clr-namespace:Noterium.Properties"
-			 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-			 xmlns:converters="clr-namespace:Noterium.Code.Converters"
-			 mc:Ignorable="d"
-			 d:DesignHeight="300" d:DesignWidth="300"
-			 DataContext="{Binding Librarys, Source={StaticResource Locator}}">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
-			</ResourceDictionary.MergedDictionaries>
-			<converters:BooleanToVisibilityConverter
-				x:Key="ReversedBooleanToVisibilityConverter"
-				True="Collapsed"
-				False="Visible" />
-		</ResourceDictionary>
-	</UserControl.Resources>
-	<StackPanel Width="250">
-		<TextBlock Margin="15" Text="{x:Static p:Resources.Librarys_DefaultLibrary}"/>
-		<ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
-			<ItemsControl.ItemContainerStyle>
-				<Style>
-					<Setter Property="ItemsControl.BorderBrush" Value="Transparent"/>
-					<Style.Triggers>
-						<Trigger Property="Border.IsMouseOver" Value="True">
-							<Setter Property="Border.BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
-						</Trigger>
-					</Style.Triggers>
-				</Style>
-			</ItemsControl.ItemContainerStyle>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<Border Name="LibraryItemBorder">
-						<Grid Margin="15, 0, 15, 3">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="25"/>
-								<ColumnDefinition Width="25"/>
-							</Grid.ColumnDefinitions>
-							<DockPanel Grid.Row="0" Grid.Column="0">
-								<RadioButton GroupName="DefaultLibrary" IsChecked="{Binding Library.Default}" VerticalAlignment="Center" HorizontalAlignment="Left"
-													 Content="{Binding Library.Name}">
-									<i:Interaction.Triggers>
-										<i:EventTrigger EventName="Checked">
-											<i:InvokeCommandAction Command="{Binding Path=SetDefaultLibraryCommand}" CommandParameter="{Binding}"/>
-										</i:EventTrigger>
-									</i:Interaction.Triggers>
-								</RadioButton>
-							</DockPanel>
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:p="clr-namespace:Noterium.Properties"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converters="clr-namespace:Noterium.Code.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding Librarys, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BooleanToVisibilityConverter
+                x:Key="ReversedBooleanToVisibilityConverter"
+                True="Collapsed"
+                False="Visible" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Width="250">
+        <TextBlock Margin="15" Text="{x:Static p:Resources.Librarys_DefaultLibrary}" />
+        <ItemsControl ItemsSource="{Binding Librarys}" Margin="0 0 0 15">
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="ItemsControl.BorderBrush" Value="Transparent" />
+                    <Style.Triggers>
+                        <Trigger Property="Border.IsMouseOver" Value="True">
+                            <Setter Property="Border.BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Name="LibraryItemBorder">
+                        <Grid Margin="15, 0, 15, 3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="25" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+                            <DockPanel Grid.Row="0" Grid.Column="0">
+                                <RadioButton GroupName="DefaultLibrary" IsChecked="{Binding Library.Default}"
+                                             VerticalAlignment="Center" HorizontalAlignment="Left"
+                                             Content="{Binding Library.Name}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Checked">
+                                            <i:InvokeCommandAction Command="{Binding Path=SetDefaultLibraryCommand}"
+                                                                   CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </RadioButton>
+                            </DockPanel>
 
-							<Button Grid.Column="1" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center"
-												CommandParameter="{Binding}"
-												Command="{Binding Path=ChangeLibraryCommand}"
-												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
-								<Button.ContentTemplate>
-									<DataTemplate DataType="dataCarriers:Library">
-										<iconPacks:PackIconEntypo Kind="Upload" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
-									</DataTemplate>
-								</Button.ContentTemplate>
-							</Button>
-							<Button Grid.Column="2" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" CommandParameter="{Binding}"
-												Command="{Binding Path=DeleteLibraryCommand}"
-												Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
-								<Button.ContentTemplate>
-									<DataTemplate DataType="dataCarriers:Library">
-										<iconPacks:PackIconMaterial Kind="Delete" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
-									</DataTemplate>
-								</Button.ContentTemplate>
-							</Button>
-						</Grid>
-					</Border>
+                            <Button Grid.Column="1" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}"
+                                    HorizontalContentAlignment="Left" VerticalAlignment="Center"
+                                    CommandParameter="{Binding}"
+                                    Command="{Binding Path=ChangeLibraryCommand}"
+                                    Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                                <Button.ContentTemplate>
+                                    <DataTemplate DataType="dataCarriers:Library">
+                                        <iconPacks:PackIconEntypo Kind="Upload"
+                                                                  Foreground="{DynamicResource IdealForegroundColorBrush}"
+                                                                  Width="15" Height="15" VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+                            <Button Grid.Column="2" DataContext="{Binding}" Style="{DynamicResource NoStyleButton}"
+                                    HorizontalContentAlignment="Left" VerticalAlignment="Center"
+                                    CommandParameter="{Binding}"
+                                    Command="{Binding Path=DeleteLibraryCommand}"
+                                    Visibility="{Binding IsCurrent, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                                <Button.ContentTemplate>
+                                    <DataTemplate DataType="dataCarriers:Library">
+                                        <iconPacks:PackIconMaterial Kind="Delete"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}"
+                                                                    Width="15" Height="15" VerticalAlignment="Center"
+                                                                    HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+                        </Grid>
+                    </Border>
 
-					<DataTemplate.Triggers>
-						<Trigger Property="ItemsControl.IsMouseOver" Value="True">
-							<Setter Property="Background" TargetName="LibraryItemBorder" Value="{DynamicResource MenuItemHighlightedBackground}" />
-						</Trigger>
-					</DataTemplate.Triggers>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
+                    <DataTemplate.Triggers>
+                        <Trigger Property="ItemsControl.IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="LibraryItemBorder"
+                                    Value="{DynamicResource MenuItemHighlightedBackground}" />
+                        </Trigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-		<Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center" Height="35" Command="{Binding AddLibraryCommand}">
-			<Button.ContentTemplate>
-				<DataTemplate>
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,5,15,5">
-						<iconPacks:PackIconMaterial Kind="DatabasePlus" Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15" Height="15" Margin="0 0 10 0" />
-						<TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
-					</StackPanel>
-				</DataTemplate>
-			</Button.ContentTemplate>
-		</Button>
-	</StackPanel>
+        <Button Style="{DynamicResource NoStyleButton}" HorizontalContentAlignment="Left" VerticalAlignment="Center"
+                Height="35" Command="{Binding AddLibraryCommand}">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                Margin="15,5,15,5">
+                        <iconPacks:PackIconMaterial Kind="DatabasePlus"
+                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" Width="15"
+                                                    Height="15" Margin="0 0 10 0" />
+                        <TextBlock Text="{x:Static p:Resources.Librarys_AddLibrary}" />
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+    </StackPanel>
 
 </UserControl>

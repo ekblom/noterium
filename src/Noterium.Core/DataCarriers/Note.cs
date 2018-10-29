@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -12,9 +11,11 @@ using Noterium.Core.Interfaces;
 namespace Noterium.Core.DataCarriers
 {
     [DataContract]
-	[DebuggerDisplay("{Name} - Index: {SortIndex} - ID: {ID}")]
+    [DebuggerDisplay("{Name} - Index: {SortIndex} - ID: {ID}")]
     public class Note : IComparable, IComparable<Note>, IEquatable<Note>, INotifyPropertyChanged, ISortable
     {
+        public delegate void NoteRefreshedFromDiskEventHandler();
+
         private readonly object _deleteLockObject = new object();
         private readonly object _saveLockObject = new object();
         private bool _archived;
@@ -27,6 +28,7 @@ namespace Noterium.Core.DataCarriers
         private ObservableCollection<NoteFile> _files;
         private Guid _group;
         private bool _important;
+        private bool _initialized;
         private bool _inTrashCan;
         private string _name;
         private Guid _notebook;
@@ -35,9 +37,6 @@ namespace Noterium.Core.DataCarriers
         private int _sortIndex;
         private ObservableCollection<string> _tags;
         private string _text;
-		private bool _initialized = false;
-
-        public delegate void NoteRefreshedFromDiskEventHandler();
 
         public Note()
         {
@@ -48,25 +47,15 @@ namespace Noterium.Core.DataCarriers
             Files.CollectionChanged += FilesCollectionChanged;
         }
 
-		public void SetIsInitialized()
-		{
-			_initialized = true;
-		}
+        public bool IsUpdatingFromDisc { get; internal set; }
 
-		public override string ToString()
-		{
-			return $"{Name} - Index: {SortIndex} - ID: {ID}";
-		}
-
-		public bool IsUpdatingFromDisc{ get; internal set; }
-
-		[DataMember]
+        [DataMember]
         public Guid ID { get; set; }
 
         [DataMember]
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 _name = value;
@@ -77,7 +66,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public string Text
         {
-            get { return _text; }
+            get => _text;
             set
             {
                 _text = value;
@@ -97,11 +86,12 @@ namespace Noterium.Core.DataCarriers
                         text = Encrypted ? Hub.Instance.EncryptionManager.Decrypt(Text) : Text;
                     _secureText = text;
                 }
+
                 return _secureText;
             }
             set
             {
-                if(!string.Equals(_secureText, value, StringComparison.Ordinal))
+                if (!string.Equals(_secureText, value, StringComparison.Ordinal))
                 {
                     _secureText = value;
                     RaiseOnPropetyChanged();
@@ -112,7 +102,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public Guid Group
         {
-            get { return _group; }
+            get => _group;
             set
             {
                 _group = value;
@@ -139,7 +129,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public DateTime DueDate
         {
-            get { return _dueDate; }
+            get => _dueDate;
             set
             {
                 _dueDate = value;
@@ -150,7 +140,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public DateTime Changed
         {
-            get { return _changed; }
+            get => _changed;
             set
             {
                 _changed = value;
@@ -161,7 +151,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public bool Protected
         {
-            get { return _protected; }
+            get => _protected;
             set
             {
                 _protected = value;
@@ -172,7 +162,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public bool Important
         {
-            get { return _important; }
+            get => _important;
             set
             {
                 _important = value;
@@ -183,7 +173,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public DateTime Created
         {
-            get { return _created; }
+            get => _created;
             set
             {
                 _created = value;
@@ -194,7 +184,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public DateTime ArchivedDate
         {
-            get { return _archivedDate; }
+            get => _archivedDate;
             set
             {
                 _archivedDate = value;
@@ -205,7 +195,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public ObservableCollection<string> Tags
         {
-            get { return _tags; }
+            get => _tags;
             set
             {
                 _tags = value;
@@ -216,7 +206,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public ObservableCollection<NoteFile> Files
         {
-            get { return _files; }
+            get => _files;
             set
             {
                 _files = value;
@@ -228,7 +218,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(false)]
         public bool Favourite
         {
-            get { return _favourite; }
+            get => _favourite;
             set
             {
                 _favourite = value;
@@ -240,7 +230,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(false)]
         public bool Archived
         {
-            get { return _archived; }
+            get => _archived;
             set
             {
                 _archived = value;
@@ -252,18 +242,18 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(false)]
         public bool Encrypted
         {
-            get { return _encrypted; }
+            get => _encrypted;
             set
             {
-	            bool raiseChanged = _encrypted != value;
+                var raiseChanged = _encrypted != value;
                 _encrypted = value;
 
-				if (raiseChanged)
-				{
-					if(_initialized)
-						Hub.Instance.EncryptionManager.SwitchTextEncryptionMode(this);
-					RaiseOnPropetyChanged();
-				}
+                if (raiseChanged)
+                {
+                    if (_initialized)
+                        Hub.Instance.EncryptionManager.SwitchTextEncryptionMode(this);
+                    RaiseOnPropetyChanged();
+                }
             }
         }
 
@@ -271,7 +261,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(false)]
         public bool InTrashCan
         {
-            get { return _inTrashCan; }
+            get => _inTrashCan;
             set
             {
                 _inTrashCan = value;
@@ -301,13 +291,11 @@ namespace Noterium.Core.DataCarriers
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public event NoteRefreshedFromDiskEventHandler NoteRefreshedFromDisk;
-
         [DataMember]
         [DefaultValue(0)]
         public int SortIndex
         {
-            get { return _sortIndex; }
+            get => _sortIndex;
             set
             {
                 _sortIndex = value;
@@ -315,23 +303,31 @@ namespace Noterium.Core.DataCarriers
             }
         }
 
+        public void SetIsInitialized()
+        {
+            _initialized = true;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} - Index: {SortIndex} - ID: {ID}";
+        }
+
+        public event NoteRefreshedFromDiskEventHandler NoteRefreshedFromDisk;
+
         public bool IsEventHandlerRegistered(Delegate prospectiveHandler)
         {
             if (PropertyChanged != null)
-            {
                 foreach (var existingHandler in PropertyChanged.GetInvocationList())
-                {
                     if (existingHandler == prospectiveHandler)
                         return true;
-                }
-            }
             return false;
         }
 
         private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
         {
-			if(_initialized)
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (_initialized)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         internal void RaiseRefreshedFromDisk()
@@ -351,8 +347,8 @@ namespace Noterium.Core.DataCarriers
 
         public void Save()
         {
-			if (IsUpdatingFromDisc)
-				return;
+            if (IsUpdatingFromDisc)
+                return;
 
             lock (_saveLockObject)
             {

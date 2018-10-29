@@ -9,58 +9,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
 using log4net;
 using Noterium.Code.Commands;
 using Noterium.Code.Data;
-using Noterium.Code.Markdown;
 using Noterium.Core;
-using Noterium.Core.DataCarriers;
-using Noterium.Core.DropBox;
 using Noterium.Properties;
 using Noterium.ViewModels;
 using Noterium.Windows;
-using GalaSoft.MvvmLight;
-using System.Diagnostics;
 
 namespace Noterium.Views
 {
     /// <summary>
-    /// Interaction logic for NoteEditor.xaml
+    ///     Interaction logic for NoteEditor.xaml
     /// </summary>
     public partial class NoteEditor : INotifyPropertyChanged
     {
         private const string MarkDownImageFormat = "![{1}]({0})";
-        private readonly ILog _log = LogManager.GetLogger(typeof(NoteEditor));
 
         public static readonly DependencyProperty NoteViewModelProperty = DependencyProperty.Register("NoteViewModel", typeof(NoteViewModel), typeof(NoteEditor), new UIPropertyMetadata(null));
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(NoteEditor), new UIPropertyMetadata(null));
+        private readonly ILog _log = LogManager.GetLogger(typeof(NoteEditor));
         private readonly Timer _saveTimer;
-        private List<DocumentEntitiy> _documentEntities = new List<DocumentEntitiy>();
-
-        public DocumentEntitiy CurrentEntity { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public NoteViewModel CurrentModel
-        {
-            get
-            {
-                if (DataContext is NoteViewModel)
-                    return ((NoteViewModel)DataContext);
-                return null;
-            }
-        }
-
-        public bool SupressOnTextChanged { get; set; }
+        private readonly List<DocumentEntitiy> _documentEntities = new List<DocumentEntitiy>();
 
         public NoteEditor()
         {
@@ -78,6 +48,28 @@ namespace Noterium.Views
             _saveTimer.AutoReset = false;
             _saveTimer.Elapsed += SaveTimerElapsed;
             _saveTimer.Interval = 500;
+        }
+
+        public DocumentEntitiy CurrentEntity { get; set; }
+
+        public NoteViewModel CurrentModel
+        {
+            get
+            {
+                if (DataContext is NoteViewModel)
+                    return (NoteViewModel) DataContext;
+                return null;
+            }
+        }
+
+        public bool SupressOnTextChanged { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void TextAreaMouseWheel(object sender, MouseWheelEventArgs e)
@@ -150,7 +142,6 @@ namespace Noterium.Views
                     CurrentModel.SaveNote(true);
                 }
             });
-
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs i)
@@ -159,10 +150,11 @@ namespace Noterium.Views
             {
                 if (i.OldValue != null && i.OldValue is NoteViewModel)
                 {
-                    NoteViewModel oldModel = (NoteViewModel)i.OldValue;
+                    var oldModel = (NoteViewModel) i.OldValue;
                     oldModel.SaveNote(true);
                     oldModel.Note.NoteRefreshedFromDisk -= Note_RefreshedFromDisk;
                 }
+
                 SupressOnTextChanged = true;
 
                 if (TableToolbarPopup.IsOpen)
@@ -186,11 +178,7 @@ namespace Noterium.Views
 
         private void Note_RefreshedFromDisk()
         {
-            InvokeOnCurrentDispatcher(() =>
-                            {
-                                MarkdownText.Text = CurrentModel.Note.DecryptedText;
-                            });
-
+            InvokeOnCurrentDispatcher(() => { MarkdownText.Text = CurrentModel.Note.DecryptedText; });
         }
 
         private void UpdateEntities()
@@ -222,7 +210,6 @@ namespace Noterium.Views
         {
             var matches = reg.Matches(MarkdownText.Text);
             foreach (Match match in matches)
-            {
                 if (match.Success)
                 {
                     ////TextAnchor anchorStart = MarkdownText.Document.CreateAnchor(match.Index);
@@ -233,7 +220,6 @@ namespace Noterium.Views
 
                     //_documentEntities.Add(ent);
                 }
-            }
         }
 
         private void DocumentEntityDeleted(DocumentEntitiy ent)
@@ -243,7 +229,7 @@ namespace Noterium.Views
 
         private void UpdateTextByCheckBox(object obj)
         {
-            string newText = (string)obj;
+            var newText = (string) obj;
             if (newText != null)
             {
                 SupressOnTextChanged = true;
@@ -254,9 +240,9 @@ namespace Noterium.Views
 
         private void ToolbarTagButtonClick(object sender, RoutedEventArgs e)
         {
-            Button button = (Button)e.Source;
-            string command = button.CommandParameter.ToString();
-            string value = string.Empty;
+            var button = (Button) e.Source;
+            var command = button.CommandParameter.ToString();
+            var value = string.Empty;
             switch (command)
             {
                 case "Image":
@@ -272,7 +258,7 @@ namespace Noterium.Views
 
             if (MarkdownText.SelectionStart >= 0 && MarkdownText.SelectionStart <= MarkdownText.Text.Length)
             {
-                int selectionStart = MarkdownText.SelectionStart;
+                var selectionStart = MarkdownText.SelectionStart;
                 MarkdownText.Text = MarkdownText.Text.Insert(MarkdownText.SelectionStart, value);
 
                 MarkdownText.SelectionStart = selectionStart + value.Length;
@@ -281,8 +267,8 @@ namespace Noterium.Views
 
         private void ToolbarButtonClick(object sender, RoutedEventArgs e)
         {
-            Button button = (Button)e.Source;
-            string command = button.CommandParameter.ToString();
+            var button = (Button) e.Source;
+            var command = button.CommandParameter.ToString();
 
             string startFormat = string.Empty, endFormat = string.Empty;
 
@@ -321,7 +307,7 @@ namespace Noterium.Views
             if (string.IsNullOrWhiteSpace(startFormat))
                 return;
 
-            int oldSelectionStart = MarkdownText.SelectionStart;
+            var oldSelectionStart = MarkdownText.SelectionStart;
             MarkdownText.Text = ToggleFormatting(MarkdownText.Text, startFormat, endFormat, MarkdownText.SelectionStart, MarkdownText.SelectionLength);
 
             if (MarkdownText.Text.Length >= oldSelectionStart)
@@ -332,19 +318,14 @@ namespace Noterium.Views
         private void SurroundSelection(string format, string defaultValue)
         {
             if (MarkdownText.SelectionStart > -1 && MarkdownText.SelectionLength > 0)
-            {
                 MarkdownText.SelectedText = string.Format(format, MarkdownText.SelectedText);
-            }
             else
-            {
                 MarkdownText.SelectedText = defaultValue;
-                // Todo: change selection
-            }
         }
 
         private string ToggleFormatting(string text, string startFormat, string endFormat, int selectionStart, int selectionLength)
         {
-            string expression =
+            var expression =
                 $@"{Regex.Escape(startFormat)}
                     (?:      # Start of non-capturing group that matches...
                      (?!{Regex.Escape(startFormat)}) # (if startFormat can't be matched here)
@@ -353,29 +334,23 @@ namespace Noterium.Views
                     {Regex.Escape(endFormat)}";
             try
             {
-                Regex reg = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+                var reg = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 
-                MatchCollection matches = reg.Matches(text);
+                var matches = reg.Matches(text);
                 if (matches.Count > 0)
-                {
                     foreach (Match m in matches)
-                    {
-                        if (selectionStart >= m.Index && (selectionStart + selectionLength) <= (m.Index + m.Length))
-                        {
+                        if (selectionStart >= m.Index && selectionStart + selectionLength <= m.Index + m.Length)
                             if (m.Value.StartsWith(startFormat) && m.Value.EndsWith(endFormat))
                             {
                                 text = text.Remove(m.Index, m.Length);
                                 text = text.Insert(m.Index, m.Value.Replace(startFormat, string.Empty).Replace(endFormat, string.Empty).TrimStart());
                                 return text;
                             }
-                        }
-                    }
-                }
 
                 if (selectionLength == 0)
                     return text;
 
-                string selection = text.Substring(selectionStart, selectionLength);
+                var selection = text.Substring(selectionStart, selectionLength);
                 text = text.Remove(selectionStart, selectionLength);
                 text = text.Insert(selectionStart, startFormat + selection + endFormat);
                 return text;
@@ -404,7 +379,7 @@ namespace Noterium.Views
 
         private void ToggleWordWrapButton_OnClick(object sender, RoutedEventArgs e)
         {
-            TextWrapping wrap = ToggleWordWrapButton.IsChecked.GetValueOrDefault() ? TextWrapping.Wrap : TextWrapping.NoWrap;
+            var wrap = ToggleWordWrapButton.IsChecked.GetValueOrDefault() ? TextWrapping.Wrap : TextWrapping.NoWrap;
             MarkdownText.TextWrapping = wrap;
         }
 
@@ -414,24 +389,21 @@ namespace Noterium.Views
             {
                 TableToolbarPopup.IsOpen = false;
 
-                string text = MarkdownText.Text.Substring(CurrentEntity.StartIndex.Offset, CurrentEntity.EndIndex.Offset - CurrentEntity.StartIndex.Offset);
+                var text = MarkdownText.Text.Substring(CurrentEntity.StartIndex.Offset, CurrentEntity.EndIndex.Offset - CurrentEntity.StartIndex.Offset);
                 text = text.Trim();
 
-                TableEditor editor = new TableEditor(text, CurrentEntity);
+                var editor = new TableEditor(text, CurrentEntity);
                 editor.Owner = Application.Current.MainWindow;
                 editor.OnTableSave += (table, entitiy) =>
                 {
-                    int index = CurrentEntity.StartIndex.Offset;
-                    string newText = MarkdownText.Text.Remove(index, CurrentEntity.EndIndex.Offset - CurrentEntity.StartIndex.Offset);
+                    var index = CurrentEntity.StartIndex.Offset;
+                    var newText = MarkdownText.Text.Remove(index, CurrentEntity.EndIndex.Offset - CurrentEntity.StartIndex.Offset);
                     newText = newText.Insert(index, table);
 
                     MarkdownText.Text = newText;
                 };
 
-                editor.OnTableSaveError += (entitiy, exception) =>
-                {
-                    MessageBox.Show(exception.Message, "Error saving table", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                };
+                editor.OnTableSaveError += (entitiy, exception) => { MessageBox.Show(exception.Message, "Error saving table", MessageBoxButton.OK, MessageBoxImage.Exclamation); };
 
                 editor.ShowDialog();
             }
@@ -465,7 +437,6 @@ namespace Noterium.Views
         {
             if (e.Data.GetFormats().Length > 0)
             {
-
             }
         }
 
@@ -473,8 +444,6 @@ namespace Noterium.Views
         {
             if (e.Data.GetFormats().Length > 0)
             {
-
-
             }
         }
 
@@ -482,7 +451,6 @@ namespace Noterium.Views
         {
             if (e.Data.GetFormats().Any())
             {
-
             }
         }
 
@@ -495,12 +463,12 @@ namespace Noterium.Views
         {
             if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
             {
-                int lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
+                var lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
                 if (lineIndex < 0)
                     return;
 
-                string line = MarkdownText.GetLineText(lineIndex);
-                string lineTextTrim = line.Trim();
+                var line = MarkdownText.GetLineText(lineIndex);
+                var lineTextTrim = line.Trim();
 
                 if (lineTextTrim.Equals("- [ ]") || lineTextTrim.Equals("-"))
                 {
@@ -508,24 +476,18 @@ namespace Noterium.Views
                     return;
                 }
 
-                string lineTextTrimStart = line.TrimStart();
-                int leadingWhitespaces = line.Length - lineTextTrimStart.Length;
-                string whiteSpaces = string.Empty;
+                var lineTextTrimStart = line.TrimStart();
+                var leadingWhitespaces = line.Length - lineTextTrimStart.Length;
+                var whiteSpaces = string.Empty;
                 if (leadingWhitespaces > 0)
                     whiteSpaces = new string(' ', leadingWhitespaces);
 
                 string stringToInsert = null;
                 if (lineTextTrimStart.StartsWith("- ["))
-                {
-
                     stringToInsert = "- [ ] ";
-                }
-                else if(lineTextTrimStart.StartsWith("- "))
-                {
-                    stringToInsert = "- ";
-                }
+                else if (lineTextTrimStart.StartsWith("- ")) stringToInsert = "- ";
 
-                if(stringToInsert != null)
+                if (stringToInsert != null)
                 {
                     InsertAt("\n" + whiteSpaces + stringToInsert, MarkdownText.CaretIndex);
                     e.Handled = true;
@@ -535,10 +497,10 @@ namespace Noterium.Views
 
         private void RemoveLine(int lineIndex)
         {
-            List<string> lines = new List<string>(MarkdownText.Text.Split('\n'));
+            var lines = new List<string>(MarkdownText.Text.Split('\n'));
             lines.RemoveAt(lineIndex);
 
-            int carretPosition = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
+            var carretPosition = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
 
             MarkdownText.Text = string.Join("\n", lines.ToArray());
             MarkdownText.CaretIndex = carretPosition;
@@ -546,7 +508,7 @@ namespace Noterium.Views
 
         private void InsertAt(string thisString, int at)
         {
-            int newCaretIndex = MarkdownText.CaretIndex + thisString.Length;
+            var newCaretIndex = MarkdownText.CaretIndex + thisString.Length;
             MarkdownText.Text = MarkdownText.Text.Insert(MarkdownText.CaretIndex, thisString);
             if (MarkdownText.Text.Length >= newCaretIndex)
                 MarkdownText.CaretIndex = newCaretIndex;

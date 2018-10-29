@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using Noterium.Core.Annotations;
-using System.Collections.Generic;
-using System.Linq;
 using Noterium.Core.Helpers;
 
 namespace Noterium.Core.DataCarriers
@@ -28,7 +27,7 @@ namespace Noterium.Core.DataCarriers
 
         public bool EnableAdvancedControls
         {
-            get { return _enableAdvancedControls; }
+            get => _enableAdvancedControls;
             set
             {
                 _enableAdvancedControls = value;
@@ -39,7 +38,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(true)]
         public bool AutoBackup
         {
-            get { return _autoBackup; }
+            get => _autoBackup;
             set
             {
                 _autoBackup = value;
@@ -50,7 +49,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(10)]
         public int NumberOfBackupsToKeep
         {
-            get { return _numberOfBackupsToKeep; }
+            get => _numberOfBackupsToKeep;
             set
             {
                 _numberOfBackupsToKeep = value;
@@ -75,7 +74,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue(5)]
         public int AutoLockMainWindowAfter
         {
-            get { return _autoLockMainWindowAfter; }
+            get => _autoLockMainWindowAfter;
             set
             {
                 _autoLockMainWindowAfter = value;
@@ -84,10 +83,10 @@ namespace Noterium.Core.DataCarriers
         }
 
         [JsonProperty("theme", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-		[DefaultValue("BaseDark")]
-		public string Theme
+        [DefaultValue("BaseDark")]
+        public string Theme
         {
-            get { return _theme; }
+            get => _theme;
             set
             {
                 _theme = value;
@@ -99,7 +98,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue("VSDark")]
         public string Accent
         {
-            get { return _accent; }
+            get => _accent;
             set
             {
                 _accent = value;
@@ -111,7 +110,7 @@ namespace Noterium.Core.DataCarriers
         [DefaultValue("View")]
         public string DefaultNoteView
         {
-            get { return _defaultNoteView; }
+            get => _defaultNoteView;
             set
             {
                 _defaultNoteView = value;
@@ -136,9 +135,7 @@ namespace Noterium.Core.DataCarriers
 
                 var tagCounts = new Dictionary<string, int>();
                 foreach (var note in notes)
-                {
                     if (note.Tags != null && note.Tags.Any())
-                    {
                         foreach (var t in note.Tags)
                         {
                             if (t == null)
@@ -150,15 +147,13 @@ namespace Noterium.Core.DataCarriers
                             else
                                 tagCounts[tag] += 1;
                         }
-                    }
-                }
 
                 foreach (var keyValuePair in tagCounts)
                 {
                     var tag = Tags.FirstOrDefault(t => t.Name == keyValuePair.Key);
                     if (tag == null)
                     {
-                        tag = new Tag { Name = keyValuePair.Key };
+                        tag = new Tag {Name = keyValuePair.Key};
 
                         Hub.Instance.Settings.Tags.Add(tag);
                     }

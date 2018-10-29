@@ -8,24 +8,23 @@ namespace Noterium.Code.Extensions
     {
         public static bool IsEqualTo(this SecureString ss1, SecureString ss2)
         {
-            IntPtr bstr1 = IntPtr.Zero;
-            IntPtr bstr2 = IntPtr.Zero;
+            var bstr1 = IntPtr.Zero;
+            var bstr2 = IntPtr.Zero;
             try
             {
                 bstr1 = Marshal.SecureStringToBSTR(ss1);
                 bstr2 = Marshal.SecureStringToBSTR(ss2);
-                int length1 = Marshal.ReadInt32(bstr1, -4);
-                int length2 = Marshal.ReadInt32(bstr2, -4);
+                var length1 = Marshal.ReadInt32(bstr1, -4);
+                var length2 = Marshal.ReadInt32(bstr2, -4);
                 if (length1 == length2)
-                {
-                    for (int x = 0; x < length1; ++x)
+                    for (var x = 0; x < length1; ++x)
                     {
-                        byte b1 = Marshal.ReadByte(bstr1, x);
-                        byte b2 = Marshal.ReadByte(bstr2, x);
+                        var b1 = Marshal.ReadByte(bstr1, x);
+                        var b2 = Marshal.ReadByte(bstr2, x);
                         if (b1 != b2) return false;
                     }
-                }
                 else return false;
+
                 return true;
             }
             finally

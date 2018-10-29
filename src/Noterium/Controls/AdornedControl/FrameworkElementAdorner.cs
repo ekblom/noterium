@@ -109,10 +109,7 @@ namespace Noterium.Controls.AdornedControl
             {
                 case HorizontalAlignment.Left:
                 {
-                    if (_horizontalAdornerPlacement == AdornerPlacement.Outside)
-                    {
-                        return -_child.DesiredSize.Width + _offsetX;
-                    }
+                    if (_horizontalAdornerPlacement == AdornerPlacement.Outside) return -_child.DesiredSize.Width + _offsetX;
                     return _offsetX;
                 }
                 case HorizontalAlignment.Right:
@@ -134,7 +131,7 @@ namespace Noterium.Controls.AdornedControl
                 {
                     var adornerWidth = _child.DesiredSize.Width;
                     var adornedWidth = AdornedElement.ActualWidth;
-                    var x = (adornedWidth/2) - (adornerWidth/2);
+                    var x = adornedWidth / 2 - adornerWidth / 2;
                     return x + _offsetX;
                 }
                 case HorizontalAlignment.Stretch:
@@ -155,10 +152,7 @@ namespace Noterium.Controls.AdornedControl
             {
                 case VerticalAlignment.Top:
                 {
-                    if (_verticalAdornerPlacement == AdornerPlacement.Outside)
-                    {
-                        return -_child.DesiredSize.Height + _offsetY;
-                    }
+                    if (_verticalAdornerPlacement == AdornerPlacement.Outside) return -_child.DesiredSize.Height + _offsetY;
                     return _offsetY;
                 }
                 case VerticalAlignment.Bottom:
@@ -180,7 +174,7 @@ namespace Noterium.Controls.AdornedControl
                 {
                     var adornerHeight = _child.DesiredSize.Height;
                     var adornedHeight = AdornedElement.ActualHeight;
-                    var x = (adornedHeight/2) - (adornerHeight/2);
+                    var x = adornedHeight / 2 - adornerHeight / 2;
                     return x + _offsetY;
                 }
                 case VerticalAlignment.Stretch:
@@ -197,10 +191,7 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         private double DetermineWidth()
         {
-            if (!double.IsNaN(PositionX))
-            {
-                return _child.DesiredSize.Width;
-            }
+            if (!double.IsNaN(PositionX)) return _child.DesiredSize.Width;
 
             switch (_child.HorizontalAlignment)
             {
@@ -230,10 +221,7 @@ namespace Noterium.Controls.AdornedControl
         /// </summary>
         private double DetermineHeight()
         {
-            if (!double.IsNaN(PositionY))
-            {
-                return _child.DesiredSize.Height;
-            }
+            if (!double.IsNaN(PositionY)) return _child.DesiredSize.Height;
 
             switch (_child.VerticalAlignment)
             {
@@ -261,15 +249,9 @@ namespace Noterium.Controls.AdornedControl
         protected override Size ArrangeOverride(Size finalSize)
         {
             var x = PositionX;
-            if (double.IsNaN(x))
-            {
-                x = DetermineX();
-            }
+            if (double.IsNaN(x)) x = DetermineX();
             var y = PositionY;
-            if (double.IsNaN(y))
-            {
-                y = DetermineY();
-            }
+            if (double.IsNaN(y)) y = DetermineY();
             var adornerWidth = DetermineWidth();
             var adornerHeight = DetermineHeight();
             _child.Arrange(new Rect(x, y, adornerWidth, adornerHeight));

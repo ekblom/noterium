@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Noterium.Core.DataCarriers;
+﻿using Noterium.Core.DataCarriers;
 using Noterium.Core.Search;
 using Noterium.Core.Security;
 using Noterium.Core.Services;
@@ -8,9 +7,6 @@ namespace Noterium.Core
 {
     public class Hub
     {
-        private Settings _settings;
-        private Storage _storage;
-
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
         static Hub()
@@ -19,7 +15,7 @@ namespace Noterium.Core
 
         private Hub()
         {
-            _storage = new Storage();
+            Storage = new Storage();
             AppSettings = new AppSettings();
         }
 
@@ -27,9 +23,9 @@ namespace Noterium.Core
 
         public SearchManager SearchManager { get; private set; }
 
-        public Storage Storage => _storage;
+        public Storage Storage { get; }
 
-        public Settings Settings => _settings;
+        public Settings Settings { get; private set; }
 
         public TextClipper TextClipper { get; private set; }
 
@@ -39,17 +35,17 @@ namespace Noterium.Core
 
         public AppSettings AppSettings { get; }
 
+        public Library CurrentLibrary { get; set; }
+
         public void Init(Library l)
         {
-	        CurrentLibrary = l;
-            _storage.Init(l);
-            SearchManager = new SearchManager(_storage);
-            _settings = _storage.GetSettings();
+            CurrentLibrary = l;
+            Storage.Init(l);
+            SearchManager = new SearchManager(Storage);
+            Settings = Storage.GetSettings();
             TextClipper = new TextClipper();
-            EncryptionManager = new EncryptionManager(_storage.DataStore);
+            EncryptionManager = new EncryptionManager(Storage.DataStore);
             TagManager = new TagManager();
         }
-
-	    public Library CurrentLibrary { get; set; }
     }
 }

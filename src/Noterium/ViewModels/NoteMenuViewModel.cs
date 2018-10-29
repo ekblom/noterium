@@ -2,368 +2,356 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using GongSolutions.Wpf.DragDrop;
+using MahApps.Metro.Controls.Dialogs;
 using Noterium.Code.Commands;
-using Noterium.Core.DataCarriers;
-using Noterium.ViewModels;
-using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
+using Noterium.Code.Helpers;
 using Noterium.Code.Messages;
 using Noterium.Core;
-using Noterium.Code.Helpers;
-using MahApps.Metro.Controls.Dialogs;
-using System.Threading.Tasks;
-using GalaSoft.MvvmLight.CommandWpf;
+using Noterium.Core.DataCarriers;
+using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
 
 namespace Noterium.ViewModels
 {
-	public class NoteMenuViewModel : NoteriumViewModelBase, IDragSource, IDropTarget
-	{
-		private NoteViewModel _selectedNote;
-		private string _sortMode = "Index";
-		private readonly object _currentNotesLockObject = new object();
+    public class NoteMenuViewModel : NoteriumViewModelBase, IDragSource, IDropTarget
+    {
+        private readonly object _currentNotesLockObject = new object();
+        private NoteViewModel _selectedNote;
+        private string _sortMode = "Index";
 
-		public ICommand CreateNewNoteCommand { get; set; }
-		public ICommand CreateNewSecureNoteCommand { get; set; }
-		public ICommand SelectedItemChangedCommand { get; set; }
-		public ICommand FilterNotesCommand { get; set; }
-		public ICommand ClearFilterCommand { get; set; }
-		public ICommand AddNoteCommand { get; set; }
-		public ICommand ShowNoteCommandsCommand { get; set; }
+        public NoteMenuViewModel()
+        {
+            DataSource = new ObservableCollection<NoteViewModel>();
+            BindingOperations.EnableCollectionSynchronization(DataSource, _currentNotesLockObject);
 
-		public NoteMenuViewModel()
-		{
-			DataSource = new ObservableCollection<NoteViewModel>();
-			BindingOperations.EnableCollectionSynchronization(DataSource, _currentNotesLockObject);
+            FilterNotesCommand = new SimpleCommand(FilterNotes);
+            ClearFilterCommand = new SimpleCommand(ClearFilter);
+            ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
+            CreateNewNoteCommand = new RelayCommand(CreateNewNote);
+            CreateNewSecureNoteCommand = new RelayCommand(CreateNewSecureNote);
 
-			FilterNotesCommand = new SimpleCommand(FilterNotes);
-			ClearFilterCommand = new SimpleCommand(ClearFilter);
-			ShowNoteCommandsCommand = new SimpleCommand(ShowNoteCommands);
-			CreateNewNoteCommand = new RelayCommand(CreateNewNote);
-			CreateNewSecureNoteCommand = new RelayCommand(CreateNewSecureNote);
+            PropertyChanged += OnPropertyChanged;
 
-			PropertyChanged += OnPropertyChanged;
+            var saveTimer = new Timer(1000)
+            {
+                AutoReset = true,
+                Enabled = true
+            };
+            saveTimer.Elapsed += SaveNotIfDirty;
+            saveTimer.Start();
 
-			var saveTimer = new Timer(1000)
-			{
-				AutoReset = true,
-				Enabled = true
-			};
-			saveTimer.Elapsed += SaveNotIfDirty;
-			saveTimer.Start();
+            MessengerInstance.Register<ReloadNoteMenuList>(this, DoReloadNoteList);
+            MessengerInstance.Register<DeleteNote>(this, DeleteNote);
+        }
 
-			MessengerInstance.Register<ReloadNoteMenuList>(this, DoReloadNoteList);
-			MessengerInstance.Register<DeleteNote>(this, DeleteNote);
-		}
+        public ICommand CreateNewNoteCommand { get; set; }
+        public ICommand CreateNewSecureNoteCommand { get; set; }
+        public ICommand SelectedItemChangedCommand { get; set; }
+        public ICommand FilterNotesCommand { get; set; }
+        public ICommand ClearFilterCommand { get; set; }
+        public ICommand AddNoteCommand { get; set; }
+        public ICommand ShowNoteCommandsCommand { get; set; }
 
-		private void DeleteNote(DeleteNote message)
-		{
-			// TODO: i18n
-			if (SelectedNote == null || SelectedNote != message.Note)
-				return;
+        public ObservableCollection<NoteViewModel> DataSource { get; }
 
-			Note note = SelectedNote.Note;
-			if (note.InTrashCan)
-			{
-				return;
-			}
+        public string SortMode
+        {
+            get => _sortMode;
+            set
+            {
+                _sortMode = value;
+                RaisePropertyChanged();
+            }
+        }
 
-			if (note.Protected)
-			{
-				MessengerInstance.Send(new QuickMessage("You cant delete this note, it's protected from that."));
+        public NoteViewModel SelectedNote
+        {
+            get => _selectedNote;
+            set
+            {
+                if (_selectedNote != null)
+                {
+                    _selectedNote.SaveNote();
+                    _selectedNote.IsSelected = false;
+                }
 
-				return;
-			}
+                _selectedNote = value;
+                if (_selectedNote != null)
+                    _selectedNote.IsSelected = true;
 
-			var settings = DialogHelpers.GetDefaultDialogSettings();
+                MessengerInstance.Send(new SelectedNoteChanged(_selectedNote));
 
-			MainWindowInstance.ShowMessageAsync("Delete", $"Do you want to delete {note.Name}?", MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate (Task<MessageDialogResult> task)
-			{
-				if (task.Result == MessageDialogResult.Affirmative)
-				{
-					InvokeOnCurrentDispatcher(() =>
-					{
-						note.InTrashCan = true;
+                RaisePropertyChanged();
+            }
+        }
 
-						DataSource.Remove(SelectedNote);
-						SelectedNote = DataSource.FirstOrDefault();
-						Hub.Instance.Settings.RefreshTags();
-					});
-				}
-			});
-		}
+        public bool Loaded { get; internal set; }
 
-		private void DoReloadNoteList(ReloadNoteMenuList obj)
-		{
-			List<Note> notes = new List<Note>();
+        public void DragOver(IDropInfo dropInfo)
+        {
+            if (SortMode != "Index")
+                dropInfo.Effects = DragDropEffects.None;
+            else
+                DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
 
-			if (obj.Tag != null)
-			{
-				var tempNotes = Hub.Instance.Storage.GetAllNotes();
-				notes = tempNotes.Where(n => n.Tags.Contains(obj.Tag.Name)).Where(n => !n.InTrashCan).ToList();
-			}
-			else if (obj.Notebook != null)
-			{
-				notes = Hub.Instance.Storage.GetNotes(obj.Notebook).Where(n => !n.InTrashCan).ToList();
-			}
-			else if (obj.LibraryType != MenuItemType.Undefined)
-			{
-				if (obj.LibraryType == MenuItemType.Trashcan)
-				{
-					var tempNotes = Hub.Instance.Storage.GetAllNotes();
-					notes = tempNotes.Where(n => n.InTrashCan).ToList();
-				}
-				else if (obj.LibraryType == MenuItemType.Favorites)
-				{
-					var tempNotes = Hub.Instance.Storage.GetAllNotes();
-					notes = tempNotes.Where(n => n.Favourite).Where(n => !n.InTrashCan).ToList();
-				}
-				else if (obj.LibraryType == MenuItemType.All)
-				{
-					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Name).ToList();
-				}
-				else if (obj.LibraryType == MenuItemType.Recent)
-				{
-					notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Changed).Take(15).ToList();
-				}
-			}
+        public void Drop(IDropInfo dropInfo)
+        {
+            if (SortMode != "Index")
+                return;
 
-			var models = ViewModelLocator.Instance.GetNoteViewModels(notes);
-			SelectedNote = null;
-			UpdateDataSource(models);
+            DragDrop.DefaultDropHandler.Drop(dropInfo);
+        }
 
-			if (obj.SelectedNote != null)
-			{
-				var selected = ViewModelLocator.Instance.GetNoteViewModel(obj.SelectedNote);
-				SelectedNote = selected;
-			}
-			else
-				SelectedNote = models.Any() ? models[0] : null;
-		}
+        private void DeleteNote(DeleteNote message)
+        {
+            // TODO: i18n
+            if (SelectedNote == null || SelectedNote != message.Note)
+                return;
 
-		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "SortMode")
-			{
-				var selected = SelectedNote;
-				UpdateDataSource(new List<NoteViewModel>(DataSource));
-				SelectedNote = selected;
-			}
-		}
+            var note = SelectedNote.Note;
+            if (note.InTrashCan) return;
 
-		private void ShowNoteCommands(object o)
-		{
-			if (o is ListViewItem)
-			{
+            if (note.Protected)
+            {
+                MessengerInstance.Send(new QuickMessage("You cant delete this note, it's protected from that."));
 
-			}
-		}
+                return;
+            }
 
-		private void SaveNotIfDirty(object sender, ElapsedEventArgs elapsedEventArgs)
-		{
-			if (SelectedNote != null && SelectedNote.IsDirty)
-				SelectedNote.SaveNote();
-		}
+            var settings = DialogHelpers.GetDefaultDialogSettings();
 
-		private void ClearFilter(object arg)
-		{
-			foreach (NoteViewModel model in DataSource)
-				model.Visible = true;
-		}
+            MainWindowInstance.ShowMessageAsync("Delete", $"Do you want to delete {note.Name}?", MessageDialogStyle.AffirmativeAndNegative, settings).ContinueWith(delegate(Task<MessageDialogResult> task)
+            {
+                if (task.Result == MessageDialogResult.Affirmative)
+                    InvokeOnCurrentDispatcher(() =>
+                    {
+                        note.InTrashCan = true;
 
-		private void FilterNotes(object o)
-		{
-			var arg = o as TextChangedEventArgs;
-			if (arg != null)
-			{
-				TextBox tb = (TextBox)arg.OriginalSource;
+                        DataSource.Remove(SelectedNote);
+                        SelectedNote = DataSource.FirstOrDefault();
+                        Hub.Instance.Settings.RefreshTags();
+                    });
+            });
+        }
 
-				foreach (NoteViewModel model in DataSource)
-				{
-					if (model.Note.Name.Contains(tb.Text) || ContainsTag(model, tb.Text) || model.Note.DecryptedText.Contains(tb.Text))
-					{
-						model.Visible = true;
-					}
-					else
-					{
-						model.Visible = false;
-					}
-				}
-			}
-		}
+        private void DoReloadNoteList(ReloadNoteMenuList obj)
+        {
+            var notes = new List<Note>();
 
-		private bool ContainsTag(NoteViewModel model, string text)
-		{
-			return model.Tags.Any(t => t.Text.Contains(text));
-		}
+            if (obj.Tag != null)
+            {
+                var tempNotes = Hub.Instance.Storage.GetAllNotes();
+                notes = tempNotes.Where(n => n.Tags.Contains(obj.Tag.Name)).Where(n => !n.InTrashCan).ToList();
+            }
+            else if (obj.Notebook != null)
+            {
+                notes = Hub.Instance.Storage.GetNotes(obj.Notebook).Where(n => !n.InTrashCan).ToList();
+            }
+            else if (obj.LibraryType != MenuItemType.Undefined)
+            {
+                if (obj.LibraryType == MenuItemType.Trashcan)
+                {
+                    var tempNotes = Hub.Instance.Storage.GetAllNotes();
+                    notes = tempNotes.Where(n => n.InTrashCan).ToList();
+                }
+                else if (obj.LibraryType == MenuItemType.Favorites)
+                {
+                    var tempNotes = Hub.Instance.Storage.GetAllNotes();
+                    notes = tempNotes.Where(n => n.Favourite).Where(n => !n.InTrashCan).ToList();
+                }
+                else if (obj.LibraryType == MenuItemType.All)
+                {
+                    notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Name).ToList();
+                }
+                else if (obj.LibraryType == MenuItemType.Recent)
+                {
+                    notes = Hub.Instance.Storage.GetAllNotes().Where(n => !n.InTrashCan).OrderBy(n => n.Changed).Take(15).ToList();
+                }
+            }
 
-		public ObservableCollection<NoteViewModel> DataSource { get; }
+            var models = ViewModelLocator.Instance.GetNoteViewModels(notes);
+            SelectedNote = null;
+            UpdateDataSource(models);
 
-		public string SortMode
-		{
-			get { return _sortMode; }
-			set { _sortMode = value; RaisePropertyChanged(); }
-		}
+            if (obj.SelectedNote != null)
+            {
+                var selected = ViewModelLocator.Instance.GetNoteViewModel(obj.SelectedNote);
+                SelectedNote = selected;
+            }
+            else
+            {
+                SelectedNote = models.Any() ? models[0] : null;
+            }
+        }
 
-		public NoteViewModel SelectedNote
-		{
-			get { return _selectedNote; }
-			set
-			{
-				if (_selectedNote != null)
-				{
-					_selectedNote.SaveNote();
-					_selectedNote.IsSelected = false;
-				}
-				_selectedNote = value;
-				if (_selectedNote != null)
-					_selectedNote.IsSelected = true;
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SortMode")
+            {
+                var selected = SelectedNote;
+                UpdateDataSource(new List<NoteViewModel>(DataSource));
+                SelectedNote = selected;
+            }
+        }
 
-				MessengerInstance.Send(new SelectedNoteChanged(_selectedNote));
+        private void ShowNoteCommands(object o)
+        {
+            if (o is ListViewItem)
+            {
+            }
+        }
 
-				RaisePropertyChanged();
-			}
-		}
+        private void SaveNotIfDirty(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            if (SelectedNote != null && SelectedNote.IsDirty)
+                SelectedNote.SaveNote();
+        }
 
-		public bool Loaded { get; internal set; }
+        private void ClearFilter(object arg)
+        {
+            foreach (var model in DataSource)
+                model.Visible = true;
+        }
 
+        private void FilterNotes(object o)
+        {
+            var arg = o as TextChangedEventArgs;
+            if (arg != null)
+            {
+                var tb = (TextBox) arg.OriginalSource;
 
-		#region dragdrop
+                foreach (var model in DataSource)
+                    if (model.Note.Name.Contains(tb.Text) || ContainsTag(model, tb.Text) || model.Note.DecryptedText.Contains(tb.Text))
+                        model.Visible = true;
+                    else
+                        model.Visible = false;
+            }
+        }
 
+        private bool ContainsTag(NoteViewModel model, string text)
+        {
+            return model.Tags.Any(t => t.Text.Contains(text));
+        }
 
-		public void StartDrag(IDragInfo dragInfo)
-		{
-			DragDrop.DefaultDragHandler.StartDrag(dragInfo);
-		}
+        public void UpdateDataSource(List<NoteViewModel> models)
+        {
+            if (SortMode == "Index")
+            {
+                models.Sort((x, y) => x.Note.SortIndex.CompareTo(y.Note.SortIndex));
+            }
+            else
+            {
+                models.Sort((x, y) => string.Compare(x.Note.Name, y.Note.Name, StringComparison.Ordinal));
+                if (SortMode == "ZA")
+                    models.Reverse();
+            }
 
-		public bool CanStartDrag(IDragInfo dragInfo)
-		{
-			return true;
-		}
+            DataSource.Clear();
+            models.ForEach(DataSource.Add);
+        }
 
-		public void Dropped(IDropInfo dropInfo)
-		{
-			ObservableCollection<NoteViewModel> targetList = dropInfo.TargetCollection as ObservableCollection<NoteViewModel>;
-			if (targetList != null)
-			{
-				for (int i = 0; i < targetList.Count; i++)
-				{
-					NoteViewModel nvm = targetList[i];
-					nvm.Note.SortIndex = i;
-					nvm.SaveNote();
-				}
-			}
-		}
+        internal void CreateNewNote(string name, bool secure = false)
+        {
+            CreateNewNote(name, ViewModelLocator.Instance.NotebookMenu.SelectedNotebook.Notebook, secure, ViewModelLocator.Instance.NoteMenu.DataSource.Count);
+        }
 
-		public void DragCancelled()
-		{
+        internal Note CreateNewNote(string name, Notebook notebook, bool secure, int sortIndex, string text = null)
+        {
+            var note = new Note
+            {
+                ID = Guid.NewGuid(),
+                Name = name,
+                Notebook = notebook.ID,
+                Created = DateTime.Now,
+                Encrypted = secure,
+                SortIndex = sortIndex,
+                Text = text ?? string.Empty
+            };
+            note.SetIsInitialized();
+            note.Save();
 
-		}
+            //var notebookViewModel = ViewModelLocator.Instance.GetNotebookViewModel(notebook);
+            DoReloadNoteList(new ReloadNoteMenuList(notebook, note));
+            //MessengerInstance.Send(new UpdateNoteList(notebookViewModel));
 
-		public bool TryCatchOccurredException(Exception exception)
-		{
-			return false;
-		}
+            //if (focusNote)
+            //	MessengerInstance.Send(new SelectNote(note));
 
-		#endregion
-
-		public void DragOver(IDropInfo dropInfo)
-		{
-			if (SortMode != "Index")
-				dropInfo.Effects = DragDropEffects.None;
-			else
-				DragDrop.DefaultDropHandler.DragOver(dropInfo);
-		}
-
-		public void Drop(IDropInfo dropInfo)
-		{
-			if (SortMode != "Index")
-				return;
-
-			DragDrop.DefaultDropHandler.Drop(dropInfo);
-		}
-
-		public void UpdateDataSource(List<NoteViewModel> models)
-		{
-			if (SortMode == "Index")
-				models.Sort((x, y) => x.Note.SortIndex.CompareTo(y.Note.SortIndex));
-			else
-			{
-				models.Sort((x, y) => String.Compare(x.Note.Name, y.Note.Name, StringComparison.Ordinal));
-				if (SortMode == "ZA")
-					models.Reverse();
-			}
-
-			DataSource.Clear();
-			models.ForEach(DataSource.Add);
-		}
-
-		internal void CreateNewNote(string name, bool secure = false)
-		{
-			CreateNewNote(name, ViewModelLocator.Instance.NotebookMenu.SelectedNotebook.Notebook, secure, ViewModelLocator.Instance.NoteMenu.DataSource.Count);
-		}
-
-		internal Note CreateNewNote(string name, Notebook notebook, bool secure, int sortIndex, string text = null)
-		{
-			Note note = new Note
-			{
-				ID = Guid.NewGuid(),
-				Name = name,
-				Notebook = notebook.ID,
-				Created = DateTime.Now,
-				Encrypted = secure,
-				SortIndex = sortIndex,
-				Text = text ?? string.Empty
-			};
-			note.SetIsInitialized();
-			note.Save();
-
-			//var notebookViewModel = ViewModelLocator.Instance.GetNotebookViewModel(notebook);
-			DoReloadNoteList(new ReloadNoteMenuList(notebook, note));
-			//MessengerInstance.Send(new UpdateNoteList(notebookViewModel));
-
-			//if (focusNote)
-			//	MessengerInstance.Send(new SelectNote(note));
-
-			return note;
-		}
+            return note;
+        }
 
 
-		private void CreateNewSecureNote()
-		{
-			if (!Hub.Instance.EncryptionManager.SecureNotesEnabled)
-			{
-				MainWindowInstance.ShowMessageAsync("Secure notes", "To create secure notes you need to activate this function in settings.");
-				return;
-			}
+        private void CreateNewSecureNote()
+        {
+            if (!Hub.Instance.EncryptionManager.SecureNotesEnabled)
+            {
+                MainWindowInstance.ShowMessageAsync("Secure notes", "To create secure notes you need to activate this function in settings.");
+                return;
+            }
 
-			CreateNewNote(true);
-		}
+            CreateNewNote(true);
+        }
 
-		private void CreateNewNote()
-		{
-			CreateNewNote(false);
-		}
+        private void CreateNewNote()
+        {
+            CreateNewNote(false);
+        }
 
-		private void CreateNewNote(bool secure)
-		{
-			// TODO: i18n
-			var settings = DialogHelpers.GetDefaultDialogSettings();
+        private void CreateNewNote(bool secure)
+        {
+            // TODO: i18n
+            var settings = DialogHelpers.GetDefaultDialogSettings();
 
-			MainWindowInstance.ShowInputAsync("New note", "Name of the new note:", settings).ContinueWith(delegate (Task<string> task)
-			{
-				string name = task.Result;
-				if (!string.IsNullOrWhiteSpace(name))
-				{
-					InvokeOnCurrentDispatcher(() => { CreateNewNote(name, secure); });
-				}
-			});
-		}
-	}
+            MainWindowInstance.ShowInputAsync("New note", "Name of the new note:", settings).ContinueWith(delegate(Task<string> task)
+            {
+                var name = task.Result;
+                if (!string.IsNullOrWhiteSpace(name)) InvokeOnCurrentDispatcher(() => { CreateNewNote(name, secure); });
+            });
+        }
+
+
+        #region dragdrop
+
+        public void StartDrag(IDragInfo dragInfo)
+        {
+            DragDrop.DefaultDragHandler.StartDrag(dragInfo);
+        }
+
+        public bool CanStartDrag(IDragInfo dragInfo)
+        {
+            return true;
+        }
+
+        public void Dropped(IDropInfo dropInfo)
+        {
+            var targetList = dropInfo.TargetCollection as ObservableCollection<NoteViewModel>;
+            if (targetList != null)
+                for (var i = 0; i < targetList.Count; i++)
+                {
+                    var nvm = targetList[i];
+                    nvm.Note.SortIndex = i;
+                    nvm.SaveNote();
+                }
+        }
+
+        public void DragCancelled()
+        {
+        }
+
+        public bool TryCatchOccurredException(Exception exception)
+        {
+            return false;
+        }
+
+        #endregion
+    }
 }

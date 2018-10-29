@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -23,44 +20,53 @@ namespace Noterium.ViewModels
         private BackupSet _selectedBackupSet;
         private FileTreeNode _selectedFileNode;
         private bool _showNoteFields;
-        public ObservableCollection<BackupSet> BackupSets { get; set; }
 
-        public BackupSet SelectedBackupSet
-        {
-            get { return _selectedBackupSet; }
-            set { _selectedBackupSet = value; RaisePropertyChanged(); }
-        }
-
-        public ObservableCollection<ITreeNode> BackupSetNodes { get; }
-
-        public FileTreeNode SelectedFileNode
-        {
-            get { return _selectedFileNode; }
-            set
-            {
-                _selectedFileNode = value;
-                ShowNoteFields = _selectedFileNode != null;
-				RaisePropertyChanged();
-            }
-        }
-
-        public bool ShowNoteFields
-        {
-            get { return _showNoteFields; }
-            set { _showNoteFields = value; RaisePropertyChanged(); }
-        }
-
-        public ICommand RestoreNoteCommand { get; set; }
-        public BackupManager Window { get; set; }
-		public bool Loaded { get; internal set; }
-
-		public BackupManagerViewModel()
+        public BackupManagerViewModel()
         {
             LoadBackupSets();
             BackupSetNodes = new ObservableCollection<ITreeNode>();
             RestoreNoteCommand = new SimpleCommand(RestoreSelectedNote);
             PropertyChanged += OnPropertyChanged;
         }
+
+        public ObservableCollection<BackupSet> BackupSets { get; set; }
+
+        public BackupSet SelectedBackupSet
+        {
+            get => _selectedBackupSet;
+            set
+            {
+                _selectedBackupSet = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ITreeNode> BackupSetNodes { get; }
+
+        public FileTreeNode SelectedFileNode
+        {
+            get => _selectedFileNode;
+            set
+            {
+                _selectedFileNode = value;
+                ShowNoteFields = _selectedFileNode != null;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool ShowNoteFields
+        {
+            get => _showNoteFields;
+            set
+            {
+                _showNoteFields = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICommand RestoreNoteCommand { get; set; }
+        public BackupManager Window { get; set; }
+        public bool Loaded { get; internal set; }
 
         private void RestoreSelectedNote(object obj)
         {
@@ -81,24 +87,23 @@ namespace Noterium.ViewModels
                     }
                     else
                     {
-                        Notebook nb = Hub.Instance.Storage.GetNotebook(SelectedFileNode.Note.Notebook);
+                        var nb = Hub.Instance.Storage.GetNotebook(SelectedFileNode.Note.Notebook);
                         if (nb != null)
                         {
-                           ;
-                            var dialog = (BaseMetroDialog)Window.Resources["SelectTargetNotebookDialog"];
+                            ;
+                            var dialog = (BaseMetroDialog) Window.Resources["SelectTargetNotebookDialog"];
 
-                            var settings = new MetroDialogSettings()
+                            var settings = new MetroDialogSettings
                             {
                                 AffirmativeButtonText = "OK",
                                 AnimateShow = true,
                                 NegativeButtonText = "Go away!",
-                                FirstAuxiliaryButtonText = "Cancel",
+                                FirstAuxiliaryButtonText = "Cancel"
                             };
 
 
                             Window.ShowMetroDialogAsync(dialog, settings);
                         }
-
                     }
                 }
             });
@@ -116,29 +121,29 @@ namespace Noterium.ViewModels
             var files = Hub.Instance.Storage.GetBackupFiles();
             foreach (var file in files)
             {
-                BackupSet set = new BackupSet(file);
+                var set = new BackupSet(file);
                 BackupSets.Add(set);
             }
         }
 
         private void LoadBackupSet(string fileName)
         {
-            List<FolderTreeNode> folders = new List<FolderTreeNode>();
-            List<FolderTreeNode> allTreeNodes = new List<FolderTreeNode>();
+            var folders = new List<FolderTreeNode>();
+            var allTreeNodes = new List<FolderTreeNode>();
 
-            using (ZipArchive zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
+            using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
             {
-                foreach (ZipArchiveEntry entry in zip.Entries)
+                foreach (var entry in zip.Entries)
                 {
-                    string path = entry.FullName.Contains("/") ? entry.FullName.Substring(0, entry.FullName.LastIndexOf('/')) : "/";
+                    var path = entry.FullName.Contains("/") ? entry.FullName.Substring(0, entry.FullName.LastIndexOf('/')) : "/";
                     FolderTreeNode parentFolder = null;
                     if (path != "/")
                     {
-                        Queue<string> pathChunks = new Queue<string>(path.Split('/'));
+                        var pathChunks = new Queue<string>(path.Split('/'));
                         while (pathChunks.Any())
                         {
-                            string folderName = pathChunks.Dequeue();
-                            FolderTreeNode node = allTreeNodes.FirstOrDefault(f => f.FolderId == folderName);
+                            var folderName = pathChunks.Dequeue();
+                            var node = allTreeNodes.FirstOrDefault(f => f.FolderId == folderName);
 
                             if (node == null)
                             {
@@ -156,17 +161,16 @@ namespace Noterium.ViewModels
                                 parentFolder = node;
                             }
                         }
-
                     }
 
                     if (entry.Name.EndsWith(".note"))
                     {
-                        Note note = ConvertFileInfo<Note>(entry.Open());
+                        var note = ConvertFileInfo<Note>(entry.Open());
                         parentFolder?.Children.Add(new FileTreeNode(entry, note, parentFolder));
                     }
                     else if (entry.Name.EndsWith(".book"))
                     {
-                        Notebook nb = ConvertFileInfo<Notebook>(entry.Open());
+                        var nb = ConvertFileInfo<Notebook>(entry.Open());
                         var treeNode = allTreeNodes.FirstOrDefault(n => n.FolderId.ToLowerInvariant() == nb.ID.ToString().ToLowerInvariant());
                         if (treeNode != null)
                         {
@@ -184,7 +188,7 @@ namespace Noterium.ViewModels
 
         private T ConvertFileInfo<T>(Stream stream)
         {
-            StreamReader reader = new StreamReader(stream);
+            var reader = new StreamReader(stream);
             var fileContent = reader.ReadToEnd();
             reader.Close();
 
@@ -192,7 +196,6 @@ namespace Noterium.ViewModels
 
             return result;
         }
-
     }
 
     public interface ITreeNode
@@ -205,16 +208,29 @@ namespace Noterium.ViewModels
     public class FolderTreeNode : ITreeNode, INotifyPropertyChanged
     {
         private readonly ITreeNode _parent;
-        public string Name { get; set; }
-        public string Path { get; }
-        private bool _isSelected;
         private bool _isExpanded;
+        private bool _isSelected;
+
+        public FolderTreeNode(string folderId, ITreeNode parent = null)
+        {
+            _parent = parent;
+            FolderId = folderId;
+            Children = new List<ITreeNode>();
+        }
+
+        public string Path { get; }
+
+        public List<ITreeNode> Children { get; }
+        public Notebook Notebook { get; set; }
+
+        public string FolderId { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public string Name { get; set; }
 
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 if (value != _isSelected)
@@ -227,7 +243,7 @@ namespace Noterium.ViewModels
 
         public bool IsExpanded
         {
-            get { return _isExpanded; }
+            get => _isExpanded;
             set
             {
                 if (value != _isExpanded)
@@ -242,37 +258,33 @@ namespace Noterium.ViewModels
             }
         }
 
-        public List<ITreeNode> Children { get; private set; }
-        public Notebook Notebook { get; set; }
-
         private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public FolderTreeNode(string folderId, ITreeNode parent = null)
-        {
-            _parent = parent;
-            FolderId = folderId;
-            Children = new List<ITreeNode>();
-        }
-
-        public string FolderId { get; set; }
     }
 
     public class FileTreeNode : ITreeNode, INotifyPropertyChanged
     {
-        public Note Note { get; set; }
         private readonly ZipArchiveEntry _entry;
         private readonly ITreeNode _parent;
-        private bool _isSelected;
         private bool _isExpanded;
+        private bool _isSelected;
+
+        public FileTreeNode(ZipArchiveEntry entry, Note note, ITreeNode parent)
+        {
+            Note = note;
+            _entry = entry;
+            _parent = parent;
+        }
+
+        public Note Note { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 if (value != _isSelected)
@@ -285,7 +297,7 @@ namespace Noterium.ViewModels
 
         public bool IsExpanded
         {
-            get { return _isExpanded; }
+            get => _isExpanded;
             set
             {
                 if (value != _isExpanded)
@@ -302,13 +314,6 @@ namespace Noterium.ViewModels
 
         public string Name => Note.Name;
 
-        public FileTreeNode(ZipArchiveEntry entry, Note note, ITreeNode parent)
-        {
-            Note = note;
-            _entry = entry;
-            _parent = parent;
-        }
-
         private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -317,24 +322,24 @@ namespace Noterium.ViewModels
 
     public class BackupSet
     {
-        public FileInfo File { get; }
-        public string FileName => File.Name;
-
         public BackupSet(FileInfo file)
         {
             File = file;
         }
+
+        public FileInfo File { get; }
+        public string FileName => File.Name;
     }
 
     public class FileCarrier
     {
-        public string FilePath { get; }
-        public string FileName { get; }
-
         public FileCarrier(string fileName, string filePath)
         {
             FileName = fileName;
             FilePath = filePath;
         }
+
+        public string FilePath { get; }
+        public string FileName { get; }
     }
 }

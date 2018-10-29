@@ -28,7 +28,7 @@ namespace Noterium.Core.Helpers
                     try
                     {
                         var ptr = new IntPtr((long) gch.AddrOfPinnedObject() + 40);
-                        bmp = new Bitmap(width, height, width*4, PixelFormat.Format32bppArgb, ptr);
+                        bmp = new Bitmap(width, height, width * 4, PixelFormat.Format32bppArgb, ptr);
 
                         var newBmp = new Bitmap(bmp);
                         newBmp.RotateFlip(RotateFlipType.Rotate180FlipX);

@@ -2,13 +2,13 @@
 
 namespace Noterium.Code.Messages
 {
-	internal struct SelectedNoteChanged
-	{
-		public NoteViewModel SelectedNote { get; private set; }
+    internal struct SelectedNoteChanged
+    {
+        public NoteViewModel SelectedNote { get; }
 
-		public SelectedNoteChanged(NoteViewModel note)
-		{
-			SelectedNote = note;
-		}
-	}
+        public SelectedNoteChanged(NoteViewModel note)
+        {
+            SelectedNote = note;
+        }
+    }
 }

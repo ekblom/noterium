@@ -1,133 +1,127 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using GongSolutions.Wpf.DragDrop;
-using MahApps.Metro.Controls.Dialogs;
 using Noterium.Code.Commands;
-using Noterium.Code.Helpers;
 using Noterium.Code.Markdown;
+using Noterium.Code.Messages;
 using Noterium.Core;
 using Noterium.Core.DataCarriers;
-using Noterium.Code.Messages;
-using System;
-using System.Threading;
 
 namespace Noterium.ViewModels
 {
-	public class NoteViewerViewModel : NoteriumViewModelBase
-	{
-		private NoteViewModel _noteViewModel;
+    public class NoteViewerViewModel : NoteriumViewModelBase
+    {
+        private NoteViewModel _noteViewModel;
 
-		public ICommand EditNoteCommand { get; set; }
-		public ICommand SaveNoteCommand { get; set; }
-		public ICommand DocumentCheckBoxCheckedCommand { get; set; }
-		public ICommand CheckBoxCheckUpdatedTextCommand { get; set; }
-		public ICommand CopyNoteCommand { get; set; }
-		public ICommand RenameNoteCommand { get; set; }
+        private bool _secureNotesEnabled;
+        private NoteFile _selectedNoteFile;
 
-		private bool _secureNotesEnabled;
-		private NoteFile _selectedNoteFile;
-		private TextToFlowDocumentConverter _markdownConverter;
+        public NoteViewerViewModel()
+        {
+            PropertyChanged += NoteViewModelPropertyChanged;
 
-		public NoteViewModel CurrentNote
-		{
-			get { return _noteViewModel; }
-			set { _noteViewModel = value; RaisePropertyChanged(); }
-		}
+            Hub.Instance.EncryptionManager.PropertyChanged += NoteViewModelPropertyChanged;
+            IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
 
-		public Settings Settings => Hub.Instance.Settings;
+            DocumentCheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
+            MessengerInstance.Register<SelectedNoteChanged>(this, UpdateSelectedNote);
 
-		public bool IsSecureNotesEnabled
-		{
-			get { return _secureNotesEnabled; }
-			set { _secureNotesEnabled = value; RaisePropertyChanged(); }
-		}
+            // Force selection of first note sincen NoteMenuViewModel is instantiated before this.
+            CurrentNote = ViewModelLocator.Instance.NoteMenu.SelectedNote;
+        }
 
-		public TextToFlowDocumentConverter MarkdownConverter
-		{
-			get { return _markdownConverter; }
-			set { _markdownConverter = value; }
-		}
+        public ICommand EditNoteCommand { get; set; }
+        public ICommand SaveNoteCommand { get; set; }
+        public ICommand DocumentCheckBoxCheckedCommand { get; set; }
+        public ICommand CheckBoxCheckUpdatedTextCommand { get; set; }
+        public ICommand CopyNoteCommand { get; set; }
+        public ICommand RenameNoteCommand { get; set; }
 
-		public bool Loaded { get; internal set; }
+        public NoteViewModel CurrentNote
+        {
+            get => _noteViewModel;
+            set
+            {
+                _noteViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
 
-		public NoteViewerViewModel()
-		{
-			PropertyChanged += NoteViewModelPropertyChanged;
+        public Settings Settings => Hub.Instance.Settings;
 
-			Hub.Instance.EncryptionManager.PropertyChanged += NoteViewModelPropertyChanged;
-			IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
+        public bool IsSecureNotesEnabled
+        {
+            get => _secureNotesEnabled;
+            set
+            {
+                _secureNotesEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
 
-			DocumentCheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
-			MessengerInstance.Register<SelectedNoteChanged>(this, UpdateSelectedNote);
+        public TextToFlowDocumentConverter MarkdownConverter { get; set; }
 
-			// Force selection of first note sincen NoteMenuViewModel is instantiated before this.
-			CurrentNote = ViewModelLocator.Instance.NoteMenu.SelectedNote;
-		}
+        public bool Loaded { get; internal set; }
 
-		private void UpdateSelectedNote(SelectedNoteChanged obj)
-		{
-			if (MarkdownConverter != null)
-			{
-				if (obj.SelectedNote != null)
-					MarkdownConverter.CurrentNote = obj.SelectedNote.Note;
-				else
-					MarkdownConverter.CurrentNote = null;
-			}
-			CurrentNote = obj.SelectedNote;
-		}
+        private void UpdateSelectedNote(SelectedNoteChanged obj)
+        {
+            if (MarkdownConverter != null)
+            {
+                if (obj.SelectedNote != null)
+                    MarkdownConverter.CurrentNote = obj.SelectedNote.Note;
+                else
+                    MarkdownConverter.CurrentNote = null;
+            }
 
-		private void DocumentCheckBoxChecked(object arg)
-		{
-			CheckBox cb = arg as CheckBox;
-			if (cb != null)
-			{
-				int number = (int)cb.Tag;
+            CurrentNote = obj.SelectedNote;
+        }
 
-				string regString = "^" + SharedSettings.MarkerToDo;
-				Regex reg = new Regex(regString, RegexOptions.Compiled | RegexOptions.Singleline);
-				string replaceRegex = @"\[(?:\s|x)\]";
-				int cbNumber = 0;
-				string[] lines = CurrentNote.Note.DecryptedText.Split('\n');
-				for (int index = 0; index < lines.Length; index++)
-				{
-					string line = lines[index];
-					if (reg.IsMatch(line))
-					{
-						if (cbNumber == number)
-						{
-							bool isChecked = cb.IsChecked ?? false;
+        private void DocumentCheckBoxChecked(object arg)
+        {
+            var cb = arg as CheckBox;
+            if (cb != null)
+            {
+                var number = (int) cb.Tag;
 
-							string isCheckedString = isChecked ? "[x]" : "[ ]";
-							//string text = line.Substring(line.LastIndexOf("]", StringComparison.Ordinal) + 2);
-							lines[index] = Regex.Replace(line, replaceRegex, isCheckedString);
-							break;
-						}
-						cbNumber++;
-					}
-				}
+                var regString = "^" + SharedSettings.MarkerToDo;
+                var reg = new Regex(regString, RegexOptions.Compiled | RegexOptions.Singleline);
+                var replaceRegex = @"\[(?:\s|x)\]";
+                var cbNumber = 0;
+                var lines = CurrentNote.Note.DecryptedText.Split('\n');
+                for (var index = 0; index < lines.Length; index++)
+                {
+                    var line = lines[index];
+                    if (reg.IsMatch(line))
+                    {
+                        if (cbNumber == number)
+                        {
+                            var isChecked = cb.IsChecked ?? false;
 
-				CurrentNote.Note.DecryptedText = string.Join("\n", lines);
-				CheckBoxCheckUpdatedTextCommand?.Execute(CurrentNote.Note.DecryptedText);
-			}
-		}
+                            var isCheckedString = isChecked ? "[x]" : "[ ]";
+                            //string text = line.Substring(line.LastIndexOf("]", StringComparison.Ordinal) + 2);
+                            lines[index] = Regex.Replace(line, replaceRegex, isCheckedString);
+                            break;
+                        }
 
-		void NoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "Note")
-			{
-			}
-			else if (e.PropertyName == "SecureNotesEnabled")
-			{
-				IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
-			}
-		}
-	}
+                        cbNumber++;
+                    }
+                }
+
+                CurrentNote.Note.DecryptedText = string.Join("\n", lines);
+                CheckBoxCheckUpdatedTextCommand?.Execute(CurrentNote.Note.DecryptedText);
+            }
+        }
+
+        private void NoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Note")
+            {
+            }
+            else if (e.PropertyName == "SecureNotesEnabled")
+            {
+                IsSecureNotesEnabled = Hub.Instance.EncryptionManager.SecureNotesEnabled;
+            }
+        }
+    }
 }

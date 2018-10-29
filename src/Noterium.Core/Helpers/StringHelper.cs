@@ -21,10 +21,7 @@ namespace Noterium.Core.Helpers
             // step 2, convert byte array to hex string
             var sb = new StringBuilder();
 
-            foreach (byte t in hash)
-            {
-                sb.Append(t.ToString("X2"));
-            }
+            foreach (var t in hash) sb.Append(t.ToString("X2"));
 
             return sb.ToString();
         }

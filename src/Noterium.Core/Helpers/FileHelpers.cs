@@ -15,14 +15,82 @@ namespace Noterium.Core.Helpers
     public class FileHelpers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(FileHelpers));
-		private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-		{
-			NullValueHandling = NullValueHandling.Ignore
-		};
 
-		#region Wait for file release
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
 
-		public static FileStream WaitForFileAccess(string filePath, FileMode fileMode, FileAccess access, FileShare share, TimeSpan timeout)
+        public static List<T> ConvertFileInfos<T>(IEnumerable<FileInfo> files)
+        {
+            var result = new List<T>();
+            foreach (var file in files)
+            {
+                var m = LoadObjectFromFile<T>(file);
+                if (m != null)
+                    result.Add(m);
+            }
+
+            return result;
+        }
+
+        public static T LoadObjectFromFile<T>(FileInfo file)
+        {
+            if (!file.Exists)
+                return default(T);
+
+            var fs = WaitForFileAccess(file.FullName, FileMode.Open, FileAccess.Read, FileShare.None, new TimeSpan(0, 0, 0, 10));
+            if (fs == null)
+            {
+                Log.Error("Unable to open " + file.FullName);
+                throw new Exception("Unable to open " + file.Name);
+            }
+
+            string fileContent;
+            using (var sr = new StreamReader(fs, Encoding.UTF8, true, 1024, false))
+            {
+                fileContent = sr.ReadToEnd();
+            }
+
+            var result = JsonConvert.DeserializeObject<T>(fileContent);
+            if (result == null)
+                Log.Error("Unable do deserialize " + file.FullName + "\n\n" + fileContent);
+
+            return result;
+        }
+
+        public static void Save<T>(T o, string filePath)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = WaitForFileAccess(filePath, FileMode.Create, FileAccess.Write, FileShare.None, new TimeSpan(0, 0, 0, 10));
+                if (fs == null)
+                    throw new SaveException(o);
+
+                var json = JsonConvert.SerializeObject(o, Formatting.Indented, JsonSerializerSettings);
+                var bytes = Encoding.UTF8.GetBytes(json);
+                if (bytes.Length == 0)
+                    throw new Exception("Error when saving note, 0 bytes of data. Note: " + filePath);
+
+                fs.Write(bytes, 0, Encoding.UTF8.GetByteCount(json));
+            }
+            finally
+            {
+                fs?.Close();
+            }
+        }
+
+        public static string GetValidFileName(string name)
+        {
+            foreach (var c in Path.GetInvalidFileNameChars())
+                name = name.Replace(c, '_');
+            return name;
+        }
+
+        #region Wait for file release
+
+        public static FileStream WaitForFileAccess(string filePath, FileMode fileMode, FileAccess access, FileShare share, TimeSpan timeout)
         {
             int errorCode;
             var start = DateTime.Now;
@@ -32,22 +100,13 @@ namespace Noterium.Core.Helpers
                 var fileHandle = CreateFile(filePath, ConvertFileAccess(access), ConvertFileShare(share), IntPtr.Zero,
                     ConvertFileMode(fileMode), EFileAttributes.Normal, IntPtr.Zero);
 
-                if (!fileHandle.IsInvalid)
-                {
-                    return new FileStream(fileHandle, access);
-                }
+                if (!fileHandle.IsInvalid) return new FileStream(fileHandle, access);
 
                 errorCode = Marshal.GetLastWin32Error();
 
-                if (errorCode != ERROR_SHARING_VIOLATION)
-                {
-                    break;
-                }
+                if (errorCode != ERROR_SHARING_VIOLATION) break;
 
-                if ((DateTime.Now - start) > timeout)
-                {
-                    return null; // timeout isn't an exception
-                }
+                if (DateTime.Now - start > timeout) return null; // timeout isn't an exception
 
                 Thread.Sleep(100);
             }
@@ -117,12 +176,12 @@ namespace Noterium.Core.Helpers
 
         private static EFileShare ConvertFileShare(FileShare share)
         {
-            return (EFileShare)((uint)share);
+            return (EFileShare) (uint) share;
         }
 
         private static ECreationDisposition ConvertFileMode(FileMode mode)
         {
-            return mode == FileMode.Open ? ECreationDisposition.OpenExisting : mode == FileMode.OpenOrCreate ? ECreationDisposition.OpenAlways : (ECreationDisposition)(uint)mode;
+            return mode == FileMode.Open ? ECreationDisposition.OpenExisting : mode == FileMode.OpenOrCreate ? ECreationDisposition.OpenAlways : (ECreationDisposition) (uint) mode;
         }
 
         [DllImport("kernel32.dll", EntryPoint = "CreateFileW", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -135,70 +194,6 @@ namespace Noterium.Core.Helpers
             EFileAttributes dwFlagsAndAttributes,
             IntPtr hTemplateFile);
 
-		#endregion
-
-		public static List<T> ConvertFileInfos<T>(IEnumerable<FileInfo> files)
-		{
-			var result = new List<T>();
-			foreach (var file in files)
-			{
-				var m = LoadObjectFromFile<T>(file);
-				if (m != null)
-					result.Add(m);
-			}
-			return result;
-		}
-
-		public static T LoadObjectFromFile<T>(FileInfo file)
-		{
-			if (!file.Exists)
-				return default(T);
-
-			var fs = FileHelpers.WaitForFileAccess(file.FullName, FileMode.Open, FileAccess.Read, FileShare.None, new TimeSpan(0, 0, 0, 10));
-			if (fs == null)
-			{
-				Log.Error("Unable to open " + file.FullName);
-				throw new Exception("Unable to open " + file.Name);
-			}
-			string fileContent;
-			using (StreamReader sr = new StreamReader(fs, Encoding.UTF8, true, 1024, false))
-				fileContent = sr.ReadToEnd();
-
-			var result = JsonConvert.DeserializeObject<T>(fileContent);
-			if (result == null)
-				Log.Error("Unable do deserialize " + file.FullName + "\n\n" + fileContent);
-
-			return result;
-		}
-
-		public static void Save<T>(T o, string filePath)
-		{
-			FileStream fs = null;
-			try
-			{
-				fs = FileHelpers.WaitForFileAccess(filePath, FileMode.Create, FileAccess.Write, FileShare.None, new TimeSpan(0, 0, 0, 10));
-				if (fs == null)
-					throw new SaveException(o);
-
-				var json = JsonConvert.SerializeObject(o, Formatting.Indented, JsonSerializerSettings);
-				var bytes = Encoding.UTF8.GetBytes(json);
-				if (bytes.Length == 0)
-					throw new Exception("Error when saving note, 0 bytes of data. Note: " + filePath);
-
-				fs.Write(bytes, 0, Encoding.UTF8.GetByteCount(json));
-			}
-			finally
-			{
-				fs?.Close();
-			}
-		}
-
-	    public static string GetValidFileName(string name)
-	    {
-			foreach (char c in Path.GetInvalidFileNameChars())
-				name = name.Replace(c, '_');
-		    return name;
-	    }
-
-	}
+        #endregion
+    }
 }

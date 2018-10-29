@@ -19,10 +19,12 @@
     <SolidColorBrush x:Key="NoteCodeForegroundBrush" options:Freeze="True" Color="{StaticResource NoteCodeForeground}" />
 
     <Color x:Key="NoteInlineCodeBackground">#002B36</Color>
-    <SolidColorBrush x:Key="NoteInlineCodeBackgroundBrush" options:Freeze="True" Color="{StaticResource NoteInlineCodeBackground}" />
+    <SolidColorBrush x:Key="NoteInlineCodeBackgroundBrush" options:Freeze="True"
+                     Color="{StaticResource NoteInlineCodeBackground}" />
 
     <Color x:Key="NoteInlineCodeForeground">#839496</Color>
-    <SolidColorBrush x:Key="NoteInlineCodeForegroundBrush" options:Freeze="True" Color="{StaticResource NoteInlineCodeForeground}" />
+    <SolidColorBrush x:Key="NoteInlineCodeForegroundBrush" options:Freeze="True"
+                     Color="{StaticResource NoteInlineCodeForeground}" />
 
     <!--  re-set brushes too  -->
     <SolidColorBrush x:Key="HighlightBrush" options:Freeze="True" Color="{StaticResource HighlightColor}" />
@@ -30,7 +32,8 @@
     <SolidColorBrush x:Key="AccentColorBrush2" options:Freeze="True" Color="{StaticResource AccentColor2}" />
     <SolidColorBrush x:Key="AccentColorBrush3" options:Freeze="True" Color="{StaticResource AccentColor3}" />
     <SolidColorBrush x:Key="AccentColorBrush4" options:Freeze="True" Color="{StaticResource AccentColor4}" />
-    <SolidColorBrush x:Key="IdealForegroundColorBrush" options:Freeze="True" Color="{StaticResource IdealForegroundColor}" />
+    <SolidColorBrush x:Key="IdealForegroundColorBrush" options:Freeze="True"
+                     Color="{StaticResource IdealForegroundColor}" />
 
     <SolidColorBrush x:Key="WindowTitleColorBrush" options:Freeze="True" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="NonActiveWindowTitleColorBrush" Color="#808080" options:Freeze="True" />
@@ -45,7 +48,8 @@
     <SolidColorBrush x:Key="ButtonMouseOverBorderBrush" options:Freeze="True" Color="{StaticResource BlackColor}" />
     <SolidColorBrush x:Key="ButtonMouseOverInnerBorderBrush" options:Freeze="True" Color="{StaticResource BlackColor}" />
     <SolidColorBrush x:Key="ComboBoxMouseOverBorderBrush" options:Freeze="True" Color="{StaticResource BlackColor}" />
-    <SolidColorBrush x:Key="ComboBoxMouseOverInnerBorderBrush" options:Freeze="True" Color="{StaticResource BlackColor}" />
+    <SolidColorBrush x:Key="ComboBoxMouseOverInnerBorderBrush" options:Freeze="True"
+                     Color="{StaticResource BlackColor}" />
 
     <SolidColorBrush x:Key="ControlBackgroundBrush" options:Freeze="True" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="WhiteBrush" options:Freeze="True" Color="{StaticResource WhiteColor}" />
@@ -53,8 +57,10 @@
     <SolidColorBrush x:Key="DisabledWhiteBrush" options:Freeze="True" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="WindowBackgroundBrush" options:Freeze="True" Color="{StaticResource WhiteColor}" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" options:Freeze="True" Color="{StaticResource WhiteColor}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" options:Freeze="True" Color="{StaticResource BlackColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" options:Freeze="True"
+                     Color="{StaticResource WhiteColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" options:Freeze="True"
+                     Color="{StaticResource BlackColor}" />
 
     <LinearGradientBrush x:Key="CheckBoxBackgroundBrush" options:Freeze="True" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Offset="0" Color="{StaticResource Gray7}" />

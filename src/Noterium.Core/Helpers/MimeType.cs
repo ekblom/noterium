@@ -17,29 +17,16 @@ namespace Noterium.Core.Helpers
             var mime = defaultMime; //DEFAULT UNKNOWN MIME TYPE
 
             if (file.Take(2).SequenceEqual(BMP))
-            {
                 mime = "image/bmp";
-            }
             else if (file.Take(4).SequenceEqual(GIF))
-            {
                 mime = "image/gif";
-            }
             else if (file.Take(4).SequenceEqual(ICO))
-            {
                 mime = "image/x-icon";
-            }
             else if (file.Take(3).SequenceEqual(JPG))
-            {
                 mime = "image/jpeg";
-            }
             else if (file.Take(16).SequenceEqual(PNG))
-            {
                 mime = "image/png";
-            }
-            else if (file.Take(4).SequenceEqual(TIFF))
-            {
-                mime = "image/tiff";
-            }
+            else if (file.Take(4).SequenceEqual(TIFF)) mime = "image/tiff";
 
             return mime;
         }

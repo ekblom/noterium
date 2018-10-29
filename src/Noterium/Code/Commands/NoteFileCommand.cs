@@ -4,29 +4,29 @@ using Noterium.Core.DataCarriers;
 
 namespace Noterium.Code.Commands
 {
-	public class NoteFileCommand : ICommand
-	{
-		public Func<NoteFile, bool> Function { get; internal set; }
+    public class NoteFileCommand : ICommand
+    {
+        public NoteFileCommand(Func<NoteFile, bool> function)
+        {
+            Function = function;
+        }
 
-		public NoteFileCommand(Func<NoteFile, bool> function)
-		{
-			Function = function;
-		}
+        public Func<NoteFile, bool> Function { get; internal set; }
 
-		public bool CanExecute(object parameter)
-		{
-			return Function != null;
-		}
+        public bool CanExecute(object parameter)
+        {
+            return Function != null;
+        }
 
-		public void Execute(object parameter)
-		{
-			Function((NoteFile)parameter);
-		}
+        public void Execute(object parameter)
+        {
+            Function((NoteFile) parameter);
+        }
 
-		public event EventHandler CanExecuteChanged
-		{
-			add { CommandManager.RequerySuggested += value; }
-			remove { CommandManager.RequerySuggested -= value; }
-		}
-	}
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+    }
 }

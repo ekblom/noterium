@@ -22,7 +22,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 if (_name == null)
@@ -35,7 +35,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public Color Color
         {
-            get { return _color; }
+            get => _color;
             set
             {
                 _color = value;
@@ -48,7 +48,7 @@ namespace Noterium.Core.DataCarriers
         [DataMember]
         public int Instances
         {
-            get { return _instances; }
+            get => _instances;
             set
             {
                 _instances = value;

@@ -8,106 +8,115 @@ using Noterium.Core.Helpers;
 
 namespace Noterium.Core.DataCarriers
 {
-	[DataContract]
-	public class Library : IComparable, IComparable<Note>, IEquatable<Note>, INotifyPropertyChanged
-	{
-		private string _name;
-		private bool _default;
+    [DataContract]
+    public class Library : IComparable, IComparable<Note>, IEquatable<Note>, INotifyPropertyChanged
+    {
+        private bool _default;
+        private string _name;
 
-		[DataMember]
-		public string Name
-		{
-			get { return _name; }
-			set
-			{
-				// RenameFile(_name, value);
-				_name = value;
-				RaiseOnPropetyChanged();
-			}
-		}
+        public Library()
+        {
+            _default = Hub.Instance.AppSettings.DefaultLibrary.Equals(Name);
+        }
 
-		private void RenameFile(string from, string to)
-		{
-			string fileName = GetFileName(from);
-			string toFileName = GetFileName(to);
-			if (File.Exists(fileName) && !File.Exists(toFileName))
-			{
-				FileInfo fi = new FileInfo(fileName);
-				fi.MoveTo(toFileName);
-				return;
-			}
+        [DataMember]
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                // RenameFile(_name, value);
+                _name = value;
+                RaiseOnPropetyChanged();
+            }
+        }
 
-			if(File.Exists(fileName))
-				throw new LibraryExistsException();
-		}
+        public string FilePath => GetFileName(Name);
 
-		public string FilePath => GetFileName(Name);
+        [DataMember]
+        public string Path { get; set; }
 
-		private string GetFileName(string name)
-		{
-			string validFileName = FileHelpers.GetValidFileName(name.ToLowerInvariant());
-			return System.IO.Path.Combine(Hub.Instance.AppSettings.SettingsFolder, $"{validFileName}.libcfg");
-		}
+        [DataMember]
+        public StorageType StorageType { get; set; }
 
-		[DataMember]
-		public string Path { get; set; }
-		[DataMember]
-		public StorageType StorageType { get; set; }
-		[DataMember]
-		public double NoteColumnWidth { get; set; } = 250;
-		[DataMember]
-		public double NotebookColumnWidth { get; set; } = 205;
-		[DataMember]
-		public Size WindowSize { get; set; } = new Size(1024, 768);
-		[DataMember]
-		public WindowState WindowState { get; set; } = WindowState.Normal;
+        [DataMember]
+        public double NoteColumnWidth { get; set; } = 250;
 
-		public bool Default
-		{
-			get { return _default; }
-			set { _default = value; RaiseOnPropetyChanged(); }
-		}
+        [DataMember]
+        public double NotebookColumnWidth { get; set; } = 205;
 
-		public Library()
-		{
-			_default = Hub.Instance.AppSettings.DefaultLibrary.Equals(Name);
-		}
+        [DataMember]
+        public Size WindowSize { get; set; } = new Size(1024, 768);
 
-		public int CompareTo(object obj)
-		{
-			return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
-		}
+        [DataMember]
+        public WindowState WindowState { get; set; } = WindowState.Normal;
 
-		public int CompareTo(Note other)
-		{
-			return string.Compare(Name, other.Name, StringComparison.Ordinal);
-		}
+        public bool Default
+        {
+            get => _default;
+            set
+            {
+                _default = value;
+                RaiseOnPropetyChanged();
+            }
+        }
 
-		public bool Equals(Note other)
-		{
-			return Name.Equals(other?.Name);
-		}
+        public int CompareTo(object obj)
+        {
+            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public int CompareTo(Note other)
+        {
+            return string.Compare(Name, other.Name, StringComparison.Ordinal);
+        }
 
-		private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
+        public bool Equals(Note other)
+        {
+            return Name.Equals(other?.Name);
+        }
 
-		public void Save()
-		{
-			FileHelpers.Save(this, FilePath);
-		}
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		public void Delete()
-		{
-			if(File.Exists(FilePath))
-				File.Delete(FilePath);
-		}
-	}
+        private void RenameFile(string from, string to)
+        {
+            var fileName = GetFileName(from);
+            var toFileName = GetFileName(to);
+            if (File.Exists(fileName) && !File.Exists(toFileName))
+            {
+                var fi = new FileInfo(fileName);
+                fi.MoveTo(toFileName);
+                return;
+            }
 
-	internal class LibraryExistsException : Exception
-	{
-	}
+            if (File.Exists(fileName))
+                throw new LibraryExistsException();
+        }
+
+        private string GetFileName(string name)
+        {
+            var validFileName = FileHelpers.GetValidFileName(name.ToLowerInvariant());
+            return System.IO.Path.Combine(Hub.Instance.AppSettings.SettingsFolder, $"{validFileName}.libcfg");
+        }
+
+        private void RaiseOnPropetyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Save()
+        {
+            FileHelpers.Save(this, FilePath);
+        }
+
+        public void Delete()
+        {
+            if (File.Exists(FilePath))
+                File.Delete(FilePath);
+        }
+    }
+
+    internal class LibraryExistsException : Exception
+    {
+    }
 }

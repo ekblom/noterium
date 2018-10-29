@@ -2,43 +2,43 @@
 
 namespace Noterium.Code.Messages
 {
-	internal struct ReloadNoteMenuList
-	{
-		public Tag Tag { get; private set; }
+    internal struct ReloadNoteMenuList
+    {
+        public Tag Tag { get; }
 
-		public Notebook Notebook { get; private set; }
+        public Notebook Notebook { get; }
 
-		public MenuItemType LibraryType { get; private set; }
+        public MenuItemType LibraryType { get; }
 
-		public Note SelectedNote { get; private set; }
+        public Note SelectedNote { get; }
 
-		public ReloadNoteMenuList(Tag tag)
-		{
-			LibraryType = MenuItemType.Undefined;
-			Notebook = null;
-			SelectedNote = null;
-			Tag = tag;
-		}
+        public ReloadNoteMenuList(Tag tag)
+        {
+            LibraryType = MenuItemType.Undefined;
+            Notebook = null;
+            SelectedNote = null;
+            Tag = tag;
+        }
 
-		public ReloadNoteMenuList(Notebook notebook, Note selectedNote = null)
-		{
-			LibraryType = MenuItemType.Undefined;
-			Notebook = notebook;
-			SelectedNote = selectedNote;
-			Tag = null;
-		}
+        public ReloadNoteMenuList(Notebook notebook, Note selectedNote = null)
+        {
+            LibraryType = MenuItemType.Undefined;
+            Notebook = notebook;
+            SelectedNote = selectedNote;
+            Tag = null;
+        }
 
-		public ReloadNoteMenuList(MenuItemType type)
-		{
-			LibraryType = type;
-			Notebook = null;
-			SelectedNote = null;
-			Tag = null;
-		}
+        public ReloadNoteMenuList(MenuItemType type)
+        {
+            LibraryType = type;
+            Notebook = null;
+            SelectedNote = null;
+            Tag = null;
+        }
 
-		public bool IsEmpty()
-		{
-			return Tag == null && Notebook == null && SelectedNote == null && LibraryType == MenuItemType.Undefined;
-		}
-	}
+        public bool IsEmpty()
+        {
+            return Tag == null && Notebook == null && SelectedNote == null && LibraryType == MenuItemType.Undefined;
+        }
+    }
 }

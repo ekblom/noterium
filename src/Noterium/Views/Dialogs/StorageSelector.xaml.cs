@@ -12,29 +12,32 @@ using Noterium.Properties;
 namespace Noterium.Views.Dialogs
 {
     /// <summary>
-    /// Interaction logic for AuthenticationWindow.xaml
+    ///     Interaction logic for AuthenticationWindow.xaml
     /// </summary>
     public partial class StorageSelector : INotifyPropertyChanged
     {
         private bool _onlyVerifyPassword;
-
-        public bool OnlyVerifyPassword
-        {
-            get { return _onlyVerifyPassword; }
-            set { _onlyVerifyPassword = value; OnPropertyChanged(); }
-        }
 
         public StorageSelector()
         {
             InitializeComponent();
         }
 
-        private void AuthenticationWindow_OnLoaded(object sender, RoutedEventArgs e)
+        public bool OnlyVerifyPassword
         {
-
+            get => _onlyVerifyPassword;
+            set
+            {
+                _onlyVerifyPassword = value;
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void AuthenticationWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+        }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -47,24 +50,24 @@ namespace Noterium.Views.Dialogs
         {
             if (StorageTypeListBox.SelectedItem != null)
             {
-                ListBoxItem item = (ListBoxItem)StorageTypeListBox.SelectedItem;
-                if (((string)item.Tag) == "DropBox")
+                var item = (ListBoxItem) StorageTypeListBox.SelectedItem;
+                if ((string) item.Tag == "DropBox")
                 {
-                    string dbPath = DataStore.GetDropBoxPath();
+                    var dbPath = DataStore.GetDropBoxPath();
                     if (!string.IsNullOrWhiteSpace(dbPath))
                     {
-	                    var lib = new Library
-	                    {
-		                    Name = "DropBox",
-		                    StorageType = StorageType.DropBox
-	                    };
-						lib.Save();
+                        var lib = new Library
+                        {
+                            Name = "DropBox",
+                            StorageType = StorageType.DropBox
+                        };
+                        lib.Save();
 
-						Hub.Instance.AppSettings.Librarys.Add(lib);
-						Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
-						Hub.Instance.AppSettings.Save();
+                        Hub.Instance.AppSettings.Librarys.Add(lib);
+                        Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
+                        Hub.Instance.AppSettings.Save();
 
-						DialogResult = true;
+                        DialogResult = true;
                     }
                     else
                     {
@@ -81,33 +84,30 @@ namespace Noterium.Views.Dialogs
                         Multiselect = false
                     };
 
-                    CommonFileDialogResult result = dialog.ShowDialog();
+                    var result = dialog.ShowDialog();
                     if (result == CommonFileDialogResult.Ok)
                     {
-                        DirectoryInfo di = new DirectoryInfo(dialog.FileName);
+                        var di = new DirectoryInfo(dialog.FileName);
                         if (di.Exists)
                         {
-                            string path = dialog.FileName;
-                            string name = Path.GetFileName(path);
-	                        var lib = new Library
-	                        {
-		                        Name = name,
-		                        Path = path,
-		                        StorageType = StorageType.Disc
-	                        };
-							lib.Save();
+                            var path = dialog.FileName;
+                            var name = Path.GetFileName(path);
+                            var lib = new Library
+                            {
+                                Name = name,
+                                Path = path,
+                                StorageType = StorageType.Disc
+                            };
+                            lib.Save();
                             Hub.Instance.AppSettings.Librarys.Add(lib);
-							Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
-							Hub.Instance.AppSettings.Save();
-							DialogResult = true;
+                            Hub.Instance.AppSettings.LibraryFiles.Add(lib.FilePath);
+                            Hub.Instance.AppSettings.Save();
+                            DialogResult = true;
                         }
                     }
                 }
 
-                if (DialogResult == true)
-                {
-                    Close();
-                }
+                if (DialogResult == true) Close();
             }
         }
 

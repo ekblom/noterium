@@ -13,7 +13,7 @@ using Noterium.Core.Helpers;
 namespace Noterium.Core.DataCarriers
 {
     [DataContract]
-    public class NoteFile: INotifyPropertyChanged
+    public class NoteFile : INotifyPropertyChanged
     {
         private string _name;
 
@@ -34,8 +34,12 @@ namespace Noterium.Core.DataCarriers
         [DataMember(Order = 1)]
         public string Name
         {
-            get { return _name; }
-            set { _name = value; OnPropertyChanged(); }
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
         }
 
         [DataMember(Order = 2)]
@@ -50,12 +54,14 @@ namespace Noterium.Core.DataCarriers
             get
             {
                 var shellFile = ShellFile.FromFilePath(FullName);
-                if(shellFile != null)
+                if (shellFile != null)
                     return shellFile.Thumbnail.BitmapSource;
 
                 return null;
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public FileInfo GetFile()
         {
@@ -67,10 +73,7 @@ namespace Noterium.Core.DataCarriers
         {
             var folder = Hub.Instance.Storage.GetNoteFolderPath(owner.ID);
             var ext = extension ?? MimeType.GetDefaultExtension(mime);
-            if (string.IsNullOrWhiteSpace(ext) && name != null && name.IndexOf(".", StringComparison.Ordinal) != -1)
-            {
-                ext = name.Split('.')[1];
-            }
+            if (string.IsNullOrWhiteSpace(ext) && name != null && name.IndexOf(".", StringComparison.Ordinal) != -1) ext = name.Split('.')[1];
 
             if (string.IsNullOrWhiteSpace(ext))
                 throw new Exception("Unable to get file extension.");
@@ -91,14 +94,15 @@ namespace Noterium.Core.DataCarriers
                 return null;
             }
         }
+
         public static string ProposeNoteFileName(string name, Note note)
         {
             var existingNoteFile = note.Files.FirstOrDefault(enf => enf.Name.Equals(name));
 
-            int count = 1;
+            var count = 1;
             while (existingNoteFile != null)
             {
-                int indexOfDot = name.IndexOf(".", StringComparison.Ordinal);
+                var indexOfDot = name.IndexOf(".", StringComparison.Ordinal);
                 name = name.Insert(indexOfDot, count.ToString());
 
                 existingNoteFile = note.Files.FirstOrDefault(enf => enf.Name.Equals(name));
@@ -140,8 +144,6 @@ namespace Noterium.Core.DataCarriers
         {
             return $"![{Name}]({FileName})";
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

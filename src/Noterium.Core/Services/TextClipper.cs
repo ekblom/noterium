@@ -22,10 +22,10 @@ namespace Noterium.Core.Services
         private static int keyId = "Noterium hotkey".GetHashCode();
 
         private readonly HotkeyBinder _hotkeyBinder = new HotkeyBinder();
-        private readonly ILog _log = LogManager.GetLogger(typeof (TextClipper));
+        private readonly object _lastHotkeyLocker = new object();
+        private readonly ILog _log = LogManager.GetLogger(typeof(TextClipper));
         private Hotkey _hotkeyCombination;
         private DateTime _lastHotkey = DateTime.MinValue;
-        private readonly object _lastHotkeyLocker = new object();
 
         private IntPtr _owner;
         public event TextClippedEvent OnTextClipped;
@@ -75,6 +75,7 @@ namespace Noterium.Core.Services
                 {
                     _lastHotkey = DateTime.Now;
                 }
+
                 var text = GetActiveWindowsTextSelection();
                 var winTitle = GetActiveWindowTitle();
                 OnTextClipped(winTitle, text);
@@ -109,10 +110,7 @@ namespace Noterium.Core.Services
 
                 var output = ClipboardHtmlHelper.ParseString(html);
 
-                if (!string.IsNullOrWhiteSpace(output.Source))
-                {
-                    return string.Format("<a href=\"{0}\">{0}</a><br /><br />{1}", output.Source, output.Html);
-                }
+                if (!string.IsNullOrWhiteSpace(output.Source)) return string.Format("<a href=\"{0}\">{0}</a><br /><br />{1}", output.Source, output.Html);
                 return output.Html;
             }
 
@@ -125,10 +123,7 @@ namespace Noterium.Core.Services
             var Buff = new StringBuilder(nChars);
             var handle = GetForegroundWindow();
 
-            if (GetWindowText(handle, Buff, nChars) > 0)
-            {
-                return Buff.ToString();
-            }
+            if (GetWindowText(handle, Buff, nChars) > 0) return Buff.ToString();
             return null;
         }
     }

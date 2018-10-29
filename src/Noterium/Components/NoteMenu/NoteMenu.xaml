@@ -18,7 +18,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <converters:BooleanToVisibilityConverter
@@ -35,23 +36,23 @@
     </UserControl.Resources>
 
     <ListView Name="NotesList"
-                SelectedItem="{Binding SelectedNote, Mode=TwoWay}"
-                ItemsSource="{Binding DataSource, Mode=OneWay}"
-                Background="{DynamicResource TransparentWhiteBrush}"
-                dragDrop:DragDrop.IsDragSource="True"
-                dragDrop:DragDrop.IsDropTarget="True"
-                dragDrop:DragDrop.UseDefaultDragAdorner="True"
-                dragDrop:DragDrop.DragHandler="{Binding}"
-                BorderBrush="Transparent" BorderThickness="0"
+              SelectedItem="{Binding SelectedNote, Mode=TwoWay}"
+              ItemsSource="{Binding DataSource, Mode=OneWay}"
+              Background="{DynamicResource TransparentWhiteBrush}"
+              dragDrop:DragDrop.IsDragSource="True"
+              dragDrop:DragDrop.IsDropTarget="True"
+              dragDrop:DragDrop.UseDefaultDragAdorner="True"
+              dragDrop:DragDrop.DragHandler="{Binding}"
+              BorderBrush="Transparent" BorderThickness="0"
 
-                VirtualizingStackPanel.IsVirtualizing="True"
-                VirtualizingStackPanel.VirtualizationMode="Standard"
-                ScrollViewer.IsDeferredScrollingEnabled="False"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                Style="{DynamicResource VirtualisedMetroListBox}"
+              VirtualizingStackPanel.IsVirtualizing="True"
+              VirtualizingStackPanel.VirtualizationMode="Standard"
+              ScrollViewer.IsDeferredScrollingEnabled="False"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              Style="{DynamicResource VirtualisedMetroListBox}"
 
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch">
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Stretch">
 
         <ListView.Resources>
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource TransparentScrollBars}" />
@@ -62,7 +63,7 @@
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Visible}" Value="False">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -70,44 +71,64 @@
                 <StackPanel Margin="5" Name="StackPanel">
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Command="{Binding DeleteNoteCommand}" Visibility="{Binding Note.Protected, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                            <MenuItem Command="{Binding DeleteNoteCommand}"
+                                      Visibility="{Binding Note.Protected, Converter={StaticResource ReversedBooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Name="DeleteNoteButton" Kind="Delete" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Name="DeleteNoteButton" Kind="Delete"
+                                                                    VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Delete}" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
                             <MenuItem Command="{Binding RenameNoteCommand}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Name="RenameNoteButton" Kind="RenameBox"
+                                                                    VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Rename}" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
                             <Separator />
-                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Encrypted, Mode=TwoWay}" StaysOpenOnClick="True" Visibility="{Binding Main.IsSecureNotesEnabled, Source={StaticResource Locator}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Encrypted, Mode=TwoWay}"
+                                      StaysOpenOnClick="True"
+                                      Visibility="{Binding Main.IsSecureNotesEnabled, Source={StaticResource Locator}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Kind="Lock" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Notes_Encrypted}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Kind="Lock" VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Notes_Encrypted}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
-                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Protected, Mode=TwoWay}" StaysOpenOnClick="True">
+                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Protected, Mode=TwoWay}"
+                                      StaysOpenOnClick="True">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Kind="Shield" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Notes_ProtectFromDelete}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Kind="Shield" VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Notes_ProtectFromDelete}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
-                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Favourite, Mode=TwoWay}" StaysOpenOnClick="True">
+                            <MenuItem IsCheckable="True" IsChecked="{Binding Note.Favourite, Mode=TwoWay}"
+                                      StaysOpenOnClick="True">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Kind="Star" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Notes_Favourite}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Kind="Star" VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Notes_Favourite}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -115,8 +136,10 @@
                             <MenuItem Command="{Binding CopyNoteCommand}" CommandParameter="{Binding Note}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial Kind="ContentCopy" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                                        <TextBlock Text="{x:Static p:Resources.Note_Copy}" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <iconPacks:PackIconMaterial Kind="ContentCopy" VerticalAlignment="Center"
+                                                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.Note_Copy}" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
                                     </StackPanel>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -132,20 +155,29 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="25" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Note.Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" MaxHeight="20" VerticalAlignment="Center" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Note.Name}" TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis" MaxHeight="20" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource IdealForegroundColorBrush}" />
 
-                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                            <iconPacks:PackIconMaterial Name="NoteLockIcon" Kind="Lock" Width="12" Height="12" Visibility="Collapsed" Foreground="{DynamicResource IdealForegroundColorBrush}" />
-                            <iconPacks:PackIconMaterial Name="NoteProtectedIcon" Kind="Shield" Width="12" Height="12" Visibility="Collapsed" Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"
+                                    HorizontalAlignment="Right">
+                            <iconPacks:PackIconMaterial Name="NoteLockIcon" Kind="Lock" Width="12" Height="12"
+                                                        Visibility="Collapsed"
+                                                        Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                            <iconPacks:PackIconMaterial Name="NoteProtectedIcon" Kind="Shield" Width="12" Height="12"
+                                                        Visibility="Collapsed"
+                                                        Foreground="{DynamicResource IdealForegroundColorBrush}" />
                         </StackPanel>
 
-                        <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding CreatedDateText}" Foreground="Gray" MaxHeight="20" VerticalAlignment="Center" />
-                        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
+                        <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding CreatedDateText}"
+                                   Foreground="Gray" MaxHeight="20" VerticalAlignment="Center" />
+                        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                              Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
 
