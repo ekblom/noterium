@@ -1,6 +1,6 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
-next-version: 0.2.4.0
+next-version: 0.3.0
 branches:
   master:
     mode: ContinuousDeployment
