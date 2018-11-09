@@ -26,7 +26,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <iconPacks:PackIconMaterial Margin="15" Width="130" Height="130" Kind="NoteMultiple" VerticalAlignment="Center"
+        <iconPacks:PackIconMaterial Margin="15" Width="130" Height="130" Kind="FileDocument" VerticalAlignment="Center"
                                     Foreground="{DynamicResource IdealForegroundColorBrush}"
                                     VerticalContentAlignment="Center" HorizontalAlignment="Center" />
         <TextBlock Name="LoadingText" Grid.Column="1" Margin="15" HorizontalAlignment="Right"

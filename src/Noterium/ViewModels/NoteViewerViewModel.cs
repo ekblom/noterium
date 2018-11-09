@@ -15,7 +15,6 @@ namespace Noterium.ViewModels
         private NoteViewModel _noteViewModel;
 
         private bool _secureNotesEnabled;
-        private NoteFile _selectedNoteFile;
 
         public NoteViewerViewModel()
         {

@@ -22,9 +22,9 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <iconPacks:PackIconMaterial Kind="Lock" Width="130" Height="130" VerticalAlignment="Center"
+        <iconPacks:PackIconModern Kind="Lock"  Width="130" Height="130" VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
-                                    Foreground="{DynamicResource IdealForegroundColorBrush}" />
+                                    Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="15,23,15,17" />
 
         <StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Left">
             <TextBlock Foreground="{DynamicResource IdealForegroundColorBrush}"

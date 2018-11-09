@@ -37,7 +37,7 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
                         <ColumnDefinition Width="*" SharedSizeGroup="Label" />
                     </Grid.ColumnDefinitions>
-                    <iconPacks:PackIconFontAwesome Kind="Dropbox" Height="60" Width="60" Margin="5"
+                    <iconPacks:PackIconFontAwesome Kind="DropboxBrands" Height="60" Width="60" Margin="5"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Dropbox</TextBlock>
                 </Grid>
@@ -48,7 +48,7 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
                         <ColumnDefinition Width="*" SharedSizeGroup="Label" />
                     </Grid.ColumnDefinitions>
-                    <iconPacks:PackIconFontAwesome Kind="HddOutline" Height="60" Width="60" Margin="5"
+                    <iconPacks:PackIconFontAwesome Kind="HddRegular" Height="60" Width="60" Margin="5"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold">Filesystem</TextBlock>
                 </Grid>
