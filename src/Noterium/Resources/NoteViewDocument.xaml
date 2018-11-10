@@ -7,12 +7,12 @@
         <Setter Property="TextAlignment" Value="Left" />
         <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
     </Style>
-    <Style TargetType="{x:Type List}">
+    <Style TargetType="{x:Type List}" x:Key="{x:Static markdig:Styles.ListStyleKey}">
         <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
         <Setter Property="Margin" Value="0,0,0,15" />
         <Setter Property="Padding" Value="0" />
     </Style>
-    <Style x:Key="ListItem" TargetType="{x:Type ListItem}">
+    <Style TargetType="{x:Type ListItem}" x:Key="{x:Static markdig:Styles.ListItemStyleKey}">
         <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
         <Setter Property="Margin" Value="30,0,0,0" />
         <Setter Property="Padding" Value="0" />
@@ -61,16 +61,15 @@
     <Style TargetType="{x:Type Paragraph}" x:Key="{x:Static markdig:Styles.Heading6StyleKey}">
         <!-- no changes -->
     </Style>
-    <!--<Style TargetType="{x:Type Hyperlink}" x:Key="{x:Static markdig:Styles.HyperlinkStyleKey}">
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
+    <Style TargetType="{x:Type Hyperlink}" x:Key="{x:Static markdig:Styles.HyperlinkStyleKey}">
+        <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
 
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
-                    </Trigger>
-                </Style.Triggers>
-
-  </Style>-->
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="{x:Type Image}" x:Key="{x:Static markdig:Styles.ImageStyleKey}">
         <Setter Property="MaxHeight" Value="{Binding RelativeSource={RelativeSource Self}, Path=Source.(BitmapSource.PixelHeight)}" />
         <Setter Property="MaxWidth" Value="{Binding RelativeSource={RelativeSource Self}, Path=Source.(BitmapSource.PixelWidth)}" />
