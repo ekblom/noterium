@@ -2,37 +2,23 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using CommonMark;
+using System.Windows.Markup;
+using Markdig;
+using Markdig.Wpf;
 using Noterium.Code.Helpers;
+using Noterium.Core.Annotations;
 using Noterium.Core.DataCarriers;
 
 namespace Noterium.Code.Markdown
 {
     public class TextToFlowDocumentConverter : DependencyObject, IMultiValueConverter
     {
-        // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty XamlFormatterProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
-
-        private readonly Lazy<XamlFormatter> _markdown = new Lazy<XamlFormatter>(() => new XamlFormatter());
-        private readonly CommonMarkSettings _settings;
         private string _text;
-
-        public TextToFlowDocumentConverter()
-        {
-            _settings = CommonMarkSettings.Default.Clone();
-            _settings.OutputFormat = OutputFormat.CustomDelegate;
-            _settings.AdditionalFeatures = CommonMarkAdditionalFeatures.StrikethroughTilde;
-        }
-
-        public XamlFormatter XamlFormatter
-        {
-            get => (XamlFormatter) GetValue(XamlFormatterProperty);
-            set => SetValue(XamlFormatterProperty, value);
-        }
 
         public bool Pause { get; set; }
         public Note CurrentNote { get; set; }
@@ -63,9 +49,6 @@ namespace Noterium.Code.Markdown
             _text = (string) value[0];
             var searchText = (string) value[1];
 
-            var engine = XamlFormatter ?? _markdown.Value;
-            engine.CurrentNote = CurrentNote;
-
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
             else
@@ -83,21 +66,39 @@ namespace Noterium.Code.Markdown
             throw new NotImplementedException();
         }
 
+        private static MarkdownPipeline BuildPipeline()
+        {
+            return new MarkdownPipelineBuilder()
+                .UseSupportedExtensions()
+                .UseAutoIdentifiers()
+                .Build();
+        }
+
         public FlowDocument GetNewDocument()
         {
             var sw = new Stopwatch();
             sw.Start();
             var text = NoteMathHelper.ReplaceMathTokens(_text);
-            using (var reader = new StringReader(text))
-            {
-                var document = CommonMarkConverter.ProcessStage1(reader, _settings);
-                CommonMarkConverter.ProcessStage2(document, _settings);
-                var engine = XamlFormatter ?? _markdown.Value;
-                var doc = engine.BlocksToXaml(document, _settings);
 
-                return doc;
-            }
+            return ToFlowDocument(text, BuildPipeline());
         }
+
+        public static FlowDocument ToFlowDocument([NotNull] string markdown, MarkdownPipeline pipeline = null)
+        {
+            if (markdown == null) throw new ArgumentNullException(nameof(markdown));
+            pipeline = pipeline ?? new MarkdownPipelineBuilder().Build();
+
+            // We override the renderer with our own writer
+            var result = new FlowDocument();
+            var renderer = new WpfRenderer(result);
+            pipeline.Setup(renderer);
+
+            var document = Markdig.Markdown.Parse(markdown, pipeline);
+            renderer.Render(document);
+
+            return result;
+        }
+
 
         private void CurrentDocument_PreviewKeyDown(object sender, KeyEventArgs e)
         {

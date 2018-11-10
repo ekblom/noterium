@@ -11,18 +11,20 @@
     xmlns:markdown="clr-namespace:Noterium.Code.Markdown"
     xmlns:attachedProperties="clr-namespace:Noterium.Code.AttachedProperties"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     x:Class="Noterium.Views.NoteView"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="500"
     DataContext="{Binding NoteView, Source={StaticResource Locator}}"
     DataContextChanged="NoteViewDataContextChanged"
     Loaded="NoteView_OnLoaded">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/Styles.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Noterium;component/Resources/NoteViewDocument.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <DataTemplate x:Key="NameTokenTemplate" DataType="dataCarriers:Tag">
                 <DataTemplate.Resources>
@@ -62,96 +64,16 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
 
-            <Style TargetType="{x:Type FlowDocument}" x:Key="DocumentStyle">
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="TextAlignment" Value="Left" />
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-            </Style>
-
-            <Style x:Key="PageHeader" TargetType="{x:Type Paragraph}">
-                <Setter Property="FontSize" Value="32" />
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Margin" Value="0,0,0,15" />
-            </Style>
-
-            <Style x:Key="SubHeader" TargetType="{x:Type Paragraph}">
-                <Setter Property="FontSize" Value="23" />
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Setter Property="Margin" Value="0,0,0,5" />
-            </Style>
-
-            <Style x:Key="SubHeaderSecondary" TargetType="{x:Type Paragraph}">
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="FontWeight" Value="Light" />
-                <Setter Property="Margin" Value="0" />
-            </Style>
 
 
-            <Style x:Key="List" TargetType="{x:Type List}">
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="Margin" Value="0,0,0,15" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-
-
-            <Style x:Key="ListItem" TargetType="{x:Type ListItem}">
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="Margin" Value="30,0,0,0" />
-                <Setter Property="Padding" Value="0" />
-
-            </Style>
-
-            <Style x:Key="Quote" TargetType="{x:Type Section}">
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="BorderBrush" Value="#c8c8c0" />
-                <Setter Property="BorderThickness" Value="4,0,0,0" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="30,0,0,0" />
-                <Style.Resources>
-                    <Style TargetType="Paragraph">
-                        <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-                        <Setter Property="Padding" Value="5" />
-                        <Setter Property="Margin" Value="5" />
-                    </Style>
-                </Style.Resources>
-            </Style>
 
             <Style x:Key="Line" TargetType="{x:Type Line}">
                 <Setter Property="StrokeThickness" Value="2" />
                 <Setter Property="Fill" Value="{DynamicResource IdealForegroundColorBrush}" />
             </Style>
-            <Style x:Key="Code" TargetType="{x:Type Span}">
-                <Setter Property="FontFamily" Value="Consolas" />
-                <Setter Property="Background" Value="{DynamicResource NoteInlineCodeBackgroundBrush}" />
-                <Setter Property="Foreground" Value="{DynamicResource NoteInlineCodeForegroundBrush}" />
-            </Style>
-
-            <Style x:Key="CodeBlock" TargetType="{x:Type Paragraph}">
-                <Setter Property="FontFamily" Value="Consolas" />
-                <Setter Property="Background" Value="{DynamicResource NoteCodeBackgroundBrush}" />
-                <Setter Property="Foreground" Value="{DynamicResource NoteCodeForegroundBrush}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushNormal}" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Padding" Value="5" />
-            </Style>
-
-            <Style x:Key="Table" TargetType="{x:Type Table}">
-                <Setter Property="CellSpacing" Value="0" />
-                <Setter Property="BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="BorderThickness" Value="0.5" />
-            </Style>
 
             <Style x:Key="TableHead" TargetType="{x:Type TableRow}">
                 <Setter Property="FontWeight" Value="Bold" />
-            </Style>
-
-            <Style x:Key="TableCell" TargetType="{x:Type TableCell}">
-                <Setter Property="BorderBrush" Value="{DynamicResource IdealForegroundColorBrush}" />
-                <Setter Property="BorderThickness" Value="0.5" />
-                <Setter Property="Padding" Value="2" />
             </Style>
 
             <Style x:Key="TableColumn" TargetType="{x:Type TableColumn}">
@@ -162,24 +84,10 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
 
-            <Style x:Key="LinkStyle" TargetType="{x:Type Hyperlink}">
-                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
-
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
-                    </Trigger>
-                </Style.Triggers>
-
-            </Style>
 
             <Style x:Key="HighlightedTextStyle" TargetType="{x:Type Run}">
                 <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}" />
             </Style>
-
-            <Style x:Key="TextStyle" TargetType="{x:Type Run}" />
-
-            <Style x:Key="ParagraphStyle" TargetType="{x:Type Paragraph}" />
 
             <Style x:Key="TodoCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
                 <Setter Property="Margin" Value="5" />
@@ -188,35 +96,13 @@
                 <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
             </Style>
 
-            <markdown:XamlFormatter x:Key="XamlFormatter" DocumentStyle="{StaticResource DocumentStyle}"
-                                    Heading1Style="{StaticResource PageHeader}"
-                                    Heading2Style="{StaticResource SubHeader}"
-                                    Heading3Style="{StaticResource SubHeaderSecondary}"
-                                    ImageStyle="{StaticResource Image}"
-                                    QuoteStyle="{StaticResource Quote}"
-                                    CodeBlockStyle="{StaticResource CodeBlock}"
-                                    InlineCodeStyle="{StaticResource Code}"
-                                    TableStyle="{StaticResource Table}"
-                                    TableHeadStyle="{StaticResource TableHead}"
-                                    TableCellStyle="{StaticResource TableCell}"
-                                    TableColumnStyle="{StaticResource TableColumn}"
-                                    LinkStyle="{StaticResource LinkStyle}"
-                                    HighlightedTextStyle="{StaticResource HighlightedTextStyle}"
-                                    TodoCheckBoxStyle="{StaticResource TodoCheckBox}"
-                                    TodoTextStyle="{StaticResource TodoTextStyle}"
-                                    TextStyle="{StaticResource TextStyle}"
-                                    ParagraphStyle="{StaticResource ParagraphStyle}"
-                                    LineStyle="{StaticResource Line}"
-                                    ListStyle="{StaticResource List}"
-                                    ListItemStyle="{StaticResource ListItem}" />
-
-            <markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter"
-                                                  XamlFormatter="{StaticResource XamlFormatter}" />
+            <markdown:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
-        <CommandBinding Command="GoToPage" Executed="GoToPage_OnExecuted" />
+        <CommandBinding Command="{x:Static markdig:Commands.Hyperlink}" Executed="GoToPage_OnExecuted" />
+        <CommandBinding Command="{x:Static markdown:TaskListRenderer.TaskListItemChanged}" Executed="DocumentCheckBoxChecked" />
     </UserControl.CommandBindings>
     <controls:TransitioningContentControl Transition="LeftReplace" x:Name="ContentContainer">
         <Grid>

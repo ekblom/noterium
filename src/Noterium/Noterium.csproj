@@ -105,10 +105,6 @@
     <AssemblyOriginatorKeyFile>noterium.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\CommonMark.NET\CommonMark.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -141,6 +137,13 @@
     </Reference>
     <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.5.0.16, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.1.5.0\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig, Version=0.15.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.15.4\lib\net40\Markdig.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig.Wpf, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Markdig.Wpf\Markdig.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MathParser.org-mXparser, Version=4.2.0.0, Culture=neutral, PublicKeyToken=0fbab7add73ed6e2, processorArchitecture=MSIL">
       <HintPath>..\packages\MathParser.org-mXparser.4.2.2\lib\net462\MathParser.org-mXparser.dll</HintPath>
@@ -220,11 +223,9 @@
     <Compile Include="Code\Helpers\DialogHelpers.cs" />
     <Compile Include="Code\Helpers\NoteMathHelper.cs" />
     <Compile Include="Code\ListViewDragDrop\MouseUtilities.cs" />
-    <Compile Include="Code\Markdown\Markdown.cs" />
-    <Compile Include="Code\Markdown\RegularExpressions.cs" />
-    <Compile Include="Code\Markdown\SharedSettings.cs" />
+    <Compile Include="Code\Markdown\TaskListRenderer.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
-    <Compile Include="Code\Markdown\XamlFormatter.cs" />
+    <Compile Include="Code\Markdown\WpfRenderer.cs" />
     <Compile Include="Code\Messages\ApplicationPartLoaded.cs" />
     <Compile Include="Code\Messages\ApplicationUnlocked.cs" />
     <Compile Include="Code\Messages\ChangeLibrary.cs" />
@@ -322,6 +323,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\NoteViewDocument.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\icon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

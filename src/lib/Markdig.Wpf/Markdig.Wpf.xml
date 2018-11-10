@@ -1,0 +1,567 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Markdig.Wpf</name>
+    </assembly>
+    <members>
+        <member name="T:Markdig.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example>
+            <code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:Markdig.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example>
+            <code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:Markdig.Wpf.Commands">
+            <summary>
+            List of supported commands.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Commands.Hyperlink">
+            <summary>
+            Routed command for Hyperlink.
+            </summary>
+        </member>
+        <member name="T:Markdig.Wpf.Markdown">
+            <summary>
+            Provides methods for parsing a Markdown string to a syntax tree and converting it to other formats.
+            </summary>
+        </member>
+        <member name="M:Markdig.Wpf.Markdown.ToFlowDocument(System.String,Markdig.MarkdownPipeline)">
+            <summary>
+            Converts a Markdown string to a FlowDocument.
+            </summary>
+            <param name="markdown">A Markdown text.</param>
+            <param name="pipeline">The pipeline used for the conversion.</param>
+            <returns>The result of the conversion</returns>
+            <exception cref="T:System.ArgumentNullException">if markdown variable is null</exception>
+        </member>
+        <member name="M:Markdig.Wpf.Markdown.ToXaml(System.String,Markdig.MarkdownPipeline)">
+            <summary>
+            Converts a Markdown string to XAML.
+            </summary>
+            <param name="markdown">A Markdown text.</param>
+            <param name="pipeline">The pipeline used for the conversion.</param>
+            <returns>The result of the conversion</returns>
+            <exception cref="T:System.ArgumentNullException">if markdown variable is null</exception>
+        </member>
+        <member name="M:Markdig.Wpf.Markdown.ToXaml(System.String,System.IO.TextWriter,Markdig.MarkdownPipeline)">
+            <summary>
+            Converts a Markdown string to XAML and output to the specified writer.
+            </summary>
+            <param name="markdown">A Markdown text.</param>
+            <param name="writer">The destination <see cref="T:System.IO.TextWriter"/> that will receive the result of the conversion.</param>
+            <param name="pipeline">The pipeline used for the conversion.</param>
+            <returns>The Markdown document that has been parsed</returns>
+            <exception cref="T:System.ArgumentNullException">if reader or writer variable are null</exception>
+        </member>
+        <member name="F:Markdig.Wpf.Markdown.Version">
+            <summary>
+            Version of this library.
+            </summary>
+        </member>
+        <member name="T:Markdig.Wpf.MarkdownExtensions">
+            <summary>
+            Provides extension methods for <see cref="T:Markdig.MarkdownPipeline"/> to enable several Markdown extensions.
+            </summary>
+        </member>
+        <member name="M:Markdig.Wpf.MarkdownExtensions.UseSupportedExtensions(Markdig.MarkdownPipelineBuilder)">
+            <summary>
+            Uses all extensions supported by <c>Markdig.Wpf</c>.
+            </summary>
+            <param name="pipeline">The pipeline.</param>
+            <returns>The modified pipeline</returns>
+        </member>
+        <member name="T:Markdig.Wpf.MarkdownViewer">
+            <summary>
+            A markdown viewer control.
+            </summary>
+        </member>
+        <member name="F:Markdig.Wpf.MarkdownViewer.DocumentProperty">
+            <summary>
+            Defines the <see cref="P:Markdig.Wpf.MarkdownViewer.Document"/> property.
+            </summary>
+        </member>
+        <member name="F:Markdig.Wpf.MarkdownViewer.MarkdownProperty">
+            <summary>
+            Defines the <see cref="P:Markdig.Wpf.MarkdownViewer.Markdown"/> property.
+            </summary>
+        </member>
+        <member name="F:Markdig.Wpf.MarkdownViewer.PipelineProperty">
+            <summary>
+            Defines the <see cref="P:Markdig.Wpf.MarkdownViewer.Markdown"/> property.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.MarkdownViewer.Document">
+            <summary>
+            Gets the flow document to display.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.MarkdownViewer.Markdown">
+            <summary>
+            Gets or sets the markdown to display.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.MarkdownViewer.Pipeline">
+            <summary>
+            Gets or sets the markdown pipeline to use.
+            </summary>
+        </member>
+        <member name="T:Markdig.Wpf.Styles">
+            <summary>
+            List of supported styles.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.CodeStyleKey">
+            <summary>
+            Resource Key for the CodeStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.CodeBlockStyleKey">
+            <summary>
+            Resource Key for the CodeBlockStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.DocumentStyleKey">
+            <summary>
+            Resource Key for the DocumentStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading1StyleKey">
+            <summary>
+            Resource Key for the Heading1Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading2StyleKey">
+            <summary>
+            Resource Key for the Heading2Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading3StyleKey">
+            <summary>
+            Resource Key for the Heading3Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading4StyleKey">
+            <summary>
+            Resource Key for the Heading4Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading5StyleKey">
+            <summary>
+            Resource Key for the Heading5Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.Heading6StyleKey">
+            <summary>
+            Resource Key for the Heading6Style.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.HyperlinkStyleKey">
+            <summary>
+            Resource Key for the HyperlinkStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.ImageStyleKey">
+            <summary>
+            Resource Key for the ImageStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.InsertedStyleKey">
+            <summary>
+            Resource Key for the InsertedStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.MarkedStyleKey">
+            <summary>
+            Resource Key for the MarkedStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.QuoteBlockStyleKey">
+            <summary>
+            Resource Key for the QuoteBlockStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.StrikeThroughStyleKey">
+            <summary>
+            Resource Key for the StrikeThroughStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.SubscriptStyleKey">
+            <summary>
+            Resource Key for the SubscriptStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.SuperscriptStyleKey">
+            <summary>
+            Resource Key for the SuperscriptStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.TableStyleKey">
+            <summary>
+            Resource Key for the TableStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.TableCellStyleKey">
+            <summary>
+            Resource Key for the TableCellStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.TableHeaderStyleKey">
+            <summary>
+            Resource Key for the TableHeaderStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.TaskListStyleKey">
+            <summary>
+            Resource Key for the TaskListStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.ThematicBreakStyleKey">
+            <summary>
+            Resource Key for the ThematicBreakStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.ListStyleKey">
+            <summary>
+            Resource Key for the ListStyle.
+            </summary>
+        </member>
+        <member name="P:Markdig.Wpf.Styles.ListItemStyleKey">
+            <summary>
+            Resource Key for the ListItemStyle.
+            </summary>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.HtmlEntityInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.HtmlEntityInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.HtmlEntityInline&gt;" />
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.AutolinkInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.AutolinkInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.AutolinkInline&gt;" />
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.Inlines.AutolinkInlineRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.Inlines.AutolinkInline)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.DelimiterInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.DelimiterInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.DelimiterInline&gt;" />
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.Inlines.DelimiterInlineRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.Inlines.DelimiterInline)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.EmphasisInlineRenderer">
+            <summary>
+            A WPF renderer for an <see cref="T:Markdig.Syntax.Inlines.EmphasisInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Syntax.Inlines.EmphasisInline" />
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.LineBreakInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.LineBreakInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.LineBreakInline&gt;" />
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.Inlines.LineBreakInlineRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.Inlines.LineBreakInline)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.LinkInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.LinkInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.LinkInline&gt;" />
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.Inlines.LinkInlineRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.Inlines.LinkInline)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.Inlines.LiteralInlineRenderer">
+            <summary>
+            A WPF renderer for a <see cref="T:Markdig.Syntax.Inlines.LiteralInline"/>.
+            </summary>
+            <seealso cref="!:Markdig.Renderers.Wpf.WpfObjectRenderer&lt;Markdig.Syntax.Inlines.LiteralInline&gt;" />
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.Inlines.LiteralInlineRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.Inlines.LiteralInline)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.QuoteBlockRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.QuoteBlock)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Markdig.Renderers.Wpf.ParagraphRenderer.Write(Markdig.Renderers.WpfRenderer,Markdig.Syntax.ParagraphBlock)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Markdig.Renderers.Wpf.WpfObjectRenderer`1">
+            <summary>
+            A base class for WPF rendering <see cref="T:Markdig.Syntax.Block"/> and <see cref="T:Markdig.Syntax.Inlines.Inline"/> Markdown objects.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <seealso cref="T:Markdig.Renderers.IMarkdownObjectRenderer" />
+        </member>
+        <member name="T:Markdig.Renderers.WpfRenderer">
+            <summary>
+            WPF renderer for a Markdown <see cref="T:Markdig.Syntax.MarkdownDocument"/> object.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.RendererBase" />
+        </member>
+        <member name="M:Markdig.Renderers.WpfRenderer.Render(Markdig.Syntax.MarkdownObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Markdig.Renderers.WpfRenderer.WriteLeafInline(Markdig.Syntax.LeafBlock)">
+            <summary>
+            Writes the inlines of a leaf inline.
+            </summary>
+            <param name="leafBlock">The leaf block.</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.WpfRenderer.WriteLeafRawLines(Markdig.Syntax.LeafBlock)">
+            <summary>
+            Writes the lines of a <see cref="T:Markdig.Syntax.LeafBlock"/>
+            </summary>
+            <param name="leafBlock">The leaf block.</param>
+        </member>
+        <member name="T:Markdig.Renderers.XamlRenderer">
+            <summary>
+            XAML renderer for a Markdown <see cref="T:Markdig.Syntax.MarkdownDocument"/> object.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.TextRendererBase`1" />
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Markdig.Renderers.XamlRenderer"/> class.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteEscape(System.String)">
+            <summary>
+            Writes the content escaped for XAML.
+            </summary>
+            <param name="content">The content.</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteEscape(Markdig.Helpers.StringSlice@,System.Boolean)">
+            <summary>
+            Writes the content escaped for XAML.
+            </summary>
+            <param name="slice">The slice.</param>
+            <param name="softEscape">Only escape &lt; and &amp;</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteEscape(Markdig.Helpers.StringSlice,System.Boolean)">
+            <summary>
+            Writes the content escaped for XAML.
+            </summary>
+            <param name="slice">The slice.</param>
+            <param name="softEscape">Only escape &lt; and &amp;</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteEscape(System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Writes the content escaped for XAML.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="softEscape">Only escape &lt; and &amp;</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteEscapeUrl(System.String)">
+            <summary>
+            Writes the URL escaped for XAML.
+            </summary>
+            <param name="content">The content.</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="M:Markdig.Renderers.XamlRenderer.WriteLeafRawLines(Markdig.Syntax.LeafBlock,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Writes the lines of a <see cref="T:Markdig.Syntax.LeafBlock"/>
+            </summary>
+            <param name="leafBlock">The leaf block.</param>
+            <param name="writeEndOfLines">if set to <c>true</c> write end of lines.</param>
+            <param name="escape">if set to <c>true</c> escape the content for XAML</param>
+            <param name="softEscape">Only escape &lt; and &amp;</param>
+            <returns>This instance</returns>
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.CodeBlockRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.CodeBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.HeadingRenderer">
+            <summary>
+            An XAML renderer for a <see cref="T:Markdig.Syntax.HeadingBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.HtmlBlockRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.HtmlBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.AutolinkInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.AutolinkInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.CodeInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.CodeInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.DelimiterInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.DelimiterInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer">
+            <summary>
+            A XAML renderer for an <see cref="T:Markdig.Syntax.Inlines.EmphasisInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer.GetTagDelegate">
+            <summary>
+            Delegates to get the tag associated to an <see cref="T:Markdig.Syntax.Inlines.EmphasisInline"/> object.
+            </summary>
+            <param name="obj">The object.</param>
+            <returns>The XAML tag associated to this <see cref="T:Markdig.Syntax.Inlines.EmphasisInline"/> object</returns>
+        </member>
+        <member name="M:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer"/> class.
+            </summary>
+        </member>
+        <member name="P:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer.GetTag">
+            <summary>
+            Gets or sets the GetTag delegate.
+            </summary>
+        </member>
+        <member name="M:Markdig.Renderers.Xaml.Inlines.EmphasisInlineRenderer.GetDefaultTag(Markdig.Syntax.Inlines.EmphasisInline)">
+            <summary>
+            Gets the default XAML tag for ** and __ emphasis.
+            </summary>
+            <param name="obj">The object.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.HtmlEntityInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.HtmlEntityInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.HtmlInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.HtmlInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.LineBreakInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.LineBreakInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.LinkInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.LinkInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.Inlines.LiteralInlineRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.Inlines.LiteralInline"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.ListRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.ListBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.ParagraphRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.ParagraphBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.QuoteBlockRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.QuoteBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.ThematicBreakRenderer">
+            <summary>
+            A XAML renderer for a <see cref="T:Markdig.Syntax.ThematicBreakBlock"/>.
+            </summary>
+            <seealso cref="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1" />
+        </member>
+        <member name="T:Markdig.Renderers.Xaml.XamlObjectRenderer`1">
+            <summary>
+            A base class for XAML rendering <see cref="T:Markdig.Syntax.Block"/> and <see cref="T:Markdig.Syntax.Inlines.Inline"/> Markdown objects.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <seealso cref="T:Markdig.Renderers.IMarkdownObjectRenderer" />
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
+    </members>
+</doc>

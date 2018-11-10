@@ -78,12 +78,14 @@ namespace Noterium.ViewModels
 
         private void DocumentCheckBoxChecked(object arg)
         {
+            const string markerToDo = @"[*\-\s]\s\[(?:\s|x)\]";
+
             var cb = arg as CheckBox;
             if (cb != null)
             {
-                var number = (int) cb.Tag;
+                var number = (int)cb.Tag;
 
-                var regString = "^" + SharedSettings.MarkerToDo;
+                var regString = "^" + markerToDo;
                 var reg = new Regex(regString, RegexOptions.Compiled | RegexOptions.Singleline);
                 var replaceRegex = @"\[(?:\s|x)\]";
                 var cbNumber = 0;
