@@ -34,7 +34,6 @@ namespace Noterium.Views
         private TextToFlowDocumentConverter _markdownToFlowDocumentConverter;
 
         private string _searchText;
-        private XamlFormatter _xamlFormatter;
 
         public NoteView()
         {
@@ -261,7 +260,6 @@ namespace Noterium.Views
 
         private void NoteView_OnLoaded(object sender, RoutedEventArgs e)
         {
-            _xamlFormatter = Resources["XamlFormatter"] as XamlFormatter;
             _markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
             Model.MarkdownConverter = _markdownToFlowDocumentConverter;
 
