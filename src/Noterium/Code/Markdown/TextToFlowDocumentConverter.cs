@@ -8,7 +8,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
-using CommonMark;
 using Markdig;
 using Markdig.Wpf;
 using Noterium.Code.Helpers;
@@ -19,25 +18,7 @@ namespace Noterium.Code.Markdown
 {
     public class TextToFlowDocumentConverter : DependencyObject, IMultiValueConverter
     {
-        // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty XamlFormatterProperty = DependencyProperty.Register("XamlFormatter", typeof(XamlFormatter), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
-
-        private readonly Lazy<XamlFormatter> _markdown = new Lazy<XamlFormatter>(() => new XamlFormatter());
-        private readonly CommonMarkSettings _settings;
         private string _text;
-
-        public TextToFlowDocumentConverter()
-        {
-            _settings = CommonMarkSettings.Default.Clone();
-            _settings.OutputFormat = OutputFormat.CustomDelegate;
-            _settings.AdditionalFeatures = CommonMarkAdditionalFeatures.StrikethroughTilde;
-        }
-
-        public XamlFormatter XamlFormatter
-        {
-            get => (XamlFormatter) GetValue(XamlFormatterProperty);
-            set => SetValue(XamlFormatterProperty, value);
-        }
 
         public bool Pause { get; set; }
         public Note CurrentNote { get; set; }
@@ -67,9 +48,6 @@ namespace Noterium.Code.Markdown
 
             _text = (string) value[0];
             var searchText = (string) value[1];
-
-            var engine = XamlFormatter ?? _markdown.Value;
-            engine.CurrentNote = CurrentNote;
 
             if (string.IsNullOrWhiteSpace(_text))
                 CurrentDocument = new FlowDocument();
