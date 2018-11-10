@@ -11,12 +11,14 @@
     xmlns:markdown="clr-namespace:Noterium.Code.Markdown"
     xmlns:attachedProperties="clr-namespace:Noterium.Code.AttachedProperties"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     x:Class="Noterium.Views.NoteView"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="500"
     DataContext="{Binding NoteView, Source={StaticResource Locator}}"
     DataContextChanged="NoteViewDataContextChanged"
     Loaded="NoteView_OnLoaded">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -216,7 +218,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
-        <CommandBinding Command="GoToPage" Executed="GoToPage_OnExecuted" />
+        <CommandBinding Command="{x:Static markdig:Commands.Hyperlink}" Executed="GoToPage_OnExecuted" />
+        <CommandBinding Command="{x:Static markdown:TaskListRenderer.TaskListItemChanged}" Executed="DocumentCheckBoxChecked" />
     </UserControl.CommandBindings>
     <controls:TransitioningContentControl Transition="LeftReplace" x:Name="ContentContainer">
         <Grid>

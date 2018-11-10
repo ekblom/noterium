@@ -2,12 +2,17 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using CommonMark;
+using Markdig;
+using Markdig.Wpf;
 using Noterium.Code.Helpers;
+using Noterium.Core.Annotations;
 using Noterium.Core.DataCarriers;
 
 namespace Noterium.Code.Markdown
@@ -83,21 +88,39 @@ namespace Noterium.Code.Markdown
             throw new NotImplementedException();
         }
 
+        private static MarkdownPipeline BuildPipeline()
+        {
+            return new MarkdownPipelineBuilder()
+                .UseSupportedExtensions()
+                .UseAutoIdentifiers()
+                .Build();
+        }
+
         public FlowDocument GetNewDocument()
         {
             var sw = new Stopwatch();
             sw.Start();
             var text = NoteMathHelper.ReplaceMathTokens(_text);
-            using (var reader = new StringReader(text))
-            {
-                var document = CommonMarkConverter.ProcessStage1(reader, _settings);
-                CommonMarkConverter.ProcessStage2(document, _settings);
-                var engine = XamlFormatter ?? _markdown.Value;
-                var doc = engine.BlocksToXaml(document, _settings);
 
-                return doc;
-            }
+            return ToFlowDocument(text, BuildPipeline());
         }
+
+        public static FlowDocument ToFlowDocument([NotNull] string markdown, MarkdownPipeline pipeline = null)
+        {
+            if (markdown == null) throw new ArgumentNullException(nameof(markdown));
+            pipeline = pipeline ?? new MarkdownPipelineBuilder().Build();
+
+            // We override the renderer with our own writer
+            var result = new FlowDocument();
+            var renderer = new WpfRenderer(result);
+            pipeline.Setup(renderer);
+
+            var document = Markdig.Markdown.Parse(markdown, pipeline);
+            renderer.Render(document);
+
+            return result;
+        }
+
 
         private void CurrentDocument_PreviewKeyDown(object sender, KeyEventArgs e)
         {

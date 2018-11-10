@@ -142,6 +142,12 @@
     <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.5.0.16, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.1.5.0\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
     </Reference>
+    <Reference Include="Markdig, Version=0.15.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.15.4\lib\net40\Markdig.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig.Wpf, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.Wpf.0.2.5\lib\net452\Markdig.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MathParser.org-mXparser, Version=4.2.0.0, Culture=neutral, PublicKeyToken=0fbab7add73ed6e2, processorArchitecture=MSIL">
       <HintPath>..\packages\MathParser.org-mXparser.4.2.2\lib\net462\MathParser.org-mXparser.dll</HintPath>
     </Reference>
@@ -223,7 +229,9 @@
     <Compile Include="Code\Markdown\Markdown.cs" />
     <Compile Include="Code\Markdown\RegularExpressions.cs" />
     <Compile Include="Code\Markdown\SharedSettings.cs" />
+    <Compile Include="Code\Markdown\TaskListRenderer.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
+    <Compile Include="Code\Markdown\WpfRenderer.cs" />
     <Compile Include="Code\Markdown\XamlFormatter.cs" />
     <Compile Include="Code\Messages\ApplicationPartLoaded.cs" />
     <Compile Include="Code\Messages\ApplicationUnlocked.cs" />

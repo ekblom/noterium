@@ -238,7 +238,7 @@ namespace Noterium.Views
                     return;
             }
 
-            if (!File.Exists(url))
+            if (!File.Exists(url) && (uri == null || !uri.IsAbsoluteUri))
                 return;
 
             var sInfo = new ProcessStartInfo(url);
@@ -264,16 +264,14 @@ namespace Noterium.Views
             _xamlFormatter = Resources["XamlFormatter"] as XamlFormatter;
             _markdownToFlowDocumentConverter = Resources["TextToFlowDocumentConverter"] as TextToFlowDocumentConverter;
             Model.MarkdownConverter = _markdownToFlowDocumentConverter;
-            if (_xamlFormatter != null)
-                _xamlFormatter.CheckBoxCheckedCommand = new SimpleCommand(DocumentCheckBoxChecked);
 
             Messenger.Default.Send(new ApplicationPartLoaded(ApplicationPartLoaded.ApplicationParts.NoteView));
         }
 
-        private void DocumentCheckBoxChecked(object arg)
+        private void DocumentCheckBoxChecked(object arg, ExecutedRoutedEventArgs executedRoutedEventArgs)
         {
             _markdownToFlowDocumentConverter.Pause = true;
-            Model.DocumentCheckBoxCheckedCommand?.Execute(arg);
+            Model.DocumentCheckBoxCheckedCommand?.Execute(executedRoutedEventArgs.Parameter);
             _markdownToFlowDocumentConverter.Pause = false;
         }
 
