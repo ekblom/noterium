@@ -78,7 +78,7 @@ namespace Noterium.ViewModels
 
         private void DocumentCheckBoxChecked(object arg)
         {
-            const string markerToDo = @"[*\-\s]\s\[(?:\s|x)\]";
+            const string markerToDo = @"\s*[*\-\s]\s\[(?:\s|x)\]";
 
             var cb = arg as CheckBox;
             if (cb != null)

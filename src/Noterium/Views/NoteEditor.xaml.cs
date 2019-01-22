@@ -461,43 +461,93 @@ namespace Noterium.Views
 
         private void MarkdownText_KeyUp(object sender, KeyEventArgs e)
         {
+            const int tabSize = 4;
+            var lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
+            if (lineIndex < 0)
+                return;
+
             if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
             {
-                var lineIndex = MarkdownText.GetLineIndexFromCharacterIndex(MarkdownText.CaretIndex);
-                if (lineIndex < 0)
-                    return;
+                HandleListLineBreak(e, lineIndex);
+            }
+            else if (e.Key == Key.Tab && Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                HandleBackTab(e, lineIndex, tabSize);
+            }
+            else if (e.Key == Key.Tab)
+            {
+                HandleTab(e, lineIndex, tabSize);
+            }
+        }
 
-                var line = MarkdownText.GetLineText(lineIndex);
-                var lineTextTrim = line.Trim();
+        private void HandleTab(KeyEventArgs e, int lineIndex, int tabSize)
+        {
+            int oldIndex = MarkdownText.CaretIndex;
+            MarkdownText.CaretIndex = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
+            MarkdownText.SelectionLength = 0;
+            MarkdownText.SelectedText = new string(' ', tabSize);
+            MarkdownText.CaretIndex = oldIndex + tabSize;
 
-                if (lineTextTrim.Equals("- [ ]") || lineTextTrim.Equals("-"))
-                {
-                    RemoveLine(lineIndex);
-                    return;
-                }
+            e.Handled = true;
+        }
 
-                var lineTextTrimStart = line.TrimStart();
-                var leadingWhitespaces = line.Length - lineTextTrimStart.Length;
-                var whiteSpaces = string.Empty;
-                if (leadingWhitespaces > 0)
-                    whiteSpaces = new string(' ', leadingWhitespaces);
+        private void HandleBackTab(KeyEventArgs e, int lineIndex, int tabSize)
+        {
+            var line = MarkdownText.GetLineText(lineIndex);
+            int spaceCount = line.TakeWhile(Char.IsWhiteSpace).Count();
+            if (spaceCount == 0)
+            {
+                e.Handled = true;
+                return;
+            }
 
-                string stringToInsert = null;
-                if (lineTextTrimStart.StartsWith("- ["))
-                    stringToInsert = "- [ ] ";
-                else if (lineTextTrimStart.StartsWith("- ")) stringToInsert = "- ";
+            int spacesToTrim;
+            if (spaceCount == tabSize || spaceCount % tabSize == 0)
+                spacesToTrim = tabSize;
+            else
+                spacesToTrim = (int) Math.IEEERemainder(spaceCount, tabSize);
 
-                if (stringToInsert != null)
-                {
-                    InsertAt("\n" + whiteSpaces + stringToInsert, MarkdownText.CaretIndex);
-                    e.Handled = true;
-                }
+            int oldPos = MarkdownText.CaretIndex;
+            MarkdownText.SelectionStart = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
+            MarkdownText.SelectionLength = spacesToTrim;
+            MarkdownText.SelectedText = string.Empty;
+            MarkdownText.CaretIndex = oldPos - spacesToTrim;
+
+            e.Handled = true;
+        }
+
+        private void HandleListLineBreak(KeyEventArgs e, int lineIndex)
+        {
+            var line = MarkdownText.GetLineText(lineIndex);
+            int spaceCount = line.TakeWhile(Char.IsWhiteSpace).Count();
+            var lineTextTrim = line.Trim();
+
+            if (lineTextTrim.Equals("- [ ]") || lineTextTrim.Equals("-"))
+            {
+                RemoveLine(lineIndex);
+                return;
+            }
+
+            var lineTextTrimStart = line.TrimStart();
+            var whiteSpaces = string.Empty;
+            if (spaceCount > 0)
+                whiteSpaces = new string(' ', spaceCount);
+
+            string stringToInsert = null;
+            if (lineTextTrimStart.StartsWith("- ["))
+                stringToInsert = "- [ ] ";
+            else if (lineTextTrimStart.StartsWith("- ")) stringToInsert = "- ";
+
+            if (stringToInsert != null)
+            {
+                InsertAt("\n" + whiteSpaces + stringToInsert, MarkdownText.CaretIndex);
+                e.Handled = true;
             }
         }
 
         private void RemoveLine(int lineIndex)
         {
-            var lines = new List<string>(MarkdownText.Text.Split('\n'));
+            var lines = new List<string>(MarkdownText.Text.Split('\n'));;
             lines.RemoveAt(lineIndex);
 
             var carretPosition = MarkdownText.GetCharacterIndexFromLineIndex(lineIndex);
