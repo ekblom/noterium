@@ -223,6 +223,7 @@
     <Compile Include="Code\Helpers\DialogHelpers.cs" />
     <Compile Include="Code\Helpers\NoteMathHelper.cs" />
     <Compile Include="Code\ListViewDragDrop\MouseUtilities.cs" />
+    <Compile Include="Code\Markdown\LinkInlineRenderer.cs" />
     <Compile Include="Code\Markdown\TaskListRenderer.cs" />
     <Compile Include="Code\Markdown\TextToFlowDocumentConverter.cs" />
     <Compile Include="Code\Markdown\WpfRenderer.cs" />

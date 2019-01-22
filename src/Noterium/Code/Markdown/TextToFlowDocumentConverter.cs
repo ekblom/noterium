@@ -70,7 +70,6 @@ namespace Noterium.Code.Markdown
         {
             return new MarkdownPipelineBuilder()
                 .UseSupportedExtensions()
-                .UseAutoIdentifiers()
                 .Build();
         }
 
@@ -91,6 +90,7 @@ namespace Noterium.Code.Markdown
             // We override the renderer with our own writer
             var result = new FlowDocument();
             var renderer = new WpfRenderer(result);
+
             pipeline.Setup(renderer);
 
             var document = Markdig.Markdown.Parse(markdown, pipeline);

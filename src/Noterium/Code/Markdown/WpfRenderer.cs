@@ -32,6 +32,9 @@ namespace Noterium.Code.Markdown
         {
             ObjectRenderers.RemoveAt(ObjectRenderers.FindIndex(x => x is Markdig.Renderers.Wpf.Extensions.TaskListRenderer));
             ObjectRenderers.Add(new TaskListRenderer());
+
+            ObjectRenderers.RemoveAt(ObjectRenderers.FindIndex(x => x is Markdig.Renderers.Wpf.Inlines.LinkInlineRenderer));
+            ObjectRenderers.Add(new LinkInlineRenderer());
         }
     }
 }
